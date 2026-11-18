@@ -1,0 +1,203 @@
+// Catalog of real resources mentioned in the roadmap.
+// Each entry is matched against resource lines and daily checklist items,
+// so the UI can turn plain text into clickable links.
+
+export type LinkKind = "free" | "book" | "video" | "course" | "tool" | "docs";
+
+export interface CatalogLink {
+  id: string;
+  label: string;
+  url: string;
+  kind: LinkKind;
+  match: RegExp;
+}
+
+export const CATALOG: CatalogLink[] = [
+  // Main track, Phase 1
+  { id: "petzold", label: "Code (Petzold)", url: "https://www.codehiddenlanguage.com/", kind: "book", match: /Petzold|Hidden Language of Computer/i },
+  { id: "cs50", label: "CS50", url: "https://cs50.harvard.edu/x/", kind: "course", match: /\bCS50\b/ },
+  { id: "crashcourse-cs", label: "Crash Course CS", url: "https://www.youtube.com/playlist?list=PL8dPuuaLjXtNlUrzyH5r6jN9ulIgZBpdo", kind: "video", match: /Crash Course (Computer Science|CS)/i },
+  { id: "latency", label: "Latency numbers", url: "https://colin-scott.github.io/personal_website/research/interactive_latency.html", kind: "free", match: /Latency Numbers/i },
+  { id: "ostep", label: "OSTEP", url: "https://pages.cs.wisc.edu/~remzi/OSTEP/", kind: "free", match: /\bOSTEP\b/ },
+  { id: "wizardzines", label: "Julia Evans' zines", url: "https://wizardzines.com/", kind: "free", match: /Julia Evans'? (zine|strace|Networking|How Containers)|wizardzines/i },
+  { id: "jvns-dns", label: "How DNS works (Julia Evans)", url: "https://jvns.ca/blog/how-updating-dns-works/", kind: "free", match: /Julia Evans' post|how DNS works/i },
+  { id: "missing", label: "MIT Missing Semester", url: "https://missing.csail.mit.edu/", kind: "course", match: /Missing Semester/i },
+  { id: "tlcl", label: "The Linux Command Line", url: "https://linuxcommand.org/tlcl.php", kind: "free", match: /Linux Command Line|linuxcommand\.org/i },
+  { id: "bandit", label: "OverTheWire Bandit", url: "https://overthewire.org/wargames/bandit/", kind: "tool", match: /Bandit/i },
+  { id: "progit", label: "Pro Git", url: "https://git-scm.com/book/en/v2", kind: "free", match: /Pro Git/i },
+  { id: "lgb", label: "Learn Git Branching", url: "https://learngitbranching.js.org/", kind: "tool", match: /Learn Git Branching/i },
+  { id: "git-inside-out", label: "Git from the inside out", url: "https://maryrosecook.com/blog/post/git-from-the-inside-out", kind: "free", match: /Git from the inside out/i },
+  { id: "hpbn", label: "High Performance Browser Networking", url: "https://hpbn.co/", kind: "free", match: /\bHPBN\b|High Performance Browser Networking/i },
+  { id: "kurose", label: "Kurose & Ross lectures", url: "https://gaia.cs.umass.edu/kurose_ross/lectures.php", kind: "video", match: /Kurose/i },
+  { id: "beej", label: "Beej's Guide", url: "https://beej.us/guide/bgnet/", kind: "free", match: /Beej/i },
+  { id: "wireshark", label: "Wireshark", url: "https://www.wireshark.org/", kind: "tool", match: /Wireshark/i },
+  { id: "mdn-http", label: "MDN HTTP guide", url: "https://developer.mozilla.org/en-US/docs/Web/HTTP", kind: "docs", match: /MDN (HTTP|Overview|Caching)/i },
+  { id: "tls13", label: "Illustrated TLS 1.3", url: "https://tls13.xargs.org/", kind: "free", match: /Illustrated TLS/i },
+  { id: "codecrafters", label: "CodeCrafters", url: "https://codecrafters.io/", kind: "course", match: /CodeCrafters/i },
+
+  // Phase 2
+  { id: "inside-browser", label: "Inside look at modern web browser", url: "https://developer.chrome.com/blog/inside-browser-part1", kind: "free", match: /Inside look/i },
+  { id: "how-browsers-work", label: "How browsers work", url: "https://web.dev/articles/howbrowserswork", kind: "free", match: /How browsers work/i },
+  { id: "crp", label: "Critical rendering path (MDN)", url: "https://developer.mozilla.org/en-US/docs/Web/Performance/Critical_rendering_path", kind: "docs", match: /Critical rendering path/i },
+  { id: "learn-html", label: "web.dev Learn HTML", url: "https://web.dev/learn/html", kind: "course", match: /Learn HTML/i },
+  { id: "learn-a11y", label: "web.dev Learn Accessibility", url: "https://web.dev/learn/accessibility", kind: "course", match: /Learn Accessibility/i },
+  { id: "mdn-html", label: "MDN HTML reference", url: "https://developer.mozilla.org/en-US/docs/Web/HTML/Element", kind: "docs", match: /MDN HTML reference/i },
+  { id: "learn-css", label: "web.dev Learn CSS", url: "https://web.dev/learn/css", kind: "course", match: /Learn CSS/i },
+  { id: "comeau", label: "Josh Comeau's blog", url: "https://www.joshwcomeau.com/", kind: "free", match: /Josh Comeau|Comeau's/i },
+  { id: "specificity", label: "Specificity calculator", url: "https://specificity.keegan.st/", kind: "tool", match: /Specificity calculator/i },
+  { id: "froggy", label: "Flexbox Froggy", url: "https://flexboxfroggy.com/", kind: "tool", match: /Flexbox Froggy/i },
+  { id: "grid-garden", label: "Grid Garden", url: "https://cssgridgarden.com/", kind: "tool", match: /Grid Garden/i },
+  { id: "jsinfo", label: "javascript.info", url: "https://javascript.info/", kind: "free", match: /javascript\.info/i },
+  { id: "ydkjsy", label: "You Don't Know JS Yet", url: "https://github.com/getify/You-Dont-Know-JS", kind: "free", match: /You Don't Know JS|YDKJSY/i },
+  { id: "flanagan", label: "JS: The Definitive Guide", url: "https://www.oreilly.com/library/view/javascript-the-definitive/9781491952016/", kind: "book", match: /Definitive Guide/i },
+  { id: "roberts-loop", label: "What the heck is the event loop?", url: "https://www.youtube.com/watch?v=8aGhZQkoFbQ", kind: "video", match: /What the heck is the event loop|event loop talks/i },
+  { id: "archibald-loop", label: "In The Loop (Jake Archibald)", url: "https://www.youtube.com/watch?v=cCOL7MC4Pl0", kind: "video", match: /In The Loop|event loop talks/i },
+  { id: "v8", label: "V8 blog", url: "https://v8.dev/blog", kind: "free", match: /\bV8 blog/i },
+  { id: "ts-handbook", label: "TypeScript Handbook", url: "https://www.typescriptlang.org/docs/handbook/intro.html", kind: "docs", match: /TypeScript Handbook/i },
+  { id: "effective-ts", label: "Effective TypeScript", url: "https://effectivetypescript.com/", kind: "book", match: /Effective TypeScript/i },
+
+  // Phase 3
+  { id: "node-loop", label: "The Node.js Event Loop", url: "https://nodejs.org/en/learn/asynchronous-work/event-loop-timers-and-nexttick", kind: "docs", match: /Node\.js Event Loop|Node\.js official guide|Node event loop guide/i },
+  { id: "node-dont-block", label: "Don't Block the Event Loop", url: "https://nodejs.org/en/learn/asynchronous-work/dont-block-the-event-loop", kind: "docs", match: /Don't Block the Event Loop/i },
+  { id: "node-patterns", label: "Node.js Design Patterns", url: "https://www.nodejsdesignpatterns.com/", kind: "book", match: /Node\.js Design Patterns/i },
+  { id: "node-docs", label: "Node.js docs", url: "https://nodejs.org/docs/latest/api/", kind: "docs", match: /Node\.js docs/i },
+  { id: "express", label: "Express source (lib/router)", url: "https://github.com/expressjs/express", kind: "free", match: /Express source/i },
+  { id: "ms-api", label: "Microsoft REST API Guidelines", url: "https://github.com/microsoft/api-guidelines", kind: "docs", match: /REST API Guidelines/i },
+  { id: "zalando-api", label: "Zalando RESTful API guidelines", url: "https://opensource.zalando.com/restful-api-guidelines/", kind: "docs", match: /Zalando/i },
+  { id: "12factor", label: "The Twelve-Factor App", url: "https://12factor.net/", kind: "free", match: /Twelve-Factor/i },
+  { id: "graphql", label: "graphql.org Learn", url: "https://graphql.org/learn/", kind: "docs", match: /graphql\.org/i },
+  { id: "grpc", label: "gRPC Introduction", url: "https://grpc.io/docs/what-is-grpc/introduction/", kind: "docs", match: /grpc\.io/i },
+  { id: "owasp", label: "OWASP Cheat Sheet Series", url: "https://cheatsheetseries.owasp.org/", kind: "docs", match: /OWASP Cheat Sheet/i },
+  { id: "oauth", label: "OAuth 2.0 Simplified", url: "https://www.oauth.com/", kind: "free", match: /oauth\.com|OAuth 2\.0 Simplified/i },
+  { id: "portswigger", label: "PortSwigger Web Security Academy", url: "https://portswigger.net/web-security", kind: "course", match: /PortSwigger/i },
+  { id: "pgtutorial", label: "PostgreSQL Tutorial", url: "https://www.postgresqltutorial.com/", kind: "free", match: /PostgreSQL Tutorial/i },
+  { id: "pgdocs-tutorial", label: "PostgreSQL docs tutorial", url: "https://www.postgresql.org/docs/current/tutorial.html", kind: "docs", match: /official PostgreSQL docs tutorial|PostgreSQL docs tutorial/i },
+  { id: "sqlbolt", label: "SQLBolt", url: "https://sqlbolt.com/", kind: "tool", match: /SQLBolt/i },
+  { id: "pgexercises", label: "pgexercises", url: "https://pgexercises.com/", kind: "tool", match: /pgexercises/i },
+  { id: "sql-antipatterns", label: "SQL Antipatterns", url: "https://pragprog.com/titles/bksap1/sql-antipatterns-volume-1/", kind: "book", match: /SQL Antipatterns/i },
+  { id: "luke", label: "Use The Index, Luke", url: "https://use-the-index-luke.com/", kind: "free", match: /Use The Index/i },
+  { id: "ddia", label: "Designing Data-Intensive Applications", url: "https://dataintensive.net/", kind: "book", match: /\bDDIA\b|Designing Data-Intensive/i },
+  { id: "cmu445", label: "CMU 15-445", url: "https://15445.courses.cs.cmu.edu/", kind: "course", match: /15-445/i },
+  { id: "pg-mvcc", label: "PostgreSQL MVCC", url: "https://www.postgresql.org/docs/current/mvcc.html", kind: "docs", match: /PostgreSQL docs: MVCC/i },
+  { id: "pg-explain", label: "PostgreSQL: Using EXPLAIN", url: "https://www.postgresql.org/docs/current/using-explain.html", kind: "docs", match: /Using EXPLAIN|EXPLAIN ANALYZE/i },
+  { id: "redis-u", label: "Redis University", url: "https://university.redis.io/", kind: "course", match: /Redis University/i },
+  { id: "redis-types", label: "Redis data types", url: "https://redis.io/docs/latest/develop/data-types/", kind: "docs", match: /Redis docs/i },
+  { id: "kafka", label: "Kafka Introduction", url: "https://kafka.apache.org/intro", kind: "docs", match: /Kafka docs/i },
+  { id: "kleppmann-lock", label: "How to do distributed locking", url: "https://martin.kleppmann.com/2016/02/08/how-to-do-distributed-locking.html", kind: "free", match: /distributed locking/i },
+  { id: "khorikov", label: "Unit Testing (Khorikov)", url: "https://www.manning.com/books/unit-testing", kind: "book", match: /Khorikov/i },
+  { id: "test-pyramid", label: "The Practical Test Pyramid", url: "https://martinfowler.com/articles/practical-test-pyramid.html", kind: "free", match: /Practical Test Pyramid/i },
+  { id: "mocks-stubs", label: "Mocks Aren't Stubs", url: "https://martinfowler.com/articles/mocksArentStubs.html", kind: "free", match: /Mocks Aren't Stubs/i },
+  { id: "node-test", label: "Node test runner", url: "https://nodejs.org/api/test.html", kind: "docs", match: /built-in test runner/i },
+  { id: "vitest", label: "Vitest", url: "https://vitest.dev/", kind: "docs", match: /Vitest/i },
+  { id: "k6", label: "k6 docs", url: "https://grafana.com/docs/k6/latest/", kind: "docs", match: /\bk6\b/i },
+
+  // Phase 4
+  { id: "webpack-concepts", label: "webpack Concepts", url: "https://webpack.js.org/concepts/", kind: "docs", match: /webpack docs/i },
+  { id: "webpack-split", label: "webpack Code Splitting", url: "https://webpack.js.org/guides/code-splitting/", kind: "docs", match: /Code Splitting/i },
+  { id: "minipack", label: "minipack", url: "https://github.com/ronami/minipack", kind: "free", match: /minipack|Ronen Amiel/i },
+  { id: "vite", label: "Why Vite", url: "https://vite.dev/guide/why", kind: "docs", match: /Why Vite|Vite docs/i },
+  { id: "astexplorer", label: "AST Explorer", url: "https://astexplorer.net/", kind: "tool", match: /AST Explorer/i },
+  { id: "pombo", label: "Build your own React", url: "https://pomb.us/build-your-own-react/", kind: "free", match: /Build your own React|Pombo/i },
+  { id: "react-dev", label: "react.dev", url: "https://react.dev/learn", kind: "docs", match: /react\.dev/i },
+  { id: "fiber", label: "React Fiber Architecture", url: "https://github.com/acdlite/react-fiber-architecture", kind: "free", match: /Fiber Architecture|acdlite/i },
+  { id: "overreacted", label: "overreacted.io", url: "https://overreacted.io/", kind: "free", match: /overreacted|Dan Abramov/i },
+  { id: "useeffect-guide", label: "A Complete Guide to useEffect", url: "https://overreacted.io/a-complete-guide-to-useeffect/", kind: "free", match: /Complete Guide to useEffect/i },
+  { id: "tkdodo", label: "TkDodo's blog", url: "https://tkdodo.eu/blog/", kind: "free", match: /TkDodo/i },
+  { id: "nextjs", label: "Next.js docs", url: "https://nextjs.org/docs", kind: "docs", match: /Next\.js docs/i },
+  { id: "patterns-dev", label: "patterns.dev", url: "https://www.patterns.dev/", kind: "free", match: /patterns\.dev/i },
+  { id: "bundle-analyzer", label: "@next/bundle-analyzer", url: "https://www.npmjs.com/package/@next/bundle-analyzer", kind: "tool", match: /bundle-analyzer/i },
+  { id: "cwv", label: "Core Web Vitals", url: "https://web.dev/articles/vitals", kind: "docs", match: /Core Web Vitals/i },
+
+  // Phase 5
+  { id: "nginx", label: "NGINX Beginner's Guide", url: "https://nginx.org/en/docs/beginners_guide.html", kind: "docs", match: /NGINX Beginner/i },
+  { id: "nginx-proxy", label: "ngx_http_proxy_module", url: "https://nginx.org/en/docs/http/ngx_http_proxy_module.html", kind: "docs", match: /ngx_http_proxy_module/i },
+  { id: "nginx-upstream", label: "ngx_http_upstream_module", url: "https://nginx.org/en/docs/http/ngx_http_upstream_module.html", kind: "docs", match: /ngx_http_upstream_module/i },
+  { id: "cf-learning", label: "Cloudflare Learning Center", url: "https://www.cloudflare.com/learning/", kind: "free", match: /Cloudflare Learning/i },
+  { id: "samwho-lb", label: "Load Balancing (Sam Rose)", url: "https://samwho.dev/load-balancing/", kind: "free", match: /Sam Rose|samwho/i },
+  { id: "apim", label: "Azure API Management overview", url: "https://learn.microsoft.com/en-us/azure/api-management/api-management-key-concepts", kind: "docs", match: /API Management overview/i },
+  { id: "crs", label: "OWASP Core Rule Set", url: "https://coreruleset.org/docs/", kind: "docs", match: /Core Rule Set/i },
+  { id: "kong", label: "Kong Gateway docs", url: "https://developer.konghq.com/gateway/", kind: "docs", match: /Kong/i },
+  { id: "rice-containers", label: "Containers From Scratch (Liz Rice)", url: "https://www.youtube.com/watch?v=8fi7uSYlOdc", kind: "video", match: /Containers From Scratch|Liz Rice/i },
+  { id: "docker", label: "Docker: Get started", url: "https://docs.docker.com/get-started/", kind: "docs", match: /Docker docs|Docker get-started/i },
+  { id: "docker-bp", label: "Dockerfile best practices", url: "https://docs.docker.com/build/building/best-practices/", kind: "docs", match: /Dockerfile best practices/i },
+  { id: "docker-deep-dive", label: "Docker Deep Dive", url: "https://nigelpoulton.com/books/", kind: "book", match: /Docker Deep Dive/i },
+  { id: "trivy", label: "Trivy", url: "https://trivy.dev/", kind: "tool", match: /Trivy/i },
+  { id: "k8s", label: "Kubernetes Concepts", url: "https://kubernetes.io/docs/concepts/", kind: "docs", match: /Kubernetes docs/i },
+  { id: "k8s-uar", label: "Kubernetes Up & Running", url: "https://www.oreilly.com/library/view/kubernetes-up-and/9781098110192/", kind: "book", match: /Kubernetes Up & Running/i },
+  { id: "k8s-comic", label: "Kubernetes comic", url: "https://cloud.google.com/kubernetes-engine/kubernetes-comic", kind: "free", match: /Kubernetes comic/i },
+  { id: "ingress-nginx", label: "ingress-nginx docs", url: "https://kubernetes.github.io/ingress-nginx/", kind: "docs", match: /ingress-nginx/i },
+  { id: "k8s-hard-way", label: "Kubernetes the Hard Way", url: "https://github.com/kelseyhightower/kubernetes-the-hard-way", kind: "free", match: /Hard Way/i },
+  { id: "aws-vpc", label: "AWS VPC docs", url: "https://docs.aws.amazon.com/vpc/latest/userguide/what-is-amazon-vpc.html", kind: "docs", match: /VPC fundamentals/i },
+  { id: "kind", label: "kind", url: "https://kind.sigs.k8s.io/", kind: "tool", match: /\bkind\b|minikube|k3d/ },
+  { id: "gha", label: "GitHub Actions docs", url: "https://docs.github.com/en/actions", kind: "docs", match: /GitHub Actions/i },
+  { id: "sre", label: "Site Reliability Engineering", url: "https://sre.google/books/", kind: "free", match: /Site Reliability Engineering/i },
+  { id: "otel", label: "OpenTelemetry Concepts", url: "https://opentelemetry.io/docs/concepts/", kind: "docs", match: /OpenTelemetry/i },
+  { id: "prometheus", label: "Prometheus overview", url: "https://prometheus.io/docs/introduction/overview/", kind: "docs", match: /Prometheus/i },
+  { id: "terraform", label: "Terraform tutorials", url: "https://developer.hashicorp.com/terraform/tutorials", kind: "docs", match: /Terraform/i },
+
+  // Phase 6
+  { id: "sdp", label: "System Design Primer", url: "https://github.com/donnemartin/system-design-primer", kind: "free", match: /System Design Primer/i },
+  { id: "alex-xu", label: "System Design Interview (Alex Xu)", url: "https://bytebytego.com/", kind: "book", match: /Alex Xu|System Design Interview/i },
+  { id: "bytebytego", label: "ByteByteGo", url: "https://blog.bytebytego.com/", kind: "free", match: /ByteByteGo/i },
+  { id: "raft", label: "Raft", url: "https://raft.github.io/", kind: "free", match: /Raft/ },
+  { id: "azure-patterns", label: "Cloud design patterns", url: "https://learn.microsoft.com/en-us/azure/architecture/patterns/", kind: "docs", match: /Cloud design patterns|Architecture Center/i },
+  { id: "jepsen", label: "Jepsen", url: "https://jepsen.io/", kind: "free", match: /Jepsen/i },
+  { id: "crafting", label: "Crafting Interpreters", url: "https://craftinginterpreters.com/", kind: "free", match: /Crafting Interpreters/i },
+  { id: "byox", label: "build-your-own-x", url: "https://github.com/codecrafters-io/build-your-own-x", kind: "free", match: /build-your-own-x/i },
+  { id: "csapp", label: "CS:APP", url: "https://csapp.cs.cmu.edu/", kind: "book", match: /Programmer's Perspective/i },
+
+  // Java + DSA track
+  { id: "mooc", label: "Helsinki Java MOOC", url: "https://java-programming.mooc.fi/", kind: "course", match: /\bMOOC\b/ },
+  { id: "headfirst-java", label: "Head First Java", url: "https://www.oreilly.com/library/view/head-first-java/9781492091646/", kind: "book", match: /Head First Java/i },
+  { id: "headfirst-dp", label: "Head First Design Patterns", url: "https://www.oreilly.com/library/view/head-first-design/9781492077992/", kind: "book", match: /Head First Design Patterns/i },
+  { id: "kunal", label: "Kunal Kushwaha DSA Bootcamp", url: "https://www.youtube.com/playlist?list=PL9gnSGHSqcnr_DxHsP7AW9ftq0AtAyYqJ", kind: "video", match: /Kunal Kushwaha/i },
+  { id: "refactoring-guru", label: "refactoring.guru", url: "https://refactoring.guru/design-patterns", kind: "free", match: /refactoring\.guru/i },
+  { id: "dev-java", label: "dev.java Learn", url: "https://dev.java/learn/", kind: "docs", match: /dev\.java|Oracle\/dev\.java/i },
+  { id: "modern-java", label: "Modern Java in Action", url: "https://www.manning.com/books/modern-java-in-action", kind: "book", match: /Modern Java in Action/i },
+  { id: "junit", label: "JUnit 5 User Guide", url: "https://junit.org/junit5/docs/current/user-guide/", kind: "docs", match: /JUnit/ },
+  { id: "maven5", label: "Maven in 5 Minutes", url: "https://maven.apache.org/guides/getting-started/maven-in-five-minutes.html", kind: "docs", match: /Maven in 5 minutes/i },
+  { id: "java-perf", label: "Java Performance (Oaks)", url: "https://www.oreilly.com/library/view/java-performance-2nd/9781492056102/", kind: "book", match: /Java Performance/i },
+  { id: "sedgewick", label: "Algorithms, 4th ed. (Sedgewick)", url: "https://algs4.cs.princeton.edu/home/", kind: "free", match: /Sedgewick/i },
+  { id: "princeton1", label: "Princeton Algorithms I", url: "https://www.coursera.org/learn/algorithms-part1", kind: "course", match: /Princeton Algorithms I\b|Princeton (lecture|lectures)|Algorithms I (week|hash|merge|lectures)/i },
+  { id: "princeton2", label: "Princeton Algorithms II", url: "https://www.coursera.org/learn/algorithms-part2", kind: "course", match: /Algorithms II/i },
+  { id: "abdul-bari", label: "Abdul Bari", url: "https://www.youtube.com/@abdul_bari", kind: "video", match: /Abdul Bari/i },
+  { id: "striver", label: "Striver's A2Z DSA sheet", url: "https://takeuforward.org/strivers-a2z-dsa-course/strivers-a2z-dsa-course-sheet-2/", kind: "free", match: /Striver/i },
+  { id: "striver-dp", label: "Striver's DP series", url: "https://takeuforward.org/dynamic-programming/striver-dp-series-dynamic-programming-problems", kind: "video", match: /Striver's DP series/i },
+  { id: "neetcode", label: "NeetCode roadmap", url: "https://neetcode.io/roadmap", kind: "free", match: /NeetCode/i },
+  { id: "visualgo", label: "VisuAlgo", url: "https://visualgo.net/", kind: "tool", match: /VisuAlgo/i },
+  { id: "cp-algo", label: "CP-Algorithms", url: "https://cp-algorithms.com/", kind: "free", match: /CP-Algorithms/i },
+  { id: "roughgarden", label: "Algorithms Illuminated", url: "https://www.algorithmsilluminated.org/", kind: "book", match: /Roughgarden|Algorithms Illuminated/i },
+  { id: "mit6006", label: "MIT 6.006", url: "https://ocw.mit.edu/courses/6-006-introduction-to-algorithms-spring-2020/", kind: "course", match: /6\.006/i },
+  { id: "jcip", label: "Java Concurrency in Practice", url: "https://jcip.net/", kind: "book", match: /Java Concurrency in Practice/i },
+  { id: "jenkov", label: "Jenkov Java concurrency", url: "https://jenkov.com/tutorials/java-concurrency/index.html", kind: "free", match: /Jenkov/i },
+  { id: "effective-java", label: "Effective Java", url: "https://www.oreilly.com/library/view/effective-java-3rd/9780134686097/", kind: "book", match: /Effective Java/i },
+  { id: "leetcode", label: "LeetCode", url: "https://leetcode.com/problemset/", kind: "tool", match: /LeetCode/i },
+  { id: "codeforces", label: "Codeforces", url: "https://codeforces.com/", kind: "tool", match: /Codeforces/i },
+  { id: "atcoder", label: "AtCoder", url: "https://atcoder.jp/", kind: "tool", match: /AtCoder/i },
+  { id: "cph", label: "Competitive Programmer's Handbook", url: "https://cses.fi/book/book.pdf", kind: "free", match: /Competitive Programmer's Handbook/i },
+
+  // Setup tools
+  { id: "obsidian", label: "Obsidian", url: "https://obsidian.md/", kind: "tool", match: /Obsidian/i },
+  { id: "vscode", label: "VS Code", url: "https://code.visualstudio.com/", kind: "tool", match: /VS Code/i },
+  { id: "intellij", label: "IntelliJ IDEA", url: "https://www.jetbrains.com/idea/download/", kind: "tool", match: /IntelliJ/i },
+  { id: "anki", label: "Anki", url: "https://apps.ankiweb.net/", kind: "tool", match: /Anki/i },
+  { id: "temurin", label: "Adoptium Temurin", url: "https://adoptium.net/", kind: "tool", match: /Temurin|Install a JDK|Install the JDK/i },
+  { id: "sdkman", label: "SDKMAN", url: "https://sdkman.io/", kind: "tool", match: /SDKMAN/i },
+  { id: "wsl", label: "WSL2", url: "https://learn.microsoft.com/en-us/windows/wsl/install", kind: "docs", match: /WSL2/i },
+];
+
+export function linksFor(text: string): CatalogLink[] {
+  const seen = new Set<string>();
+  const out: CatalogLink[] = [];
+  for (const l of CATALOG) {
+    if (l.match.test(text) && !seen.has(l.id)) {
+      seen.add(l.id);
+      out.push(l);
+    }
+  }
+  return out;
+}
+
+export const leetcodeUrl = (slug: string) => `https://leetcode.com/problems/${slug}/`;
+export const neetcodeSearch = (name: string) =>
+  `https://www.google.com/search?q=${encodeURIComponent(name + " neetcode")}`;
