@@ -2,10 +2,9 @@
 
 import Link from "next/link";
 import { useMemo, useState } from "react";
-import { WEEKS } from "@/lib/roadmap";
+import { useContent } from "@/lib/content";
 import { customProblems, problemRec, problemStats, type ProblemRec } from "@/lib/progress";
 import { setEntry, useHydrated, useStore, useToday } from "@/lib/store";
-import { PRACTICE_RULES } from "@/data/guide";
 import { ProblemRow } from "./problem-row";
 import { Bar, SectionTitle } from "./ui";
 
@@ -22,6 +21,8 @@ function slugFrom(input: string): string {
 }
 
 export function ProblemsView() {
+  const c = useContent();
+  const javaWeeks = c.weeks.java ?? [];
   const s = useStore();
   const h = useHydrated();
   const [filter, setFilter] = useState<Filter>("all");
@@ -29,7 +30,7 @@ export function ProblemsView() {
   const [name, setName] = useState("");
   const [week, setWeek] = useState(11);
   const now = useToday();
-  const st = problemStats(s, now);
+  const st = problemStats(s, now, c.problems);
   const custom = customProblems(s);
   const dueSet = useMemo(() => new Set(st.due.map((d) => d.slug)), [st.due]);
 
@@ -40,14 +41,14 @@ export function ProblemsView() {
     return problemRec(s, slug).status === filter;
   };
 
-  const weeks = WEEKS.java
+  const weeks = javaWeeks
     .map((w) => ({
       n: w.n,
       title: w.title,
       items: [...w.problems.map((p) => ({ ...p, custom: false })), ...custom.filter((c) => c.week === w.n).map((c) => ({ ...c, custom: true }))].filter((p) => keep(p.slug, p.name)),
     }))
     .filter((w) => w.items.length);
-  const unassigned = custom.filter((c) => !c.week || !WEEKS.java.some((w) => w.n === c.week)).filter((p) => keep(p.slug, p.name));
+  const unassigned = custom.filter((c) => !c.week || !javaWeeks.some((w) => w.n === c.week)).filter((p) => keep(p.slug, p.name));
 
   const add = (e: React.FormEvent) => {
     e.preventDefault();
@@ -146,7 +147,7 @@ export function ProblemsView() {
         <form onSubmit={add} className="flex flex-col gap-2 sm:flex-row">
           <input className="input flex-1" value={name} onChange={(e) => setName(e.target.value)} placeholder="e.g. Jump Game III or https://leetcode.com/problems/…" aria-label="Problem name or URL" />
           <select className="input sm:w-40" value={week} onChange={(e) => setWeek(Number(e.target.value))} aria-label="Week">
-            {WEEKS.java.map((w) => (
+            {javaWeeks.map((w) => (
               <option key={w.n} value={w.n}>
                 Week {w.n}
               </option>
@@ -159,7 +160,7 @@ export function ProblemsView() {
       <section className="card p-5">
         <SectionTitle>Practice rules for every problem</SectionTitle>
         <ol className="list-decimal space-y-1.5 pl-5 text-[15px] leading-relaxed">
-          {PRACTICE_RULES.map((r) => (
+          {c.practiceRules.map((r) => (
             <li key={r}>{r}</li>
           ))}
         </ol>

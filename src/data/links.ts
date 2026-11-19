@@ -1,3 +1,4 @@
+import "server-only";
 // Catalog of real resources mentioned in the roadmap.
 // Each entry is matched against resource lines and daily checklist items,
 // so the UI can turn plain text into clickable links.

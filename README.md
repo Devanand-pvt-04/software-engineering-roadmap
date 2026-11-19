@@ -19,6 +19,17 @@ Progress is local-first (saved in the browser). When cloud sync is configured, s
 
 Sync needs four environment variables (see `.env.example`). Without them the app runs in browser-only mode.
 
+## Invites and access
+
+When sign-in is configured, the app is invite only. The owner (the GitHub account that owns the repo on Vercel, or the usernames in `ADMIN_GITHUB_LOGINS`, comma-separated) gets everything plus **Admin**:
+
+- **Invite** people by GitHub username. They open the app and sign in with GitHub; anyone not on the list sees a "not invited" page.
+- **Profiles** are named sets of features (each track, problem tracker, journal, timer, export, guide, glossary). Editing a profile changes it for everyone on it.
+- **Per-person overrides** switch single features on or off for one member, on top of their profile.
+- **Revoke** takes effect on their next request. **Preview** shows the app exactly as a member sees it.
+
+A feature someone doesn't have is absent, not hidden: plan content is only read on the server (`src/server/content.ts`) and each person's browser receives only their slice. Their pages for anything else render the same "Page not found" as a URL that doesn't exist.
+
 ## Deploying on Vercel
 
 1. Import this repo in Vercel (framework: Next.js, no build settings to change).
@@ -37,6 +48,8 @@ npm install
 cp .env.example .env.local   # optional, for sync
 npm run dev
 ```
+
+Without sign-in configured, the app runs in open mode with every feature on. To try invites locally without Postgres, set `ZTD_LOCAL_DB=/tmp/ztd.json` (members, profiles and progress go in that file; it's ignored when `DATABASE_URL` is set).
 
 ## Where the content lives
 

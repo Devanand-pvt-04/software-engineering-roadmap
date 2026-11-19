@@ -1,3 +1,4 @@
+import "server-only";
 // Exact chapters / sections / modules for resources the plan describes loosely.
 // Every chapter number and title here was taken from the resource's own table of contents
 // (publisher or official site), checked November 2026.

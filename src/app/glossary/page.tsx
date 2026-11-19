@@ -1,20 +1,27 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { GLOSSARY } from "@/data/guide";
+import { allowed, titleFor } from "@/server/access";
+import { Missing } from "@/components/missing";
+import { glossaryFor, tracksFor } from "@/server/content";
 
-export const metadata: Metadata = { title: "Glossary" };
+export async function generateMetadata(): Promise<Metadata> {
+  return titleFor("Glossary", "glossary");
+}
 
-export default function Page() {
+export default async function Page() {
+  const a = await allowed("glossary");
+  if (!a) return <Missing />;
+  const glossary = glossaryFor(tracksFor(a.features));
   return (
     <div className="space-y-6">
       <header>
         <h1 className="text-2xl font-bold tracking-tight sm:text-3xl">Glossary: the scary terms, mapped</h1>
         <p className="mt-2 max-w-2xl text-[15px] text-muted">
-          One-line meanings so they stop being noise today. Depth comes in the week listed. By week 36, every term here should map to something you&apos;ve built or configured.
+          One-line meanings so they stop being noise today. Depth comes in the week listed. By the end of the plan, every term here should map to something you&apos;ve built or configured.
         </p>
       </header>
       <div className="card divide-y divide-line">
-        {GLOSSARY.map((g) => (
+        {glossary.map((g) => (
           <div key={g.term} className="grid gap-1 p-4 sm:grid-cols-[200px_1fr_auto] sm:gap-4">
             <div className="font-semibold">{g.term}</div>
             <div className="text-[15px] text-muted">{g.meaning}</div>

@@ -1,9 +1,8 @@
 "use client";
 
 import Link from "next/link";
-import { linksFor, type CatalogLink } from "@/data/links";
 import { useCheck } from "@/lib/store";
-import type { Track } from "@/lib/roadmap";
+import type { LinkRef, Track } from "@/lib/roadmap";
 
 export function CheckBox({ checked, onChange, label, color = "accent" }: { checked: boolean; onChange: (v: boolean) => void; label: string; color?: "accent" | "main" | "java" | "ok" }) {
   const bg = { accent: "bg-accent border-accent", main: "bg-main border-main", java: "bg-java border-java", ok: "bg-ok border-ok" }[color];
@@ -25,7 +24,7 @@ export function CheckBox({ checked, onChange, label, color = "accent" }: { check
   );
 }
 
-export function CheckRow({ k, children, color, muted, links }: { k: string; children: React.ReactNode; color?: "accent" | "main" | "java" | "ok"; muted?: boolean; links?: string }) {
+export function CheckRow({ k, children, color, muted, links }: { k: string; children: React.ReactNode; color?: "accent" | "main" | "java" | "ok"; muted?: boolean; links?: LinkRef[] }) {
   const [v, set] = useCheck(k);
   const text = typeof children === "string" ? children : "";
   return (
@@ -35,13 +34,13 @@ export function CheckRow({ k, children, color, muted, links }: { k: string; chil
         <span className="cursor-pointer" onClick={() => set(!v)}>
           {children}
         </span>
-        {links !== undefined && <LinkChips text={links || text} className="mt-1.5" />}
+        {links && <LinkChips links={links} className="mt-1.5" />}
       </div>
     </div>
   );
 }
 
-export function LinkChip({ l }: { l: CatalogLink }) {
+export function LinkChip({ l }: { l: LinkRef }) {
   return (
     <a href={l.url} target="_blank" rel="noopener noreferrer" className="chip">
       {l.label}
@@ -52,13 +51,12 @@ export function LinkChip({ l }: { l: CatalogLink }) {
   );
 }
 
-export function LinkChips({ text, className = "" }: { text: string; className?: string }) {
-  const ls = linksFor(text);
+export function LinkChips({ links: ls, className = "" }: { links: LinkRef[]; className?: string }) {
   if (!ls.length) return null;
   return (
     <div className={`flex flex-wrap gap-1.5 ${className}`}>
       {ls.map((l) => (
-        <LinkChip key={l.id} l={l} />
+        <LinkChip key={l.url} l={l} />
       ))}
     </div>
   );

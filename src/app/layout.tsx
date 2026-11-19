@@ -1,15 +1,20 @@
 import type { Metadata, Viewport } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
+import { Suspense } from "react";
 import { SyncProvider } from "@/lib/store";
 import { Shell } from "@/components/shell";
+import { ContentProvider } from "@/lib/content";
+import { getAccess } from "@/server/access";
+import { clientContent } from "@/server/content";
+import { NoAccess, SignInScreen, Splash } from "@/components/gate";
 
 const geistSans = Geist({ variable: "--font-geist-sans", subsets: ["latin"] });
 const geistMono = Geist_Mono({ variable: "--font-geist-mono", subsets: ["latin"] });
 
 export const metadata: Metadata = {
   title: { default: "Zero to Deep", template: "%s · Zero to Deep" },
-  description: "A 36-week software engineering plan: Main track (CPU to Kubernetes) and Java + DSA, with daily checklists, trackers and links.",
+  description: "A 36-week software engineering plan with daily checklists, trackers and links. Invite only.",
 };
 export const viewport: Viewport = {
   themeColor: [
@@ -29,10 +34,25 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
         />
       </head>
       <body className="min-h-full font-sans">
-        <SyncProvider>
-          <Shell>{children}</Shell>
-        </SyncProvider>
+        <Suspense fallback={<Splash />}>
+          <Gate>{children}</Gate>
+        </Suspense>
       </body>
     </html>
+  );
+}
+
+/** Decides, per request, whether this person gets the app and which slice of the plan they receive. */
+async function Gate({ children }: { children: React.ReactNode }) {
+  const a = await getAccess();
+  if (a.status === "anon" || a.status === "relogin") return <SignInScreen relogin={a.status === "relogin"} />;
+  if (a.status === "denied") return <NoAccess login={a.login} />;
+  const content = clientContent({ role: a.role!, login: a.login, previewAs: a.previewAs, features: a.features });
+  return (
+    <ContentProvider value={content}>
+      <SyncProvider>
+        <Shell>{children}</Shell>
+      </SyncProvider>
+    </ContentProvider>
   );
 }

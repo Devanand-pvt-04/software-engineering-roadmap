@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { URL_NOTE_SECTIONS } from "@/data/guide";
+import { useContent } from "@/lib/content";
 import { setEntry, useHydrated, useStore } from "@/lib/store";
 import { dayKey } from "@/lib/schedule";
 import { NoteBox } from "./notes";
@@ -18,36 +18,46 @@ interface LogItem {
 const MISTAKE_TAGS = ["off-by-one", "edge case", "wrong pattern", "complexity", "misread problem", "bug", "other"];
 
 const TABS = [
-  { id: "url", label: "What happens when I type a URL" },
+  { id: "url", label: "" },
   { id: "mistake", label: "Mistakes log" },
   { id: "pattern", label: "Patterns note" },
 ] as const;
 
 export function JournalView() {
-  const [tab, setTab] = useState<(typeof TABS)[number]["id"]>("url");
+  const c = useContent();
+  const tabs = TABS.filter((t) => (t.id === "url" ? c.urlNoteSections.length > 0 : c.tracks.includes("java")));
+  const [picked, setTab] = useState<(typeof TABS)[number]["id"] | null>(null);
+  const tab = picked ?? tabs[0]?.id;
   return (
     <div className="space-y-6">
       <header>
         <h1 className="text-2xl font-bold tracking-tight sm:text-3xl">Journal</h1>
-        <p className="mt-2 max-w-2xl text-[15px] text-muted">The plan&apos;s long-running notes: one URL note that grows each phase, and the patterns and mistakes notes for the Java + DSA track.</p>
+        <p className="mt-2 max-w-2xl text-[15px] text-muted">
+          {tabs.length === 3
+            ? "The plan's long-running notes: one URL note that grows each phase, and the patterns and mistakes notes for the Java + DSA track."
+            : tab === "url"
+              ? "The plan's long-running note: one URL explanation that grows each phase."
+              : "Your long-running patterns and mistakes notes."}
+        </p>
       </header>
       <div className="flex flex-wrap gap-1.5" role="tablist">
-        {TABS.map((t) => (
+        {tabs.map((t) => (
           <button key={t.id} role="tab" aria-selected={tab === t.id} onClick={() => setTab(t.id)} className={`chip !px-3 !py-2 !text-[13px] ${tab === t.id ? "!border-accent !text-accent" : ""}`}>
-            {t.label}
+            {t.id === "url" ? c.urlNoteTitle : t.label}
           </button>
         ))}
       </div>
-      {tab === "url" ? <UrlNote /> : <Log kind={tab} />}
+      {tab === "url" ? <UrlNote /> : tab ? <Log kind={tab} /> : null}
     </div>
   );
 }
 
 function UrlNote() {
+  const { urlNoteSections } = useContent();
   return (
     <div className="space-y-4">
       <p className="text-sm text-muted">Start this in week 1. Every phase adds a section. By week 36 it&apos;s a document you could teach from, and the basis of your capstone talk.</p>
-      {URL_NOTE_SECTIONS.map((s) => (
+      {urlNoteSections.map((s) => (
         <section key={s.id} className="card p-5">
           <SectionTitle hint={s.phase}>{s.title}</SectionTitle>
           <p className="mb-2 text-xs text-muted">{s.hint}</p>

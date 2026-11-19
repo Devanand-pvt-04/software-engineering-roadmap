@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { SESSION_TEMPLATE } from "@/data/guide";
+import { SESSION_TEMPLATE } from "@/lib/constants";
 
 /** The 5-step session template (Open, Recall, Focus, Explain, Close) as a guided timer. */
 export function FocusTimer() {

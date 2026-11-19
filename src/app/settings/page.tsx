@@ -1,6 +1,11 @@
-import type { Metadata } from "next";
 import { SettingsView } from "@/components/settings-view";
-export const metadata: Metadata = { title: "Settings" };
-export default function Page() {
+import { allowed, titleFor } from "@/server/access";
+import { Missing } from "@/components/missing";
+export async function generateMetadata() {
+  return titleFor("Settings");
+}
+
+export default async function Page() {
+  if (!(await allowed())) return <Missing />;
   return <SettingsView />;
 }

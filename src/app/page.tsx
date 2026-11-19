@@ -1,4 +1,8 @@
 import { TodayView } from "@/components/today";
-export default function Page() {
+import { allowed } from "@/server/access";
+import { Missing } from "@/components/missing";
+
+export default async function Page() {
+  if (!(await allowed())) return <Missing />;
   return <TodayView />;
 }
