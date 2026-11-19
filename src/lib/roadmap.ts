@@ -1,15 +1,34 @@
-import data from "@/data/roadmap.json";
-import type { Day } from "@/data/guide";
+// Types, labels and progress keys for the plan. Client-safe: no plan content here.
+// The content itself is loaded on the server and filtered per person (src/server/content.ts).
+import type { Day } from "./constants";
 
 export type Track = "main" | "java";
+export const TRACKS: Track[] = ["main", "java"];
 
 export interface TopicNode {
   t: string;
   c: string[];
 }
+export interface LinkRef {
+  label: string;
+  url: string;
+}
+/** Exact chapters / sections for an item. */
+export interface SpecView {
+  detail: string;
+  links?: LinkRef[];
+}
 export interface Resource {
   text: string;
   core: boolean;
+  links: LinkRef[];
+  specs: SpecView[];
+}
+export interface DayItem {
+  day: Day;
+  text: string;
+  links: LinkRef[];
+  specs: SpecView[];
 }
 export interface Problem {
   slug: string;
@@ -23,12 +42,12 @@ export interface Week {
   mustKnow: TopicNode[];
   niche: string[];
   resources: Resource[];
-  checklist: { day: Day; text: string }[];
+  checklist: DayItem[];
   doneWhen: string;
   build: string;
   problems: Problem[];
   problemNote: string;
-  after: string[];
+  after: { text: string; links: LinkRef[] }[];
   extra: string[];
 }
 export interface Group {
@@ -39,26 +58,8 @@ export interface Group {
   weeks: number[];
 }
 
-export const WEEKS: Record<Track, Week[]> = {
-  main: data.main as Week[],
-  java: data.java as Week[],
-};
-export const GROUPS: Record<Track, Group[]> = {
-  main: data.mainGroups as Group[],
-  java: data.javaGroups as Group[],
-};
-
 export const TRACK_LABEL: Record<Track, string> = { main: "Main track", java: "Java + DSA" };
 export const TRACK_SHORT: Record<Track, string> = { main: "M", java: "J" };
-
-export function getWeek(track: Track, n: number): Week | undefined {
-  return WEEKS[track].find((w) => w.n === n);
-}
-export function groupOf(track: Track, n: number): Group | undefined {
-  return GROUPS[track].find((g) => g.weeks.includes(n));
-}
-
-export const ALL_PROBLEMS = WEEKS.java.flatMap((w) => w.problems.map((p) => ({ ...p, week: w.n })));
 
 // ---- Checkable keys ----
 export const wk = (track: Track, n: number) => `${TRACK_SHORT[track]}${n}`;
@@ -74,7 +75,7 @@ export const keys = {
 };
 
 /** Keys that count toward a week's "required" progress (niche + resources are optional). */
-export function requiredKeys(track: Track, w: Week): string[] {
+export function requiredKeys(track: Track, w: Pick<Week, "n" | "mustKnow" | "checklist" | "doneWhen">): string[] {
   const out: string[] = [];
   w.mustKnow.forEach((m, i) => {
     if (m.c.length) m.c.forEach((_, j) => out.push(keys.must(track, w.n, i, j)));

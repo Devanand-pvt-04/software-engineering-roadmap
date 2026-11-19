@@ -1,12 +1,17 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import {
-  AI_TUTOR, FALLING_BEHIND, JAVA_CORE_RESOURCES, JAVA_INTRO, MAIN_INTRO, SCHEDULE, SESSION_TEMPLATE, SETUP_JAVA, SETUP_MAIN, STUCK_ORDER,
-  WHATS_DIFFERENT, WHY_JAVA, WHY_PAST_FAILED, AFTER_JAVA_RHYTHM,
-} from "@/data/guide";
+import { AI_TUTOR, JAVA_CORE_RESOURCES, SESSION_TEMPLATE, SETUP_JAVA, STUCK_ORDER, WHY_PAST_FAILED, AFTER_JAVA_RHYTHM } from "@/data/guide";
+import { linksFor } from "@/data/links";
 import { CheckRow, LinkChips, SectionTitle } from "@/components/ui";
+import { allowed, titleFor } from "@/server/access";
+import { Missing } from "@/components/missing";
+import { clientContent, guideFor, tracksFor } from "@/server/content";
 
-export const metadata: Metadata = { title: "How it works" };
+const links = (t: string) => linksFor(t).map((l) => ({ label: l.label, url: l.url }));
+
+export async function generateMetadata(): Promise<Metadata> {
+  return titleFor("How it works", "guide");
+}
 
 function Card({ id, title, hint, children }: { id?: string; title: string; hint?: string; children: React.ReactNode }) {
   return (
@@ -17,14 +22,21 @@ function Card({ id, title, hint, children }: { id?: string; title: string; hint?
   );
 }
 
-export default function Page() {
+export default async function Page() {
+  const a = await allowed("guide");
+  if (!a) return <Missing />;
+  const tracks = tracksFor(a.features);
+  const both = tracks.length > 1;
+  const hasMain = tracks.includes("main");
+  const hasJava = tracks.includes("java");
+  const g = guideFor(tracks);
+  const schedule = clientContent({ role: "member", login: null, previewAs: null, features: a.features }).schedule;
   return (
     <div className="space-y-6">
       <header>
         <h1 className="text-2xl font-bold tracking-tight sm:text-3xl">How the plan works</h1>
         <p className="mt-2 max-w-2xl text-[15px] leading-relaxed text-muted">
-          Two tracks for 36 weeks: a Main track (how software actually works, from the CPU to Kubernetes) and a Java + DSA track. You never have to decide what to do next:
-          every week has a day-by-day checklist.
+          {g.lead} You never have to decide what to do next: every week has a day-by-day checklist.
         </p>
       </header>
 
@@ -38,14 +50,14 @@ export default function Page() {
         </Card>
         <Card title="What's different here">
           <ol className="list-decimal space-y-1.5 pl-5 text-[15px] leading-relaxed">
-            {WHATS_DIFFERENT.map((x) => (
+            {g.whatsDifferent.map((x) => (
               <li key={x}>{x}</li>
             ))}
           </ol>
         </Card>
       </div>
 
-      <Card title="Your week, hour by hour" hint="About 15-16 h a week">
+      <Card title="Your week, hour by hour" hint={g.hours}>
         <div className="overflow-x-auto">
           <table className="w-full min-w-[520px] text-left text-sm">
             <thead className="text-xs text-muted">
@@ -57,10 +69,10 @@ export default function Page() {
               </tr>
             </thead>
             <tbody>
-              {SCHEDULE.map((r) => (
+              {schedule.map((r) => (
                 <tr key={r.day} className="border-t border-line align-top">
                   <td className="py-2 pr-3 font-medium">{r.day}</td>
-                  <td className={`py-2 pr-3 ${r.track.startsWith("Main") ? "text-main" : "text-java"}`}>{r.track}</td>
+                  <td className={`py-2 pr-3 ${r.track === "main" ? "text-main" : r.track === "java" ? "text-java" : "text-muted"}`}>{r.label}</td>
                   <td className="py-2 pr-3 whitespace-nowrap">{r.time}</td>
                   <td className="py-2">{r.what}</td>
                 </tr>
@@ -85,29 +97,36 @@ export default function Page() {
       </Card>
 
       <Card id="setup" title="Setup: do this before week 1" hint="Ticks are saved">
-        <div className="grid gap-x-8 sm:grid-cols-2">
-          <div>
-            <div className="mb-1 text-sm font-semibold text-main">Main track</div>
-            {SETUP_MAIN.map((x, i) => (
-              <CheckRow key={x} k={`su:m${i}`} color="main" links="">
-                {x}
-              </CheckRow>
-            ))}
-          </div>
-          <div>
-            <div className="mb-1 mt-4 text-sm font-semibold text-java sm:mt-0">Java + DSA track</div>
-            {SETUP_JAVA.map((x, i) => (
-              <CheckRow key={x} k={`su:j${i}`} color="java" links="">
-                {x}
-              </CheckRow>
-            ))}
-          </div>
+        <div className={`grid gap-x-8 ${both ? "sm:grid-cols-2" : ""}`}>
+          {g.setupMain.length > 0 && (
+            <div>
+              {both && <div className="mb-1 text-sm font-semibold text-main">Main track</div>}
+              {g.setupMain.map(({ x, i }) => (
+                <CheckRow key={x} k={`su:m${i}`} color={hasMain ? "main" : "java"} links={links(x)}>
+                  {x}
+                </CheckRow>
+              ))}
+            </div>
+          )}
+          {hasJava && (
+            <div>
+              {both && <div className="mb-1 mt-4 text-sm font-semibold text-java sm:mt-0">Java + DSA track</div>}
+              {SETUP_JAVA.map((x0, i) => {
+                const x = hasMain ? x0 : x0.replace("Create java-dsa/ in your foundations repo", "Create a GitHub repo called java-dsa for your code");
+                return (
+                <CheckRow key={x} k={`su:j${i}`} color="java" links={links(x)}>
+                  {x}
+                </CheckRow>
+                );
+              })}
+            </div>
+          )}
         </div>
       </Card>
 
       <Card id="behind" title="When you fall behind or get stuck">
         <ol className="space-y-3">
-          {FALLING_BEHIND.map((r, i) => (
+          {g.fallingBehind.map((r, i) => (
             <li key={r.title} className="text-[15px] leading-relaxed">
               <b>
                 {i + 1}. {r.title}.
@@ -145,9 +164,10 @@ export default function Page() {
         <p className="mt-3 font-medium">{AI_TUTOR.rule}</p>
       </Card>
 
-      <div className="grid gap-4 sm:grid-cols-2">
+      <div className={`grid gap-4 ${both ? "sm:grid-cols-2" : ""}`}>
+        {hasMain && (
         <Card title="Main track">
-          <p className="text-[15px] leading-relaxed">{MAIN_INTRO}</p>
+          <p className="text-[15px] leading-relaxed">{g.mainIntro}</p>
           <p className="mt-3 text-sm text-muted">
             Each week: Why this week → Must know → Overlooked / niche → Resources (⭐ = do first) → Daily checklist → Done when.
           </p>
@@ -155,8 +175,10 @@ export default function Page() {
             Start Main week 1 →
           </Link>
         </Card>
+        )}
+        {hasJava && (
         <Card title="Java + DSA track">
-          <p className="text-[15px] leading-relaxed">{JAVA_INTRO}</p>
+          <p className="text-[15px] leading-relaxed">{g.javaIntro}</p>
           <ul className="mt-3 list-disc space-y-1 pl-5 text-sm text-muted">
             {AFTER_JAVA_RHYTHM.map((x) => (
               <li key={x}>{x}</li>
@@ -166,26 +188,32 @@ export default function Page() {
             Start Java week 1 →
           </Link>
         </Card>
+        )}
       </div>
 
+      {hasJava && (
       <Card title="Why Java works well for this">
         <ul className="list-disc space-y-1.5 pl-5 text-[15px] leading-relaxed">
-          {WHY_JAVA.map((x) => (
+          {g.whyJava.map((x) => (
             <li key={x}>{x}</li>
           ))}
         </ul>
       </Card>
 
+      )}
+
+      {hasJava && (
       <Card title="Core resources for the Java + DSA track">
         <ul className="space-y-3">
           {JAVA_CORE_RESOURCES.map((x) => (
             <li key={x} className="text-[15px] leading-relaxed">
               {x}
-              <LinkChips text={x} className="mt-1.5" />
+              <LinkChips links={links(x)} className="mt-1.5" />
             </li>
           ))}
         </ul>
       </Card>
+      )}
     </div>
   );
 }

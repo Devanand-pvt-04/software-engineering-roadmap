@@ -1,8 +1,11 @@
+import "server-only";
+import type { Day } from "@/lib/constants";
+export { DEFAULT_START, BUFFER_AFTER, SESSION_TEMPLATE, DAYS, type Day } from "@/lib/constants";
+
 // Hand-transcribed intro content from "Zero to Deep: 36-Week Software Engineering Plan".
 
 export const PLAN_TITLE = "Zero to Deep";
 export const PLAN_SUBTITLE = "36-Week Software Engineering Plan";
-export const DEFAULT_START = "2026-11-02"; // Monday
 
 export const WHY_PAST_FAILED = [
   'They were lists of topics, not instructions. "Learn networking" is not something you can sit down and do on a Tuesday at 8 pm.',
@@ -22,8 +25,6 @@ export const WHATS_DIFFERENT = [
 export const ENCOURAGEMENT =
   "You are not a zero. You've been shipping code for 1.5 years without the foundations, which means once the foundations are in, everything you've seen at work will suddenly connect.";
 
-export type Day = "Mon" | "Tue" | "Wed" | "Thu" | "Fri" | "Sat" | "Sun";
-export const DAYS: Day[] = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
 
 export const SCHEDULE: { day: Day; track: string; time: string; what: string }[] = [
   { day: "Mon", track: "Main", time: "1.5 h", what: "Read / watch the week's first core resource. Take notes in your own words." },
@@ -33,14 +34,6 @@ export const SCHEDULE: { day: Day; track: string; time: string; what: string }[]
   { day: "Fri", track: "Main", time: "1.5 h", what: "Start the week's build; write down what confuses you." },
   { day: "Sat", track: "Main", time: "4 h", what: 'Finish the build; write the week\'s "explain it to a junior" note.' },
   { day: "Sun", track: "Java + DSA, then review", time: "3 h + 1 h", what: "Practice problems; then 1 h: Done-when tests for both tracks, tick boxes, plan next week." },
-];
-
-export const SESSION_TEMPLATE: { name: string; minutes: number; text: string }[] = [
-  { name: "Open", minutes: 2, text: "Open this app, find today's unticked box, read it aloud." },
-  { name: "Recall", minutes: 5, text: "Without notes, write 3 things you remember from the last session. Blank page? Reread your last note quickly." },
-  { name: "Focus", minutes: 65, text: "Phone in another room. One resource only. When stuck for more than 20 minutes, write the exact question down and move to the next part." },
-  { name: "Explain", minutes: 10, text: 'Write 5-10 lines: "Today I learned X. It exists because Y. It works by Z. I\'m still confused about W."' },
-  { name: "Close", minutes: 3, text: "Tick the box. Write the first action for next session on a sticky note." },
 ];
 
 export const SETUP_MAIN = [
@@ -83,8 +76,6 @@ export const STUCK_ORDER = [
   'An AI tutor ("explain X; I understand Y but not Z")',
   "A person (colleague, or a community like r/learnprogramming or a Discord)",
 ];
-
-export const BUFFER_AFTER = [6, 12, 18, 24, 30];
 
 export const PRACTICE_RULES = [
   "Read the problem, then write 2-3 examples by hand, including edge cases (empty, one element, duplicates, negatives).",

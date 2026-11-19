@@ -1,4 +1,4 @@
-import { ALL_PROBLEMS, WEEKS, keys, requiredKeys, type Track, type Week } from "./roadmap";
+import { keys, requiredKeys, type Problem, type Track, type Week } from "./roadmap";
 import type { State } from "./merge";
 import { dayKey, addDays } from "./schedule";
 
@@ -9,7 +9,7 @@ export interface ProblemRec {
   notes?: string;
 }
 
-export function weekProgress(s: State, track: Track, w: Week) {
+export function weekProgress(s: State, track: Track, w: Pick<Week, "n" | "mustKnow" | "checklist" | "doneWhen">) {
   const req = requiredKeys(track, w);
   let done = 0;
   for (const k of req) if (s.entries[k]?.v) done++;
@@ -17,11 +17,11 @@ export function weekProgress(s: State, track: Track, w: Week) {
   return { done, total: req.length, ratio: req.length ? done / req.length : 0, passed };
 }
 
-export function trackProgress(s: State, track: Track) {
+export function trackProgress(s: State, track: Track, weeks: Week[]) {
   let done = 0;
   let total = 0;
   let passed = 0;
-  for (const w of WEEKS[track]) {
+  for (const w of weeks) {
     const p = weekProgress(s, track, w);
     done += p.done;
     total += p.total;
@@ -61,11 +61,11 @@ export function customProblems(s: State): CustomProblem[] {
   return out.sort((a, b) => a.week - b.week || a.name.localeCompare(b.name));
 }
 
-export function problemStats(s: State, now: Date | null) {
+export function problemStats(s: State, now: Date | null, problems: (Problem & { week: number })[]) {
   let solved = 0, helped = 0, stuck = 0;
   const due: { slug: string; name: string; week: number; due: string }[] = [];
   const today = now ? dayKey(now) : "";
-  const list = [...ALL_PROBLEMS, ...customProblems(s)];
+  const list = [...problems, ...customProblems(s)];
   for (const p of list) {
     const r = problemRec(s, p.slug);
     if (r.status === "solved") solved++;

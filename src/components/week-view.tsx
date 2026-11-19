@@ -1,31 +1,31 @@
 "use client";
 
 import Link from "next/link";
-import { GROUPS, TRACK_LABEL, keys, type Track, type Week, getWeek } from "@/lib/roadmap";
+import { TRACK_LABEL, keys, type SpecView, type Track } from "@/lib/roadmap";
+import { getWeek, groupOf, useContent } from "@/lib/content";
 import { weekProgress } from "@/lib/progress";
 import { useHydrated, useSettings, useStore, useToday } from "@/lib/store";
 import { addDays, fmtShort, weekStartFor, weekday } from "@/lib/schedule";
-import { PHASE_SUMMARY } from "@/data/guide";
 import { CheckRow, Ring, SectionTitle } from "./ui";
 import { ProblemRow } from "./problem-row";
 import { NoteBox } from "./notes";
-import { specsFor, type Spec } from "@/data/specifics";
 
 const DAY_OFFSET: Record<string, number> = { Mon: 0, Tue: 1, Wed: 2, Thu: 3, Fri: 4, Sat: 5, Sun: 6 };
 
 export function WeekView({ track, n }: { track: Track; n: number }) {
-  const w = getWeek(track, n) as Week;
+  const c = useContent();
+  const w = getWeek(c, track, n)!;
   const s = useStore();
   const hydrated = useHydrated();
   const cfg = useSettings();
   const p = weekProgress(s, track, w);
-  const group = GROUPS[track].find((g) => g.weeks.includes(n));
+  const group = groupOf(c, track, n);
   const isLastOfGroup = group && group.weeks[group.weeks.length - 1] === n;
   const start = weekStartFor(n, cfg.start, cfg.slide, cfg.buffers);
   const today = useToday();
   const todayName = today ? weekday(today) : "";
   const inThisWeek = !!today && today >= start && today < addDays(start, 7);
-  const other: Track = track === "main" ? "java" : "main";
+  const other: Track | undefined = c.tracks.find((t) => t !== track);
   const color = track;
 
   return (
@@ -74,26 +74,28 @@ export function WeekView({ track, n }: { track: Track; n: number }) {
             </Link>
           )}
         </div>
-        <Link className="text-sm text-muted hover:text-fg" href={`/${other}/${n}`}>
-          Same week on {TRACK_LABEL[other]} →
-        </Link>
+        {other && (
+          <Link className="text-sm text-muted hover:text-fg" href={`/${other}/${n}`}>
+            Same week on {TRACK_LABEL[other]} →
+          </Link>
+        )}
       </nav>
 
       {/* daily checklist */}
       <section className="card p-5">
         <SectionTitle hint="One box per session">Daily checklist</SectionTitle>
         <div>
-          {w.checklist.map((c) => (
-            <div key={c.day} className={`-mx-2 flex gap-3 rounded-lg px-2 ${inThisWeek && c.day === todayName ? "bg-accent-soft/60" : ""}`}>
+          {w.checklist.map((d) => (
+            <div key={d.day} className={`-mx-2 flex gap-3 rounded-lg px-2 ${inThisWeek && d.day === todayName ? "bg-accent-soft/60" : ""}`}>
               <div className="w-10 shrink-0 pt-2 text-xs font-semibold text-muted">
-                {c.day}
-                {hydrated && <div className="font-normal">{fmtShort(addDays(start, DAY_OFFSET[c.day]))}</div>}
+                {d.day}
+                {hydrated && <div className="font-normal">{fmtShort(addDays(start, DAY_OFFSET[d.day]))}</div>}
               </div>
               <div className="min-w-0 flex-1">
-                <CheckRow k={keys.day(track, n, c.day)} color={color} links="">
-                  {c.text}
+                <CheckRow k={keys.day(track, n, d.day)} color={color} links={d.links}>
+                  {d.text}
                 </CheckRow>
-                <Specifics specs={specsFor(track, n, "day", c.day, c.text)} />
+                <Specifics specs={d.specs} />
               </div>
             </div>
           ))}
@@ -167,10 +169,10 @@ export function WeekView({ track, n }: { track: Track; n: number }) {
           <SectionTitle hint="⭐ = do this one first">Resources</SectionTitle>
           {w.resources.map((r, i) => (
             <div key={i}>
-              <CheckRow k={keys.res(track, n, i)} color="ok" links="">
+              <CheckRow k={keys.res(track, n, i)} color="ok" links={r.links}>
                 {(r.core ? "⭐ " : "") + r.text}
               </CheckRow>
-              <Specifics specs={specsFor(track, n, "res", r.text)} />
+              <Specifics specs={r.specs} />
             </div>
           ))}
         </section>
@@ -187,10 +189,10 @@ export function WeekView({ track, n }: { track: Track; n: number }) {
       )}
 
       {/* milestone */}
-      {isLastOfGroup && group && (group.milestone || PHASE_SUMMARY[group.id]) && (
+      {isLastOfGroup && group && (group.milestone || c.phaseSummary[group.id]) && (
         <section className="card bg-panel-2 p-5">
           <SectionTitle>{group.id} milestone</SectionTitle>
-          <p className="text-[15px] leading-relaxed">{group.milestone || PHASE_SUMMARY[group.id]?.milestone}</p>
+          <p className="text-[15px] leading-relaxed">{group.milestone || c.phaseSummary[group.id]?.milestone}</p>
           <div className="mt-3">
             <CheckRow k={`ms:${track}:${group.id}`} color="ok">
               Milestone complete
@@ -211,8 +213,8 @@ export function WeekView({ track, n }: { track: Track; n: number }) {
           <SectionTitle>After week 36</SectionTitle>
           {track === "main" && <p className="mb-2 text-sm text-muted">Pick 1-2 per quarter, not all at once.</p>}
           {w.after.map((a, i) => (
-            <CheckRow key={i} k={`af:${track}:${i}`} color="ok" links="">
-              {a}
+            <CheckRow key={i} k={`af:${track}:${i}`} color="ok" links={a.links}>
+              {a.text}
             </CheckRow>
           ))}
         </section>
@@ -231,7 +233,7 @@ export function WeekView({ track, n }: { track: Track; n: number }) {
 }
 
 /** Exact chapters/sections for a resource or day, shown under the item. */
-export function Specifics({ specs }: { specs: Spec[] }) {
+export function Specifics({ specs }: { specs: SpecView[] }) {
   if (!specs.length) return null;
   return (
     <div className="mb-2 ml-8 rounded-lg bg-panel-2 px-3 py-2 text-[13px] leading-relaxed">

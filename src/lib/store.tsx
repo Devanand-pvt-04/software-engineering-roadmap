@@ -1,7 +1,7 @@
 "use client";
 
 import { createContext, useCallback, useContext, useEffect, useRef, useState, useSyncExternalStore } from "react";
-import { DEFAULT_START } from "@/data/guide";
+import { DEFAULT_START } from "./constants";
 import { mondayOf } from "./schedule";
 import { mergeState, emptyState, type Entry, type State } from "./merge";
 

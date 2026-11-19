@@ -5,6 +5,7 @@ import { getState, replaceState, setEntry, useHydrated, useSettings, useSync } f
 import { mergeState, emptyState } from "@/lib/merge";
 import { endDate, fmt, parseDate } from "@/lib/schedule";
 import { StartPicker } from "./start-picker";
+import { useContent } from "@/lib/content";
 import { SectionTitle } from "./ui";
 import { signInGitHub, signOutAction } from "@/app/actions";
 
@@ -34,6 +35,7 @@ function useTheme(): [string, (t: string) => void] {
 
 export function SettingsView() {
   const cfg = useSettings();
+  const backup = useContent().features.includes("backup");
   const h = useHydrated();
   const sync = useSync();
   const [theme, setTheme] = useTheme();
@@ -139,7 +141,8 @@ export function SettingsView() {
       </section>
 
       <section className="card p-5">
-        <SectionTitle>Backup</SectionTitle>
+        <SectionTitle>{backup ? "Backup" : "Reset"}</SectionTitle>
+        {backup && (
         <div className="flex flex-wrap gap-2">
           <button className="btn" onClick={exportJson}>
             Export progress (JSON)
@@ -149,8 +152,9 @@ export function SettingsView() {
           </button>
           <input ref={file} type="file" accept="application/json,.json" className="hidden" onChange={(e) => e.target.files?.[0] && importJson(e.target.files[0])} />
         </div>
+        )}
         {msg && <p className="mt-2 text-sm text-muted">{msg}</p>}
-        <div className="mt-6 border-t border-line pt-4">
+        <div className={backup ? "mt-6 border-t border-line pt-4" : ""}>
           {!confirmReset ? (
             <button className="text-sm text-danger hover:underline" onClick={() => setConfirmReset(true)}>
               Reset all progress on this device…

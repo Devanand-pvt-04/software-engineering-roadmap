@@ -1,6 +1,5 @@
 "use client";
 
-import { leetcodeUrl } from "@/data/links";
 import { keys } from "@/lib/roadmap";
 import { problemRec, reviewDue, type ProblemRec } from "@/lib/progress";
 import { setEntry, useStore, useToday } from "@/lib/store";
@@ -13,6 +12,8 @@ const STATUS: { v: ProblemRec["status"]; label: string; cls: string }[] = [
   { v: "helped", label: "Needed help", cls: "bg-warn-soft text-warn border-warn" },
   { v: "stuck", label: "Stuck", cls: "bg-panel-2 text-danger border-danger" },
 ];
+
+const leetcodeUrl = (slug: string) => `https://leetcode.com/problems/${slug}/`;
 
 export function ProblemRow({ slug, name, note, week, showWeek }: { slug: string; name: string; note?: string; week?: number; showWeek?: boolean }) {
   const s = useStore();

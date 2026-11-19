@@ -1,4 +1,4 @@
-import { BUFFER_AFTER, type Day } from "@/data/guide";
+import { BUFFER_AFTER, type Day } from "./constants";
 
 export type Slot = { kind: "week"; n: number } | { kind: "buffer"; after: number };
 
