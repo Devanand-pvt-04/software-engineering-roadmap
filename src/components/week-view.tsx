@@ -9,6 +9,7 @@ import { PHASE_SUMMARY } from "@/data/guide";
 import { CheckRow, Ring, SectionTitle } from "./ui";
 import { ProblemRow } from "./problem-row";
 import { NoteBox } from "./notes";
+import { specsFor, type Spec } from "@/data/specifics";
 
 const DAY_OFFSET: Record<string, number> = { Mon: 0, Tue: 1, Wed: 2, Thu: 3, Fri: 4, Sat: 5, Sun: 6 };
 
@@ -92,6 +93,7 @@ export function WeekView({ track, n }: { track: Track; n: number }) {
                 <CheckRow k={keys.day(track, n, c.day)} color={color} links="">
                   {c.text}
                 </CheckRow>
+                <Specifics specs={specsFor(track, n, "day", c.day, c.text)} />
               </div>
             </div>
           ))}
@@ -164,9 +166,12 @@ export function WeekView({ track, n }: { track: Track; n: number }) {
         <section className="card p-5">
           <SectionTitle hint="⭐ = do this one first">Resources</SectionTitle>
           {w.resources.map((r, i) => (
-            <CheckRow key={i} k={keys.res(track, n, i)} color="ok" links="">
-              {(r.core ? "⭐ " : "") + r.text}
-            </CheckRow>
+            <div key={i}>
+              <CheckRow k={keys.res(track, n, i)} color="ok" links="">
+                {(r.core ? "⭐ " : "") + r.text}
+              </CheckRow>
+              <Specifics specs={specsFor(track, n, "res", r.text)} />
+            </div>
           ))}
         </section>
       )}
@@ -222,5 +227,40 @@ export function WeekView({ track, n }: { track: Track; n: number }) {
       )}
 
     </article>
+  );
+}
+
+/** Exact chapters/sections for a resource or day, shown under the item. */
+export function Specifics({ specs }: { specs: Spec[] }) {
+  if (!specs.length) return null;
+  return (
+    <div className="mb-2 ml-8 rounded-lg bg-panel-2 px-3 py-2 text-[13px] leading-relaxed">
+      {specs.map((s, i) => (
+        <div key={i}>
+          {s.detail && (
+            <p>
+              <span className="mr-1" aria-hidden>
+                📖
+              </span>
+              {s.detail}
+            </p>
+          )}
+          {s.links && s.links.length > 0 && (
+            <div className={`flex flex-wrap gap-1.5 ${s.detail ? "mt-1.5" : ""}`}>
+              {!s.detail && (
+                <span className="mr-0.5 self-center" aria-hidden>
+                  📖
+                </span>
+              )}
+              {s.links.map((l) => (
+                <a key={l.url + l.label} href={l.url} target="_blank" rel="noopener noreferrer" className="chip !bg-panel">
+                  {l.label} <span className="opacity-60">↗</span>
+                </a>
+              ))}
+            </div>
+          )}
+        </div>
+      ))}
+    </div>
   );
 }
