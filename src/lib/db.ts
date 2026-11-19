@@ -1,11 +1,13 @@
 import { neon } from "@neondatabase/serverless";
 
-export const dbEnabled = Boolean(process.env.DATABASE_URL);
+// Vercel's Neon integration sets DATABASE_URL; older Vercel Postgres setups use POSTGRES_URL.
+const DB_URL = process.env.DATABASE_URL || process.env.POSTGRES_URL || "";
+export const dbEnabled = Boolean(DB_URL);
 
 let ready: Promise<void> | null = null;
 
 function sql() {
-  return neon(process.env.DATABASE_URL!);
+  return neon(DB_URL);
 }
 
 async function ensureTable() {
