@@ -8,6 +8,9 @@ import { addDays, endDate, fmt, fmtShort, position, weekday } from "@/lib/schedu
 import { ENCOURAGEMENT, SCHEDULE } from "@/data/guide";
 import { Bar, CheckRow, Ring, SectionTitle, TrackTag } from "./ui";
 import { FocusTimer } from "./focus-timer";
+import { StartPicker } from "./start-picker";
+import { Specifics } from "./week-view";
+import { specsFor } from "@/data/specifics";
 import { ProblemRow } from "./problem-row";
 
 const TRACK_FOR_DAY: Record<string, Track> = { Mon: "main", Tue: "java", Wed: "main", Thu: "java", Fri: "main", Sat: "main", Sun: "java" };
@@ -57,6 +60,16 @@ export function TodayView() {
         </p>
       </header>
 
+      {!cfg.startSet && (
+        <section className="card border-2 border-accent p-5">
+          <SectionTitle>When does your plan start?</SectionTitle>
+          <p className="mb-4 text-[15px] leading-relaxed text-muted">
+            Until you choose, the plan assumes you start this week. Pick a start date, or tell it which week you&apos;re on, and every date in the app follows.
+          </p>
+          <StartPicker />
+        </section>
+      )}
+
       {pos.status === "before" && (
         <section className="card p-5">
           <SectionTitle>Before week 1</SectionTitle>
@@ -101,9 +114,12 @@ export function TodayView() {
           </div>
           <h2 className="mb-1 text-lg font-semibold">Today&apos;s box</h2>
           {todayItem ? (
-            <CheckRow k={keys.day(track, n, day)} color={track} links="">
-              {todayItem.text}
-            </CheckRow>
+            <>
+              <CheckRow k={keys.day(track, n, day)} color={track} links="">
+                {todayItem.text}
+              </CheckRow>
+              <Specifics specs={specsFor(track, n, "day", day, todayItem.text)} />
+            </>
           ) : (
             <p className="text-muted">{sched.what}</p>
           )}

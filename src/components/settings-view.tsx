@@ -4,7 +4,7 @@ import { useRef, useState, useSyncExternalStore } from "react";
 import { getState, replaceState, setEntry, useHydrated, useSettings, useSync } from "@/lib/store";
 import { mergeState, emptyState } from "@/lib/merge";
 import { endDate, fmt, parseDate } from "@/lib/schedule";
-import { DEFAULT_START } from "@/data/guide";
+import { StartPicker } from "./start-picker";
 import { SectionTitle } from "./ui";
 import { signInGitHub, signOutAction } from "@/app/actions";
 
@@ -41,16 +41,6 @@ export function SettingsView() {
   const [msg, setMsg] = useState("");
   const [confirmReset, setConfirmReset] = useState(false);
 
-  const onStart = (v: string) => {
-    if (!v) return;
-    const d = parseDate(v);
-    // snap to the Monday of that week
-    const offset = (d.getDay() + 6) % 7;
-    d.setDate(d.getDate() - offset);
-    const iso = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
-    setEntry("cfg:start", iso);
-  };
-
   const exportJson = () => {
     const blob = new Blob([JSON.stringify(getState(), null, 1)], { type: "application/json" });
     const a = document.createElement("a");
@@ -78,11 +68,12 @@ export function SettingsView() {
       <section className="card p-5">
         <SectionTitle>Calendar</SectionTitle>
         <div className="grid gap-5 sm:grid-cols-2">
-          <label className="block">
-            <span className="mb-1 block text-sm font-medium">Start date (a Monday)</span>
-            <input type="date" className="input" value={h ? cfg.start : DEFAULT_START} onChange={(e) => onStart(e.target.value)} />
-            <span className="mt-1 block text-xs text-muted">Any date snaps to the Monday of its week. The PDF assumes 2 Nov 2026.</span>
-          </label>
+          <div className="sm:col-span-2">
+            <span className="mb-2 block text-sm font-medium">
+              Start date{h && <span className="font-normal text-muted">: currently {fmt(parseDate(cfg.start))}{!cfg.startSet && " (not chosen yet, using this week)"}</span>}
+            </span>
+            <StartPicker />
+          </div>
           <div>
             <span className="mb-1 block text-sm font-medium">Slide the calendar</span>
             <div className="flex items-center gap-2">

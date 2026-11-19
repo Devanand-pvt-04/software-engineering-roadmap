@@ -2,6 +2,7 @@
 
 import { createContext, useCallback, useContext, useEffect, useRef, useState, useSyncExternalStore } from "react";
 import { DEFAULT_START } from "@/data/guide";
+import { mondayOf } from "./schedule";
 import { mergeState, emptyState, type Entry, type State } from "./merge";
 
 const LS_KEY = "ztd:v1";
@@ -108,13 +109,18 @@ export function isChecked(s: State, key: string) {
 
 export interface Settings {
   start: string;
+  /** False until the person picks a start date; until then the plan starts this week. */
+  startSet: boolean;
   slide: number;
   buffers: boolean;
 }
 export function useSettings(): Settings {
   const s = useStore();
+  const today = useToday();
+  const chosen = s.entries["cfg:start"]?.v as string | undefined;
   return {
-    start: (s.entries["cfg:start"]?.v as string) || DEFAULT_START,
+    start: chosen || (today ? mondayOf(today) : DEFAULT_START),
+    startSet: !!chosen,
     slide: (s.entries["cfg:slide"]?.v as number) || 0,
     buffers: !!s.entries["cfg:buffers"]?.v,
   };

@@ -14,6 +14,16 @@ export function dayKey(d: Date = new Date()): string {
   const dd = String(d.getDate()).padStart(2, "0");
   return `${y}-${m}-${dd}`;
 }
+/** yyyy-mm-dd of the Monday of the week containing d. */
+export function mondayOf(d: Date): string {
+  const x = new Date(d.getFullYear(), d.getMonth(), d.getDate());
+  x.setDate(x.getDate() - ((x.getDay() + 6) % 7));
+  return dayKey(x);
+}
+/** Start Monday such that `d` falls in plan week `n` (ignores slide/buffers). */
+export function startForWeek(d: Date, n: number): string {
+  return dayKey(addDays(parseDate(mondayOf(d)), -(n - 1) * 7));
+}
 export function addDays(d: Date, n: number): Date {
   const x = new Date(d);
   x.setDate(x.getDate() + n);
