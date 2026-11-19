@@ -6,6 +6,8 @@ export type FeatureId =
   | "track:main"
   | "track:java"
   | "problems"
+  | "quizzes"
+  | "hints"
   | "journal"
   | "guide"
   | "glossary"
@@ -30,6 +32,8 @@ export const FEATURES: FeatureDef[] = [
   { id: "track:main", label: "Main track", description: "36 weeks from the CPU to Kubernetes: week pages, map, schedule days, URL note", group: "Tracks", defaultOn: false },
   { id: "track:java", label: "Java + DSA track", description: "36 weeks of Java, OOP and algorithms: week pages, map, schedule days", group: "Tracks", defaultOn: false },
   { id: "problems", label: "Problem tracker", description: "LeetCode list with statuses and spaced re-solves", group: "Tools", defaultOn: true, requires: "track:java" },
+  { id: "quizzes", label: "Self-check quizzes", description: "Questions with model answers on each week, and spaced review of the ones they missed", group: "Tools", defaultOn: true },
+  { id: "hints", label: "Problem hints", description: "The pattern and step-by-step hints for each LeetCode problem", group: "Tools", defaultOn: true, requires: "problems" },
   { id: "journal", label: "Journal", description: "URL note (Main) and the mistakes and patterns logs (Java)", group: "Tools", defaultOn: true },
   { id: "timer", label: "Session timer", description: "The guided 5-step session timer on Today", group: "Tools", defaultOn: true },
   { id: "catchup", label: "Catch-up planning", description: "Notices missed sessions and offers to spread them out or slide the calendar", group: "Tools", defaultOn: true },

@@ -5,12 +5,17 @@ import {
 } from "@/data/guide";
 import { linksFor } from "@/data/links";
 import { specsFor } from "@/data/specifics";
+import { QUIZ_MAIN } from "@/data/quiz-main";
+import { QUIZ_JAVA } from "@/data/quiz-java";
+import { HINTS } from "@/data/hints";
+import { BRIEFS } from "@/data/briefs";
+import { CORE_TIME, FREE_ALTERNATIVES } from "@/data/estimates";
 import type { Day } from "@/lib/constants";
 import type { ClientContent, Role, ScheduleRow } from "@/lib/content";
 import type { FeatureId } from "@/lib/features";
 import type { Group, LinkRef, Track, Week, SpecView } from "@/lib/roadmap";
 
-interface RawWeek extends Omit<Week, "resources" | "checklist" | "after"> {
+interface RawWeek extends Omit<Week, "resources" | "checklist" | "after" | "quiz" | "brief"> {
   resources: { text: string; core: boolean }[];
   checklist: { day: Day; text: string }[];
   after: string[];
@@ -22,10 +27,27 @@ const GROUPS: Record<Track, Group[]> = { main: data.mainGroups as Group[], java:
 const links = (text: string): LinkRef[] => linksFor(text).map((l) => ({ label: l.label, url: l.url }));
 const specs = (...a: Parameters<typeof specsFor>): SpecView[] => specsFor(...a).map((s) => ({ detail: s.detail, ...(s.links ? { links: s.links } : {}) }));
 
+const QUIZ: Record<Track, Record<number, [string, string][]>> = { main: QUIZ_MAIN, java: QUIZ_JAVA };
+
+function freeFor(text: string): LinkRef[] | undefined {
+  const alts = linksFor(text).flatMap((l) => FREE_ALTERNATIVES[l.id] ?? []);
+  return alts.length ? alts : undefined;
+}
+
 function enrich(track: Track, w: RawWeek): Week {
+  const id = `${track === "main" ? "M" : "J"}${w.n}`;
   return {
     ...w,
-    resources: w.resources.map((r) => ({ ...r, links: links(r.text), specs: specs(track, w.n, "res", r.text) })),
+    quiz: (QUIZ[track][w.n] ?? []).map(([q, a]) => ({ q, a })),
+    brief: BRIEFS[id],
+    problems: w.problems.map((p) => ({ ...p, hint: HINTS[p.slug] })),
+    resources: w.resources.map((r) => ({
+      ...r,
+      links: links(r.text),
+      specs: specs(track, w.n, "res", r.text),
+      ...(r.core && CORE_TIME[id] ? { time: CORE_TIME[id] } : {}),
+      ...(freeFor(r.text) ? { free: freeFor(r.text) } : {}),
+    })),
     checklist: w.checklist.map((c) => ({ ...c, links: links(c.text), specs: specs(track, w.n, "day", c.day, c.text) })),
     after: w.after.map((a) => ({ text: a, links: links(a) })),
   };
@@ -66,8 +88,15 @@ export function clientContent(opts: { role: Role; login: string | null; previewA
   const weeks: ClientContent["weeks"] = {};
   const groups: ClientContent["groups"] = {};
   const phaseSummary: ClientContent["phaseSummary"] = {};
+  const quizzes = opts.features.includes("quizzes");
+  const hints = opts.features.includes("hints");
+  const slice = (w: Week): Week => ({
+    ...w,
+    quiz: quizzes ? w.quiz : [],
+    problems: hints ? w.problems : w.problems.map((p) => ({ slug: p.slug, name: p.name, note: p.note })),
+  });
   for (const t of tracks) {
-    weeks[t] = ENRICHED[t];
+    weeks[t] = ENRICHED[t].map(slice);
     groups[t] = GROUPS[t];
     for (const g of GROUPS[t]) if (PHASE_SUMMARY[g.id]) phaseSummary[g.id] = PHASE_SUMMARY[g.id];
   }
@@ -84,7 +113,7 @@ export function clientContent(opts: { role: Role; login: string | null; previewA
     groups,
     phaseSummary,
     schedule: scheduleFor(tracks),
-    problems: java && opts.features.includes("problems") ? ENRICHED.java.flatMap((w) => w.problems.map((p) => ({ ...p, week: w.n }))) : [],
+    problems: java && opts.features.includes("problems") ? (weeks.java ?? []).flatMap((w) => w.problems.map((p) => ({ ...p, week: w.n }))) : [],
     practiceRules: java ? PRACTICE_RULES : [],
     urlNoteSections: main && opts.features.includes("journal") ? URL_NOTE_SECTIONS : [],
     urlNoteTitle: main ? "What happens when I type a URL" : "",

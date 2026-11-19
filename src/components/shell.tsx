@@ -14,6 +14,7 @@ const NAV: { href: string; label: string; icon: string; match?: string; needs?: 
   { href: "/plan", label: "36-week map", icon: "M2 4l5-2 6 2 5-2v14l-5 2-6-2-5 2zM7 2v14M13 4v14" },
   { href: "/main/1", label: "Main track", match: "/main", needs: "track:main", icon: "M3 3h14v4H3zM3 9h14v4H3zM3 15h9v2H3z" },
   { href: "/java/1", label: "Java + DSA", match: "/java", needs: "track:java", icon: "M6 4L2 10l4 6M14 4l4 6-4 6M11 3L9 17" },
+  { href: "/review", label: "Review", needs: "quizzes", icon: "M4 4h12v9H4zM7 16h6M10 13v3M7 8l2 2 4-4" },
   { href: "/problems", label: "Problem tracker", needs: "problems", icon: "M4 10l4 4 8-9" },
   { href: "/journal", label: "Journal", needs: "journal", icon: "M5 2h10v16H5zM8 6h4M8 9h4M8 12h2" },
   { href: "/guide", label: "How it works", needs: "guide", icon: "M10 18a8 8 0 100-16 8 8 0 000 16zM10 14v.01M10 11a2 2 0 10-2-2" },

@@ -120,7 +120,7 @@ export function ProblemsView() {
           {w.items.map((p) => (
             <div key={p.slug} className="flex items-center gap-2">
               <div className="flex-1">
-                <ProblemRow slug={p.slug} name={p.name} note={p.note} />
+                <ProblemRow slug={p.slug} name={p.name} note={p.note} hint={"hint" in p ? p.hint : undefined} />
               </div>
               {p.custom && (
                 <button className="text-xs text-muted hover:text-danger" onClick={() => setEntry(`cp:${p.slug}`, null)} aria-label={`Remove ${p.name}`}>

@@ -11,6 +11,10 @@ A web app for the **Zero to Deep: 36-Week Software Engineering Plan**: a Main tr
 - **Journal**: the long-running "What happens when I type a URL" note (one section per phase), a mistakes log with tags, and a patterns note.
 - **How it works**: schedule, session template, setup checklist, falling-behind rules, AI-as-tutor rules, practice rules.
 - **Glossary** linked to the weeks that cover each term.
+- **Self-check quizzes**: 5 questions with model answers per week (356 in all). Rate yourself and missed ones come back on a spaced schedule on the Review page.
+- **Problem hints**: every listed LeetCode problem has its pattern and 2-3 hints revealed one at a time.
+- **Build briefs**: what "done" means for each week's build, plus a stretch goal.
+- **Time and money**: rough time for each week's core resource, and free alternatives wherever a paid book is linked.
 - **Catch-up**: Today notices sessions you missed this week and last, and offers to spread them one a day (free days first) or slide the calendar. After two weeks away it suggests where to resume.
 - **Search** (press / or Ctrl K): every topic, resource, chapter, build and problem you can see.
 - **Study heatmap**: the last six months of days you ticked or wrote something.
@@ -58,4 +62,5 @@ Without sign-in configured, the app runs in open mode with every feature on. To 
 
 - `src/data/roadmap.json`: every week of both tracks, extracted from the plan PDF.
 - `src/data/guide.ts`: intro sections, schedule, rules, glossary.
+- `src/data/quiz-main.ts`, `src/data/quiz-java.ts`, `src/data/hints.ts`, `src/data/briefs.ts`, `src/data/estimates.ts`: quizzes, hint ladders, build briefs, time estimates and free alternatives.
 - `src/data/links.ts`: catalog of real resource URLs and the patterns that link them from the text.

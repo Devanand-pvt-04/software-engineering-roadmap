@@ -5,6 +5,8 @@ import { problemRec, reviewDue, type ProblemRec } from "@/lib/progress";
 import { setEntry, useStore, useToday } from "@/lib/store";
 import { dayKey } from "@/lib/schedule";
 import Link from "next/link";
+import { useState } from "react";
+import type { HintLadder } from "@/lib/roadmap";
 
 const STATUS: { v: ProblemRec["status"]; label: string; cls: string }[] = [
   { v: "todo", label: "To do", cls: "" },
@@ -15,7 +17,8 @@ const STATUS: { v: ProblemRec["status"]; label: string; cls: string }[] = [
 
 const leetcodeUrl = (slug: string) => `https://leetcode.com/problems/${slug}/`;
 
-export function ProblemRow({ slug, name, note, week, showWeek }: { slug: string; name: string; note?: string; week?: number; showWeek?: boolean }) {
+export function ProblemRow({ slug, name, note, week, showWeek, hint }: { slug: string; name: string; note?: string; week?: number; showWeek?: boolean; hint?: HintLadder }) {
+  const [shown, setShown] = useState(0);
   const s = useStore();
   const rec = problemRec(s, slug);
   const due = reviewDue(rec);
@@ -51,7 +54,25 @@ export function ProblemRow({ slug, name, note, week, showWeek }: { slug: string;
             </button>
           )}
           {rec.status === "helped" && due.stage === 2 && <span className="text-ok">Both re-solves done</span>}
+          {hint && shown <= hint.hints.length && (
+            <button className="underline hover:text-fg" onClick={() => setShown(shown + 1)}>
+              {shown === 0 ? "Stuck? Show the pattern" : `Hint ${shown} of ${hint.hints.length}`}
+            </button>
+          )}
         </div>
+        {hint && shown > 0 && (
+          <ol className="mt-2 space-y-1 rounded-lg bg-panel-2 px-3 py-2 text-[13px] leading-relaxed">
+            <li>
+              <span className="font-semibold">Pattern:</span> {hint.pattern}
+            </li>
+            {hint.hints.slice(0, shown - 1).map((x, i) => (
+              <li key={i}>
+                <span className="font-semibold">Hint {i + 1}:</span> {x}
+              </li>
+            ))}
+            {shown <= hint.hints.length && <li className="text-xs text-muted">Try again for a while before the next hint.</li>}
+          </ol>
+        )}
       </div>
       <div className="flex flex-wrap gap-1" role="radiogroup" aria-label={`Status for ${name}`}>
         {STATUS.map((st) => (

@@ -5,7 +5,8 @@ import { TRACK_LABEL, keys, type Track } from "@/lib/roadmap";
 import { getWeek, useContent, weeksOf } from "@/lib/content";
 import { problemStats, streak, trackProgress, weekProgress } from "@/lib/progress";
 import { setEntry, useSettings, useStore, useToday } from "@/lib/store";
-import { addDays, endDate, fmt, fmtShort, position, weekday } from "@/lib/schedule";
+import { addDays, dayKey, endDate, fmt, fmtShort, position, weekday } from "@/lib/schedule";
+import { dueCards } from "@/lib/quiz";
 import { Bar, CheckRow, Ring, SectionTitle, TrackTag } from "./ui";
 import { FocusTimer } from "./focus-timer";
 import { StartPicker } from "./start-picker";
@@ -39,6 +40,7 @@ export function TodayView() {
   const hasProblems = c.problems.length > 0;
   const ps = problemStats(s, now, c.problems);
   const st = streak(s, now);
+  const quizDue = c.features.includes("quizzes") ? dueCards(s, c, dayKey(now)) : [];
   const prevN = n - 1;
   const prevUnpassed =
     prevN >= 1 && !isBuffer && tracks.filter((t) => !weekProgress(s, t, getWeek(c, t, prevN)!).passed);
@@ -234,11 +236,25 @@ export function TodayView() {
         </section>
       )}
 
+      {quizDue.length > 0 && (
+        <section className="card flex flex-wrap items-center justify-between gap-3 p-5">
+          <div>
+            <SectionTitle>Self-check review</SectionTitle>
+            <p className="text-[15px]">
+              {quizDue.length} question{quizDue.length > 1 ? "s" : ""} from earlier weeks {quizDue.length > 1 ? "are" : "is"} due. About {Math.max(1, Math.round(quizDue.length * 1.5))} minutes.
+            </p>
+          </div>
+          <Link href="/review" className="btn btn-primary">
+            Review now
+          </Link>
+        </section>
+      )}
+
       {hasProblems && ps.due.length > 0 && (
         <section className="card p-5">
           <SectionTitle hint="Practice rule 6">Re-solves due</SectionTitle>
           {ps.due.map((d) => (
-            <ProblemRow key={d.slug} slug={d.slug} name={d.name} week={d.week} showWeek />
+            <ProblemRow key={d.slug} slug={d.slug} name={d.name} week={d.week} showWeek hint={c.problems.find((p) => p.slug === d.slug)?.hint} />
           ))}
         </section>
       )}
