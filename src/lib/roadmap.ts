@@ -23,6 +23,22 @@ export interface Resource {
   core: boolean;
   links: LinkRef[];
   specs: SpecView[];
+  /** Rough time for a core resource. */
+  time?: string;
+  /** Free alternatives when the resource is a paid book. */
+  free?: LinkRef[];
+}
+export interface QuizItem {
+  q: string;
+  a: string;
+}
+export interface Brief {
+  done: string[];
+  stretch?: string;
+}
+export interface HintLadder {
+  pattern: string;
+  hints: string[];
 }
 export interface DayItem {
   day: Day;
@@ -34,6 +50,7 @@ export interface Problem {
   slug: string;
   name: string;
   note: string;
+  hint?: HintLadder;
 }
 export interface Week {
   n: number;
@@ -49,6 +66,8 @@ export interface Week {
   problemNote: string;
   after: { text: string; links: LinkRef[] }[];
   extra: string[];
+  quiz: QuizItem[];
+  brief?: Brief;
 }
 export interface Group {
   id: string;
@@ -72,6 +91,7 @@ export const keys = {
   build: (t: Track, n: number) => `bd:${wk(t, n)}`,
   note: (t: Track, n: number) => `nt:${wk(t, n)}`,
   problem: (slug: string) => `pr:${slug}`,
+  quiz: (t: Track, n: number, i: number) => `qz:${wk(t, n)}:${i}`,
 };
 
 /** Keys that count toward a week's "required" progress (niche + resources are optional). */

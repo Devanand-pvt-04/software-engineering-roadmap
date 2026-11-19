@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { TRACK_LABEL, keys, type SpecView, type Track } from "@/lib/roadmap";
+import { TRACK_LABEL, keys, type Brief, type SpecView, type Track } from "@/lib/roadmap";
 import { getWeek, groupOf, useContent } from "@/lib/content";
 import { weekProgress } from "@/lib/progress";
 import { useHydrated, useSettings, useStore, useToday } from "@/lib/store";
@@ -9,6 +9,7 @@ import { addDays, fmtShort, weekStartFor, weekday } from "@/lib/schedule";
 import { CheckRow, Ring, SectionTitle } from "./ui";
 import { ProblemRow } from "./problem-row";
 import { NoteBox } from "./notes";
+import { QuizCard } from "./quiz";
 
 const DAY_OFFSET: Record<string, number> = { Mon: 0, Tue: 1, Wed: 2, Thu: 3, Fri: 4, Sat: 5, Sun: 6 };
 
@@ -110,6 +111,16 @@ export function WeekView({ track, n }: { track: Track; n: number }) {
           <CheckRow k={keys.build(track, n)} color={color}>
             {w.build.charAt(0).toUpperCase() + w.build.slice(1)}
           </CheckRow>
+          {w.brief && <BriefView brief={w.brief} />}
+        </section>
+      )}
+
+      {/* Main-track builds live in the Friday/Saturday items; their brief gets its own card. */}
+      {!w.build && w.brief && (
+        <section className="card p-5">
+          <SectionTitle hint="Friday and Saturday">Build brief</SectionTitle>
+          <p className="text-[15px] leading-relaxed">{w.checklist.find((d) => d.day === "Sat")?.text}</p>
+          <BriefView brief={w.brief} />
         </section>
       )}
 
@@ -173,6 +184,21 @@ export function WeekView({ track, n }: { track: Track; n: number }) {
                 {(r.core ? "⭐ " : "") + r.text}
               </CheckRow>
               <Specifics specs={r.specs} />
+              {(r.time || r.free) && (
+                <div className="mb-2 ml-8 flex flex-wrap items-center gap-1.5 text-xs text-muted">
+                  {r.time && <span className="chip">⏱ {r.time}</span>}
+                  {r.free && (
+                    <>
+                      <span>Paid book. Free alternative:</span>
+                      {r.free.map((l) => (
+                        <a key={l.url} href={l.url} target="_blank" rel="noopener noreferrer" className="chip">
+                          {l.label} <span className="opacity-60">↗</span>
+                        </a>
+                      ))}
+                    </>
+                  )}
+                </div>
+              )}
             </div>
           ))}
         </section>
@@ -185,6 +211,17 @@ export function WeekView({ track, n }: { track: Track; n: number }) {
           <CheckRow k={keys.done(track, n)} color="ok">
             {"You can " + w.doneWhen.replace(/^you can /i, "")}
           </CheckRow>
+        </section>
+      )}
+
+      {/* self-check */}
+      {w.quiz.length > 0 && (
+        <section className="card px-5 pb-2 pt-5">
+          <SectionTitle hint={<Link href="/review" className="hover:text-fg">Review due questions →</Link>}>Self-check ({w.quiz.length})</SectionTitle>
+          <p className="text-xs text-muted">Answer from memory first, out loud or on paper. Then reveal and rate yourself; anything shaky comes back for review.</p>
+          {w.quiz.map((q, i) => (
+            <QuizCard key={i} k={keys.quiz(track, n, i)} q={q.q} a={q.a} />
+          ))}
         </section>
       )}
 
@@ -263,6 +300,25 @@ export function Specifics({ specs }: { specs: SpecView[] }) {
           )}
         </div>
       ))}
+    </div>
+  );
+}
+
+/** What "done" means for a build, plus one stretch goal. */
+function BriefView({ brief }: { brief: Brief }) {
+  return (
+    <div className="mt-3 rounded-lg bg-panel-2 px-4 py-3 text-[14px] leading-relaxed">
+      <div className="mb-1 text-xs font-semibold uppercase tracking-wider text-muted">Done means</div>
+      <ul className="list-disc space-y-1 pl-5">
+        {brief.done.map((d) => (
+          <li key={d}>{d}</li>
+        ))}
+      </ul>
+      {brief.stretch && (
+        <p className="mt-2">
+          <span className="font-semibold">Stretch:</span> {brief.stretch}
+        </p>
+      )}
     </div>
   );
 }

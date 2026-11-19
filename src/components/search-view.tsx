@@ -37,7 +37,8 @@ export function SearchView({ initial }: { initial: string }) {
         w.niche.forEach((x) => add("Overlooked", x, 1));
         w.resources.forEach((r) => add("Resource", r.text, 3, [...r.links.map((l) => l.label), ...r.specs.flatMap((s) => [s.detail, ...(s.links ?? []).map((l) => l.label)])].join(" ")));
         w.checklist.forEach((d) => add(d.day, d.text, 2, d.specs.flatMap((s) => [s.detail, ...(s.links ?? []).map((l) => l.label)]).join(" ")));
-        add("Build", w.build, 2);
+        add("Build", w.build, 2, w.brief ? [...w.brief.done, w.brief.stretch ?? ""].join(" ") : "");
+        w.quiz.forEach((q) => add("Self-check", q.q, 1, q.a));
         add("Done when", w.doneWhen, 2);
         if (c.features.includes("problems")) w.problems.forEach((p) => add("Problem", p.name, 3, p.note, `https://leetcode.com/problems/${p.slug}/`, true));
       }
