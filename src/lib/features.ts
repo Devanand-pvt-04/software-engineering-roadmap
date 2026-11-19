@@ -10,6 +10,9 @@ export type FeatureId =
   | "guide"
   | "glossary"
   | "timer"
+  | "catchup"
+  | "search"
+  | "heatmap"
   | "backup";
 
 export interface FeatureDef {
@@ -29,7 +32,10 @@ export const FEATURES: FeatureDef[] = [
   { id: "problems", label: "Problem tracker", description: "LeetCode list with statuses and spaced re-solves", group: "Tools", defaultOn: true, requires: "track:java" },
   { id: "journal", label: "Journal", description: "URL note (Main) and the mistakes and patterns logs (Java)", group: "Tools", defaultOn: true },
   { id: "timer", label: "Session timer", description: "The guided 5-step session timer on Today", group: "Tools", defaultOn: true },
-  { id: "backup", label: "Export and import", description: "Download or restore progress as a file", group: "Tools", defaultOn: true },
+  { id: "catchup", label: "Catch-up planning", description: "Notices missed sessions and offers to spread them out or slide the calendar", group: "Tools", defaultOn: true },
+  { id: "search", label: "Search", description: "Find any topic, book or problem across their weeks", group: "Tools", defaultOn: true },
+  { id: "heatmap", label: "Study heatmap", description: "A grid of the days they studied, with streaks", group: "Tools", defaultOn: true },
+  { id: "backup", label: "Export and import", description: "Download or restore progress, and export notes as Markdown", group: "Tools", defaultOn: true },
   { id: "guide", label: "How it works", description: "Schedule, rules, setup checklist, falling-behind rules", group: "Reference", defaultOn: true },
   { id: "glossary", label: "Glossary", description: "The scary terms, mapped to weeks", group: "Reference", defaultOn: true },
 ];

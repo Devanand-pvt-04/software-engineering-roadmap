@@ -6,6 +6,8 @@ import { mergeState, emptyState } from "@/lib/merge";
 import { endDate, fmt, parseDate } from "@/lib/schedule";
 import { StartPicker } from "./start-picker";
 import { useContent } from "@/lib/content";
+import { download, notesMarkdown } from "@/lib/notes-export";
+import { dayKey } from "@/lib/schedule";
 import { SectionTitle } from "./ui";
 import { signInGitHub, signOutAction } from "@/app/actions";
 
@@ -35,7 +37,8 @@ function useTheme(): [string, (t: string) => void] {
 
 export function SettingsView() {
   const cfg = useSettings();
-  const backup = useContent().features.includes("backup");
+  const content = useContent();
+  const backup = content.features.includes("backup");
   const h = useHydrated();
   const sync = useSync();
   const [theme, setTheme] = useTheme();
@@ -149,6 +152,9 @@ export function SettingsView() {
           </button>
           <button className="btn" onClick={() => file.current?.click()}>
             Import…
+          </button>
+          <button className="btn" onClick={() => download(`zero-to-deep-notes-${dayKey()}.md`, notesMarkdown(getState(), content, dayKey()), "text/markdown")}>
+            Export notes (Markdown)
           </button>
           <input ref={file} type="file" accept="application/json,.json" className="hidden" onChange={(e) => e.target.files?.[0] && importJson(e.target.files[0])} />
         </div>

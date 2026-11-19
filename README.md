@@ -11,7 +11,10 @@ A web app for the **Zero to Deep: 36-Week Software Engineering Plan**: a Main tr
 - **Journal**: the long-running "What happens when I type a URL" note (one section per phase), a mistakes log with tags, and a patterns note.
 - **How it works**: schedule, session template, setup checklist, falling-behind rules, AI-as-tutor rules, practice rules.
 - **Glossary** linked to the weeks that cover each term.
-- **Settings**: start date, slide the calendar (never cram, never skip), buffer weeks, theme, JSON export/import, reset.
+- **Catch-up**: Today notices sessions you missed this week and last, and offers to spread them one a day (free days first) or slide the calendar. After two weeks away it suggests where to resume.
+- **Search** (press / or Ctrl K): every topic, resource, chapter, build and problem you can see.
+- **Study heatmap**: the last six months of days you ticked or wrote something.
+- **Settings**: start date, slide the calendar (never cram, never skip), buffer weeks, theme, JSON export/import, Markdown export of all your notes, reset.
 
 ## Progress and sync
 

@@ -1,8 +1,8 @@
 "use client";
 
 import Link from "next/link";
-import { usePathname } from "next/navigation";
-import { useState } from "react";
+import { usePathname, useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
 import { useSync } from "@/lib/store";
 import { signInGitHub, signOutAction, stopPreview } from "@/app/actions";
 import { useContent } from "@/lib/content";
@@ -10,6 +10,7 @@ import type { FeatureId } from "@/lib/features";
 
 const NAV: { href: string; label: string; icon: string; match?: string; needs?: FeatureId; admin?: boolean }[] = [
   { href: "/", label: "Today", icon: "M3 10l7-6 7 6v7a1 1 0 01-1 1h-4v-5H8v5H4a1 1 0 01-1-1z" },
+  { href: "/search", label: "Search", needs: "search", icon: "M9 15a6 6 0 100-12 6 6 0 000 12zM13.5 13.5L18 18" },
   { href: "/plan", label: "36-week map", icon: "M2 4l5-2 6 2 5-2v14l-5 2-6-2-5 2zM7 2v14M13 4v14" },
   { href: "/main/1", label: "Main track", match: "/main", needs: "track:main", icon: "M3 3h14v4H3zM3 9h14v4H3zM3 15h9v2H3z" },
   { href: "/java/1", label: "Java + DSA", match: "/java", needs: "track:java", icon: "M6 4L2 10l4 6M14 4l4 6-4 6M11 3L9 17" },
@@ -72,6 +73,21 @@ export function Shell({ children }: { children: React.ReactNode }) {
   const c = useContent();
   const isAdmin = c.role === "owner" || c.role === "admin";
   const journal = c.urlNoteSections.length > 0 || c.tracks.includes("java");
+  const router = useRouter();
+  const canSearch = c.features.includes("search");
+  useEffect(() => {
+    if (!canSearch) return;
+    const onKey = (e: KeyboardEvent) => {
+      const el = e.target as HTMLElement;
+      const typing = el.isContentEditable || ["INPUT", "TEXTAREA", "SELECT"].includes(el.tagName);
+      if ((e.key === "k" && (e.metaKey || e.ctrlKey)) || (e.key === "/" && !typing)) {
+        e.preventDefault();
+        router.push("/search");
+      }
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [canSearch, router]);
   const items = NAV.filter((n) => (n.admin ? isAdmin : (!n.needs || c.features.includes(n.needs)) && (n.href !== "/journal" || journal)));
   const active = (n: (typeof NAV)[number]) => (n.href === "/" ? path === "/" : path.startsWith(n.match ?? n.href));
   const nav = (
