@@ -11,6 +11,8 @@ import { FocusTimer } from "./focus-timer";
 import { StartPicker } from "./start-picker";
 import { Specifics } from "./week-view";
 import { ProblemRow } from "./problem-row";
+import { CatchUp } from "./catch-up";
+import { Heatmap } from "./heatmap";
 
 const TRACK_FOR_DAY: Record<string, Track> = { Mon: "main", Tue: "java", Wed: "main", Thu: "java", Fri: "main", Sat: "main", Sun: "java" };
 
@@ -162,7 +164,9 @@ export function TodayView() {
         </section>
       )}
 
-      {prevUnpassed && prevUnpassed.length > 0 && pos.status === "active" && (
+      {c.features.includes("catchup") && pos.status === "active" && !isBuffer && <CatchUp now={now} n={n} />}
+
+      {!c.features.includes("catchup") && prevUnpassed && prevUnpassed.length > 0 && pos.status === "active" && (
         <section className="card border-warn bg-warn-soft p-5">
           <SectionTitle>Slide, don&apos;t skip</SectionTitle>
           <p className="text-[15px] leading-relaxed">
@@ -195,6 +199,8 @@ export function TodayView() {
         )}
         <Stat label="Streak" value={`${st} day${st === 1 ? "" : "s"}`} sub="Zero weeks are the only thing to avoid" />
       </section>
+
+      {c.features.includes("heatmap") && <Heatmap now={now} />}
 
       {pos.status === "active" && (
         <section className="card p-5">

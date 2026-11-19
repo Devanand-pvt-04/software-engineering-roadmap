@@ -2,7 +2,8 @@
 
 import { useState } from "react";
 import { useContent } from "@/lib/content";
-import { setEntry, useHydrated, useStore } from "@/lib/store";
+import { getState, setEntry, useHydrated, useStore } from "@/lib/store";
+import { download, notesMarkdown } from "@/lib/notes-export";
 import { dayKey } from "@/lib/schedule";
 import { NoteBox } from "./notes";
 import { SectionTitle } from "./ui";
@@ -31,7 +32,14 @@ export function JournalView() {
   return (
     <div className="space-y-6">
       <header>
-        <h1 className="text-2xl font-bold tracking-tight sm:text-3xl">Journal</h1>
+        <div className="flex flex-wrap items-center justify-between gap-2">
+          <h1 className="text-2xl font-bold tracking-tight sm:text-3xl">Journal</h1>
+          {c.features.includes("backup") && (
+            <button className="btn" onClick={() => download(`zero-to-deep-notes-${dayKey()}.md`, notesMarkdown(getState(), c, dayKey()), "text/markdown")}>
+              Export all notes (Markdown)
+            </button>
+          )}
+        </div>
         <p className="mt-2 max-w-2xl text-[15px] text-muted">
           {tabs.length === 3
             ? "The plan's long-running notes: one URL note that grows each phase, and the patterns and mistakes notes for the Java + DSA track."
