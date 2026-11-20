@@ -5,7 +5,7 @@
 import { createContext, useContext } from "react";
 import type { Day } from "./constants";
 import type { FeatureId } from "./features";
-import type { Group, Problem, Track, Week } from "./roadmap";
+import type { ContestInfo, Group, Phase2SetView, Problem, Track, Week } from "./roadmap";
 
 export type Role = "open" | "owner" | "admin" | "member";
 
@@ -28,7 +28,10 @@ export interface ClientContent {
   groups: Partial<Record<Track, Group[]>>;
   phaseSummary: Record<string, { unlocks: string; milestone: string }>;
   schedule: ScheduleRow[];
+  /** Core problems, then Phase 2 ones (flagged phase2) when that feature is on. */
   problems: (Problem & { week: number })[];
+  phase2: Phase2SetView[];
+  contest: ContestInfo | null;
   practiceRules: string[];
   urlNoteSections: { id: string; phase: string; title: string; hint: string }[];
   urlNoteTitle: string;

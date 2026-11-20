@@ -132,6 +132,14 @@ export function WeekView({ track, n }: { track: Track; n: number }) {
           {w.problems.map((pr) => (
             <ProblemRow key={pr.slug} {...pr} />
           ))}
+          {track === "java" &&
+            c.phase2
+              .filter((set) => set.week === w.n)
+              .map((set) => (
+                <Link key={set.id} href={`/problems#p2-${set.id}`} className="mt-3 block text-sm text-muted hover:text-fg">
+                  Phase 2: {set.problems.length} harder problems on this topic, for later →
+                </Link>
+              ))}
         </section>
       )}
 

@@ -43,6 +43,9 @@ export function SearchView({ initial }: { initial: string }) {
         if (c.features.includes("problems")) w.problems.forEach((p) => add("Problem", p.name, 3, p.note, `https://leetcode.com/problems/${p.slug}/`, true));
       }
     }
+    for (const set of c.phase2)
+      for (const p of set.problems)
+        out.push({ track: "java", n: set.week, kind: "Phase 2", text: p.name, extra: [set.title, p.difficulty ?? "", p.hint?.pattern ?? ""].join(" "), href: `https://leetcode.com/problems/${p.slug}/`, external: true, weight: 2 });
     return out;
   }, [c]);
 
