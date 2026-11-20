@@ -51,6 +51,22 @@ export interface Problem {
   name: string;
   note: string;
   hint?: HintLadder;
+  difficulty?: "Easy" | "Medium" | "Hard";
+  /** From the optional Phase 2 set rather than a week's core list. */
+  phase2?: boolean;
+}
+export interface Phase2SetView {
+  id: string;
+  title: string;
+  week: number;
+  why: string;
+  problems: Problem[];
+}
+export interface ContestInfo {
+  weeklyUtc: { day: number; hour: number; minute: number };
+  url: string;
+  startAfterWeek: number;
+  rules: string[];
 }
 export interface Week {
   n: number;
@@ -92,6 +108,7 @@ export const keys = {
   note: (t: Track, n: number) => `nt:${wk(t, n)}`,
   problem: (slug: string) => `pr:${slug}`,
   quiz: (t: Track, n: number, i: number) => `qz:${wk(t, n)}:${i}`,
+  contest: (date: string) => `ct:${date}`,
 };
 
 /** Keys that count toward a week's "required" progress (niche + resources are optional). */

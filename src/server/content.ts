@@ -10,10 +10,11 @@ import { QUIZ_JAVA } from "@/data/quiz-java";
 import { HINTS } from "@/data/hints";
 import { BRIEFS } from "@/data/briefs";
 import { CORE_TIME, FREE_ALTERNATIVES } from "@/data/estimates";
+import { CONTEST_INFO, PHASE2 } from "@/data/phase2";
 import type { Day } from "@/lib/constants";
 import type { ClientContent, Role, ScheduleRow } from "@/lib/content";
 import type { FeatureId } from "@/lib/features";
-import type { Group, LinkRef, Track, Week, SpecView } from "@/lib/roadmap";
+import type { Group, LinkRef, Phase2SetView, Problem, Track, Week, SpecView } from "@/lib/roadmap";
 
 interface RawWeek extends Omit<Week, "resources" | "checklist" | "after" | "quiz" | "brief"> {
   resources: { text: string; core: boolean }[];
@@ -102,6 +103,17 @@ export function clientContent(opts: { role: Role; login: string | null; previewA
   }
   const java = tracks.includes("java");
   const main = tracks.includes("main");
+  const problemsOn = java && opts.features.includes("problems");
+  const phase2: Phase2SetView[] =
+    problemsOn && opts.features.includes("phase2")
+      ? PHASE2.map((set) => ({
+          id: set.id,
+          title: set.title,
+          week: set.week,
+          why: set.why,
+          problems: set.problems.map((x): Problem => ({ slug: x.slug, name: x.name, note: "", difficulty: x.difficulty, phase2: true, ...(hints ? { hint: x.hint } : {}) })),
+        }))
+      : [];
   const isOwner = opts.role === "owner" || opts.role === "open";
   return {
     role: opts.role,
@@ -113,7 +125,11 @@ export function clientContent(opts: { role: Role; login: string | null; previewA
     groups,
     phaseSummary,
     schedule: scheduleFor(tracks),
-    problems: java && opts.features.includes("problems") ? (weeks.java ?? []).flatMap((w) => w.problems.map((p) => ({ ...p, week: w.n }))) : [],
+    problems: problemsOn
+      ? [...(weeks.java ?? []).flatMap((w) => w.problems.map((p) => ({ ...p, week: w.n }))), ...phase2.flatMap((s) => s.problems.map((p) => ({ ...p, week: s.week })))]
+      : [],
+    phase2,
+    contest: problemsOn && opts.features.includes("contests") ? CONTEST_INFO : null,
     practiceRules: java ? PRACTICE_RULES : [],
     urlNoteSections: main && opts.features.includes("journal") ? URL_NOTE_SECTIONS : [],
     urlNoteTitle: main ? "What happens when I type a URL" : "",

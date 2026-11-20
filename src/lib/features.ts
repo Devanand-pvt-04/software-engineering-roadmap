@@ -8,6 +8,8 @@ export type FeatureId =
   | "problems"
   | "quizzes"
   | "hints"
+  | "phase2"
+  | "contests"
   | "journal"
   | "guide"
   | "glossary"
@@ -34,6 +36,8 @@ export const FEATURES: FeatureDef[] = [
   { id: "problems", label: "Problem tracker", description: "LeetCode list with statuses and spaced re-solves", group: "Tools", defaultOn: true, requires: "track:java" },
   { id: "quizzes", label: "Self-check quizzes", description: "Questions with model answers on each week, and spaced review of the ones they missed", group: "Tools", defaultOn: true },
   { id: "hints", label: "Problem hints", description: "The pattern and step-by-step hints for each LeetCode problem", group: "Tools", defaultOn: true, requires: "problems" },
+  { id: "phase2", label: "Phase 2 problems", description: "About 115 extra problems, weighted toward DP, graphs and Hards, each paired with the week that teaches it", group: "Tools", defaultOn: false, requires: "problems" },
+  { id: "contests", label: "Weekly contests", description: "The LeetCode weekly contest slot, with a log of results and a Sunday reminder on Today", group: "Tools", defaultOn: false, requires: "problems" },
   { id: "journal", label: "Journal", description: "URL note (Main) and the mistakes and patterns logs (Java)", group: "Tools", defaultOn: true },
   { id: "timer", label: "Session timer", description: "The guided 5-step session timer on Today", group: "Tools", defaultOn: true },
   { id: "catchup", label: "Catch-up planning", description: "Notices missed sessions and offers to spread them out or slide the calendar", group: "Tools", defaultOn: true },
@@ -61,7 +65,7 @@ export function resolveFeatures(profile: FeatureMap, overrides: FeatureMap = {})
 }
 
 export const PRESETS: { id: string; name: string; features: FeatureMap }[] = [
-  { id: "everything", name: "Everything", features: { "track:main": true, "track:java": true } },
-  { id: "java", name: "Java + DSA only", features: { "track:java": true } },
+  { id: "everything", name: "Everything", features: { "track:main": true, "track:java": true, phase2: true, contests: true } },
+  { id: "java", name: "Java + DSA only", features: { "track:java": true, phase2: true, contests: true } },
   { id: "main", name: "Main track only", features: { "track:main": true } },
 ];

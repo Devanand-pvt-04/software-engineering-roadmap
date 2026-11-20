@@ -17,7 +17,11 @@ const STATUS: { v: ProblemRec["status"]; label: string; cls: string }[] = [
 
 const leetcodeUrl = (slug: string) => `https://leetcode.com/problems/${slug}/`;
 
-export function ProblemRow({ slug, name, note, week, showWeek, hint }: { slug: string; name: string; note?: string; week?: number; showWeek?: boolean; hint?: HintLadder }) {
+const DIFF_CLS = { Easy: "text-ok", Medium: "text-warn", Hard: "text-danger" } as const;
+
+export function ProblemRow({
+  slug, name, note, week, showWeek, hint, difficulty,
+}: { slug: string; name: string; note?: string; week?: number; showWeek?: boolean; hint?: HintLadder; difficulty?: "Easy" | "Medium" | "Hard" }) {
   const [shown, setShown] = useState(0);
   const s = useStore();
   const rec = problemRec(s, slug);
@@ -37,6 +41,7 @@ export function ProblemRow({ slug, name, note, week, showWeek, hint }: { slug: s
           <span className="ml-1 text-xs text-muted">↗</span>
         </a>
         <div className="mt-0.5 flex flex-wrap items-center gap-2 text-xs text-muted">
+          {difficulty && <span className={`font-medium ${DIFF_CLS[difficulty]}`}>{difficulty}</span>}
           {showWeek && week && (
             <Link href={`/java/${week}`} className="hover:text-fg">
               Week {week}
