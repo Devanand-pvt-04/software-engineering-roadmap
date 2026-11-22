@@ -1,8 +1,8 @@
 "use client";
 
 import { useRef, useState, useSyncExternalStore } from "react";
-import { getState, replaceState, setEntry, useHydrated, useSettings, useSync } from "@/lib/store";
-import { mergeState, emptyState } from "@/lib/merge";
+import { clearAll, getState, replaceState, setEntry, useHydrated, useSettings, useSync } from "@/lib/store";
+import { mergeState, type State } from "@/lib/merge";
 import { endDate, fmt, parseDate } from "@/lib/schedule";
 import { StartPicker } from "./start-picker";
 import { useContent } from "@/lib/content";
@@ -163,17 +163,27 @@ export function SettingsView() {
         <div className={backup ? "mt-6 border-t border-line pt-4" : ""}>
           {!confirmReset ? (
             <button className="text-sm text-danger hover:underline" onClick={() => setConfirmReset(true)}>
-              Reset all progress on this device…
+              Reset all progress…
             </button>
           ) : (
             <div className="flex flex-wrap items-center gap-2 text-sm">
-              <span>This clears ticks, notes and problems in this browser{sync.user ? " (your synced copy keeps them and will merge back)" : ""}. Export first if unsure.</span>
+              <span>
+                This clears ticks, quiz marks, notes, problems and your start date{sync.user ? " here and in your synced copy, so every signed-in device resets too" : " in this browser"}. Export first if unsure.
+              </span>
               <button
                 className="btn !border-danger !text-danger"
-                onClick={() => {
-                  replaceState(emptyState(), true);
+                onClick={async () => {
+                  let remote: State | undefined;
+                  if (sync.user) {
+                    try {
+                      const res = await fetch("/api/progress");
+                      if (res.ok) remote = (await res.json()) as State;
+                    } catch {}
+                  }
+                  clearAll(remote);
+                  if (sync.user) sync.syncNow();
                   setConfirmReset(false);
-                  setMsg("Local progress cleared.");
+                  setMsg(sync.user ? "All progress cleared, including your synced copy." : "All progress cleared.");
                 }}
               >
                 Yes, reset

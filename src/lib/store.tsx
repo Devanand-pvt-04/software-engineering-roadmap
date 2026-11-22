@@ -46,6 +46,19 @@ export function setEntry(key: string, v: unknown) {
   const e: Entry = { v, t: Date.now() };
   replaceState({ ...state, entries: { ...state.entries, [key]: e } });
 }
+/**
+ * Clear every saved entry: ticks, quiz marks, notes, problems, settings. Each key becomes an empty
+ * entry with a fresh timestamp rather than disappearing, so the cleared value wins the last-writer-wins
+ * merge against the synced copy and other devices instead of being merged back in.
+ * Pass the synced copy as `also` so keys this browser has never seen are cleared too.
+ */
+export function clearAll(also?: State) {
+  load();
+  const t = Date.now();
+  const entries: Record<string, Entry> = {};
+  for (const k of new Set([...Object.keys(state.entries), ...Object.keys(also?.entries ?? {})])) entries[k] = { v: null, t };
+  replaceState({ version: 1, entries });
+}
 function subscribe(l: () => void) {
   load();
   listeners.add(l);
