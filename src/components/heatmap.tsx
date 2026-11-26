@@ -1,5 +1,6 @@
 "use client";
 
+import { entryDay } from "@/lib/day";
 import { addDays, dayKey, mondayOf, parseDate } from "@/lib/schedule";
 import { useStore } from "@/lib/store";
 import { SectionTitle } from "./ui";
@@ -13,7 +14,7 @@ export function Heatmap({ now }: { now: Date }) {
   const counts = new Map<string, number>();
   for (const [k, e] of Object.entries(s.entries)) {
     if (k.startsWith("cfg:") || !e.v) continue;
-    const d = dayKey(new Date(e.t));
+    const d = entryDay(e);
     counts.set(d, (counts.get(d) ?? 0) + 1);
   }
   const today = dayKey(now);

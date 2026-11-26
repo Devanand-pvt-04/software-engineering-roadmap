@@ -1,4 +1,5 @@
 import { keys, requiredKeys, type Problem, type Track, type Week } from "./roadmap";
+import { entryDay } from "@/lib/day";
 import type { State } from "./merge";
 import { dayKey, addDays } from "./schedule";
 
@@ -82,7 +83,7 @@ export function activeDays(s: State): Set<string> {
   const out = new Set<string>();
   for (const [k, e] of Object.entries(s.entries)) {
     if (k.startsWith("cfg:")) continue;
-    if (e.v) out.add(dayKey(new Date(e.t)));
+    if (e.v) out.add(entryDay(e));
   }
   return out;
 }
