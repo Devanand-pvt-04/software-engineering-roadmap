@@ -2,23 +2,15 @@
 // The plan content, assembled on the server (src/server/content.ts) and handed to client components through context.
 
 import { createContext, useContext } from "react";
-import type { Day } from "./constants";
 import type { ContestInfo, Group, Phase2SetView, Problem, Track, Week } from "./roadmap";
-
-export interface ScheduleRow {
-  day: Day;
-  track: Track | "review";
-  label: string;
-  time: string;
-  what: string;
-}
 
 export interface ClientContent {
   tracks: Track[];
   weeks: Partial<Record<Track, Week[]>>;
   groups: Partial<Record<Track, Group[]>>;
   phaseSummary: Record<string, { unlocks: string; milestone: string }>;
-  schedule: ScheduleRow[];
+  /** Why each track runs in the order it does. */
+  intros: Record<Track, string>;
   /** Core problems, then Phase 2 ones (flagged phase2) when that feature is on. */
   problems: (Problem & { week: number })[];
   phase2: Phase2SetView[];

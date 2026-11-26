@@ -1,5 +1,5 @@
 import { PlanView } from "@/components/plan-view";
-export const metadata = { title: "36-week map" };
+export const metadata = { title: "Big picture" };
 
 export default function Page() {
   return <PlanView />;

@@ -1,212 +1,155 @@
 "use client";
 
 import Link from "next/link";
-import { TRACK_LABEL, keys, type Track } from "@/lib/roadmap";
-import { getWeek, useContent, weeksOf } from "@/lib/content";
-import { problemStats, streak, trackProgress, weekProgress } from "@/lib/progress";
-import { useSettings, useStore, useToday } from "@/lib/store";
-import { addDays, dayKey, endDate, fmt, fmtShort, position, weekday } from "@/lib/schedule";
+import { useContent } from "@/lib/content";
+import { problemStats } from "@/lib/progress";
+import { useStore } from "@/lib/store";
+import { usePlan, type LivePlan } from "@/lib/use-plan";
+import { currentWeek, dayHoursKey, MIN_WEEK_SESSIONS, rhythmOf, rhythmTotal, weekdayIndex, type Planned } from "@/lib/sessions";
+import { doToday, resetDay, skipDay, swapSessions } from "@/lib/plan-actions";
+import { addDays, dayKey, fmt, parseDate } from "@/lib/schedule";
 import { dueCards } from "@/lib/quiz";
 import { contestNudge, fmtContest } from "@/lib/contest";
-import { Bar, CheckRow, Ring, SectionTitle, TrackTag } from "./ui";
+import { Ring, SectionTitle } from "./ui";
 import { StartPicker } from "./start-picker";
-import { Specifics } from "./week-view";
 import { ProblemRow } from "./problem-row";
-import { CatchUp } from "./catch-up";
 import { Heatmap } from "./heatmap";
+import { SessionItem, hoursLabel } from "./session-row";
+import { YouAreHere } from "./big-picture";
 
-const TRACK_FOR_DAY: Record<string, Track> = { Mon: "main", Tue: "java", Wed: "main", Thu: "java", Fri: "main", Sat: "main", Sun: "java" };
+const dayName = (d: string, today: string) => {
+  if (d === today) return "Today";
+  if (d === dayKey(addDays(parseDate(today), 1))) return "Tomorrow";
+  return parseDate(d).toLocaleDateString(undefined, { weekday: "long", day: "numeric", month: "short" });
+};
 
 export function TodayView() {
-  const today = useToday();
-  const s = useStore();
-  const cfg = useSettings();
-  const c = useContent();
-  if (!today) return <div className="h-96" />;
+  const live = usePlan();
+  if (!live) return <div className="h-96" />;
+  return <Today live={live} />;
+}
 
-  const now = today;
-  const pos = position(cfg.start, cfg.slide, cfg.buffers, now);
-  const day = weekday(now);
-  const sched = c.schedule.find((x) => x.day === day);
-  const dayTrack = TRACK_FOR_DAY[day];
-  const restDay = !c.tracks.includes(dayTrack);
-  const track: Track = restDay ? c.tracks[0] : dayTrack;
-  const tracks = c.tracks;
-  const n = pos.slot?.kind === "week" ? pos.slot.n : pos.slot?.kind === "buffer" ? pos.slot.after : 1;
-  const isBuffer = pos.status === "active" && pos.slot?.kind === "buffer";
-  const week = getWeek(c, track, n)!;
-  const todayItem = week.checklist.find((c) => c.day === day);
-  const prog = tracks.map((t) => ({ t, p: trackProgress(s, t, weeksOf(c, t)) }));
-  const hasProblems = c.problems.length > 0;
+function Today({ live }: { live: LivePlan }) {
+  const c = useContent();
+  const s = useStore();
+  const { plan, pace, today: now } = live;
+  const t = dayKey(now);
+  const before = live.start > t;
+  const finished = plan.planned.length === 0;
+  const todays = before ? [] : (plan.byDate.get(t) ?? []);
+  const doneToday = plan.sessions.filter((x) => plan.doneOn.get(x.key) === t);
+  const upcoming = plan.planned.filter((p) => p.date > t || before);
+  const nextDays = [...new Set(upcoming.map((p) => p.date))].slice(0, 3);
+  const overridden = s.entries[dayHoursKey(t)]?.v !== undefined && s.entries[dayHoursKey(t)]?.v !== null;
+  const rhythm = rhythmOf(s);
+  const plannedHoursToday = rhythm[weekdayIndex(now)];
+  const n = currentWeek(plan);
   const ps = problemStats(s, now, c.problems);
-  const st = streak(s, now);
-  const quizDue = dueCards(s, c, dayKey(now));
-  const contest = c.contest && n > c.contest.startAfterWeek ? contestNudge(c.contest, s, now) : null;
+  const quizDue = dueCards(s, c, t);
+  const contest = c.contest && currentWeek(plan, "java") > c.contest.startAfterWeek ? contestNudge(c.contest, s, now) : null;
+  const next = upcoming[0];
+
+  const headline = before
+    ? `Week 1 starts ${fmt(parseDate(live.start))}`
+    : finished
+      ? "You finished all 36 weeks"
+      : todays.length
+        ? `Week ${n} of 36 · ${todays.reduce((a, x) => a + x.hours, 0)} h today`
+        : doneToday.length
+          ? `Week ${n} of 36 · done for today`
+          : `Week ${n} of 36 · free day`;
 
   return (
     <div className="space-y-6">
       <header>
         <p className="text-sm text-muted">{now.toLocaleDateString(undefined, { weekday: "long", day: "numeric", month: "long" })}</p>
-        <h1 className="mt-1 text-2xl font-bold tracking-tight sm:text-3xl">
-          {pos.status === "before"
-            ? `Week 1 starts in ${pos.daysUntilStart} day${pos.daysUntilStart === 1 ? "" : "s"}`
-            : pos.status === "after"
-              ? "You finished the 36 weeks"
-              : isBuffer
-                ? `Buffer week after week ${n}`
-                : restDay
-                  ? `Week ${n} of 36 · no session today`
-                  : `Week ${n} of 36 · ${sched?.label ?? TRACK_LABEL[track]} day`}
-        </h1>
-        <p className="mt-2 text-sm text-muted">
-          Plan runs {fmt(new Date(cfg.start + "T00:00:00"))} → {fmt(endDate(cfg.start, cfg.slide, cfg.buffers))}
-          {cfg.slide > 0 && ` (slid ${cfg.slide} week${cfg.slide > 1 ? "s" : ""})`}.{" "}
-          <Link href="/settings" className="underline hover:text-fg">
-            Change
-          </Link>
-        </p>
+        <h1 className="mt-1 text-2xl font-bold tracking-tight sm:text-3xl">{headline}</h1>
       </header>
 
-      {!cfg.startSet && (
+      {!live.startSet && (
         <section className="card border-2 border-accent p-5">
           <SectionTitle>When does your plan start?</SectionTitle>
           <p className="mb-4 text-[15px] leading-relaxed text-muted">
-            Until you choose, the plan assumes you start this week. Pick a start date, or tell it which week you&apos;re on, and every date in the app follows.
+            Until you choose, the plan assumes you start this week. Pick a start date, or say how far you&apos;ve already got, and every date in the app follows.
           </p>
           <StartPicker />
         </section>
       )}
 
-      {pos.status === "before" && (
+      {before && (
         <section className="card p-5">
           <SectionTitle>Before week 1</SectionTitle>
           <p className="text-[15px]">
-            <>
-                Do the setup checklist first, then read how the plan works.{" "}
-                <Link href="/guide#setup" className="font-medium text-accent">
-                  Open setup →
-                </Link>
-              </>
-          </p>
-        </section>
-      )}
-
-      {isBuffer && (
-        <section className="card p-5">
-          <SectionTitle>Buffer week</SectionTitle>
-          <p className="text-[15px] leading-relaxed">
-            Optional catch-up or review. Behind? Finish week {n}&apos;s Done-when {tracks.length > 1 ? "tests" : "test"}. On schedule? Revisit the Overlooked lists from the last six weeks.
-          </p>
-          <div className="mt-3 flex flex-wrap gap-2">
-            {tracks.map((t) => (
-              <Link key={t} className="btn" href={`/${t}/${n}`}>
-                {t === "main" ? "Main" : "Java"} week {n}
-              </Link>
-            ))}
-          </div>
-        </section>
-      )}
-
-      {pos.status === "active" && !isBuffer && restDay && (
-        <section className="card p-5">
-          <SectionTitle>Rest day</SectionTitle>
-          <p className="text-[15px] leading-relaxed">
-            Your track has no session today. If you want to use the time, reread your notes from this week or finish anything left unticked.
-          </p>
-          <Link href={`/${track}/${n}`} className="btn mt-3">
-            Open week {n} →
-          </Link>
-        </section>
-      )}
-
-      {pos.status === "active" && !isBuffer && !restDay && (
-        <section className={`card border-l-4 p-5 ${track === "main" ? "border-l-main" : "border-l-java"}`}>
-          <div className="mb-3 flex flex-wrap items-center justify-between gap-2">
-            <div className="flex items-center gap-2">
-              <TrackTag track={track} n={n} />
-              <span className="text-xs text-muted">
-                {sched?.time} · {week.title}
-              </span>
-            </div>
-            <Link href={`/${track}/${n}`} className="text-sm text-muted hover:text-fg">
-              Open week →
+            Do the setup checklist first, then read how the plan works.{" "}
+            <Link href="/guide#setup" className="font-medium text-accent">
+              Open setup →
             </Link>
-          </div>
-          <h2 className="mb-1 text-lg font-semibold">Today&apos;s box</h2>
-          {todayItem ? (
-            <>
-              <CheckRow k={keys.day(track, n, day)} color={track} links={todayItem.links}>
-                {todayItem.text}
-              </CheckRow>
-              <Specifics specs={todayItem.specs} />
-            </>
-          ) : (
-            <p className="text-muted">{sched?.what}</p>
+          </p>
+        </section>
+      )}
+
+      {!before && !finished && (
+        <section className="card p-5">
+          <SectionTitle hint={overridden ? <button className="underline hover:text-fg" onClick={() => resetDay(t)}>Undo changes to today</button> : `${hoursLabel(plannedHoursToday)} in your rhythm`}>
+            Today
+          </SectionTitle>
+          {todays.map((x, i) => (
+            <SessionItem
+              key={x.key}
+              x={x}
+              actions={
+                <>
+                  {(todays[i + 1] ?? upcoming[0]) && (
+                    <button className="btn !py-1 !text-[13px]" onClick={() => swapSessions(x, todays[i + 1] ?? upcoming[0])} title="Do the next session instead, and this one in its place">
+                      ⇄ Swap with next
+                    </button>
+                  )}
+                  {i === 0 && (
+                    <button className="btn !py-1 !text-[13px]" onClick={() => skipDay(plan, t)} title="Everything moves back to your next study day">
+                      Not today
+                    </button>
+                  )}
+                </>
+              }
+            />
+          ))}
+          {doneToday.length > 0 && (
+            <div className={todays.length ? "mt-2 border-t border-line pt-2" : ""}>
+              {doneToday.map((x) => (
+                <SessionItem key={x.key} x={x} detail={false} />
+              ))}
+            </div>
           )}
-          {day === "Sun" && (
-            <div className="mt-4 border-t border-line pt-4">
-              <h3 className="mb-1 text-sm font-semibold">Then 1 h review: {tracks.length > 1 ? "Done-when tests for both tracks" : "the week's Done-when test"}</h3>
-              {tracks.map((t) => {
-                const w = getWeek(c, t, n)!;
-                return (
-                  <CheckRow key={t} k={keys.done(t, n)} color="ok">
-                    <span className="mr-1 font-medium">{t === "main" ? "Main" : "Java"}:</span>
-                    {"you can " + w.doneWhen.replace(/^you can /i, "")}
-                  </CheckRow>
-                );
-              })}
+          {todays.length === 0 && next && (
+            <div className="mt-2 rounded-xl bg-panel-2 p-4">
+              <p className="text-[15px]">
+                {doneToday.length ? "Done for today. Nice work." : "Nothing planned today."} Next up {dayName(next.date, t).toLowerCase() === "tomorrow" ? "tomorrow" : `on ${dayName(next.date, t)}`}: <b>{next.label}</b> ({hoursLabel(next.hours)}).
+              </p>
+              <button className="btn btn-primary mt-3" onClick={() => doToday(plan, next, now)}>
+                Do it today instead
+              </button>
+              <p className="mt-2 text-xs text-muted">Everything after it moves up, so you finish sooner.</p>
             </div>
           )}
         </section>
       )}
 
-      {pos.status === "active" && !isBuffer && <CatchUp now={now} n={n} />}
+      {!finished && <Momentum live={live} />}
 
+      {!finished && <YouAreHere plan={plan} />}
 
-      <section className="grid grid-cols-2 gap-3 sm:grid-cols-4">
-        {prog.map(({ t, p }) => (
-          <Stat key={t} label={TRACK_LABEL[t]} value={`${Math.round(p.ratio * 100)}%`} sub={`${p.weeksPassed}/36 weeks passed`}>
-            <Bar value={p.ratio} track={t} className="mt-2" />
-          </Stat>
-        ))}
-        {hasProblems && (
-          <Stat label="Problems" value={`${ps.attempted}`} sub={c.phase2.length ? `of ${ps.total} listed, Phase 2 included` : `of ${ps.total} listed · goal 180-200`}>
-            <Bar value={ps.attempted / ps.total} track="ok" className="mt-2" />
-          </Stat>
-        )}
-        <Stat label="Streak" value={`${st} day${st === 1 ? "" : "s"}`} sub="Zero weeks are the only thing to avoid" />
-      </section>
-
-      <Heatmap now={now} />
-
-      {pos.status === "active" && (
+      {nextDays.length > 0 && (
         <section className="card p-5">
-          <SectionTitle hint={`${fmtShort(pos.weekStart)} – ${fmtShort(addDays(pos.weekStart, 6))}`}>This week</SectionTitle>
-          <div className="grid gap-4 sm:grid-cols-2">
-            {tracks.map((t) => {
-              const w = getWeek(c, t, n)!;
-              const p = weekProgress(s, t, w);
-              return (
-                <Link key={t} href={`/${t}/${n}`} className="flex items-center gap-4 rounded-xl border border-line p-4 hover:border-muted">
-                  <Ring value={p.ratio} track={t} size={56} />
-                  <div className="min-w-0">
-                    <TrackTag track={t} n={n} link={false} />
-                    <div className="mt-1 truncate font-medium">{w.title}</div>
-                    <div className="mt-1 flex gap-1">
-                      {w.checklist.map((d) => (
-                        <span
-                          key={d.day}
-                          title={d.day}
-                          className={`grid size-6 place-items-center rounded text-[10px] font-semibold ${s.entries[keys.day(t, n, d.day)]?.v ? (t === "main" ? "bg-main text-white" : "bg-java text-white") : d.day === day ? "border border-accent text-accent" : "bg-panel-2 text-muted"}`}
-                        >
-                          {d.day.slice(0, 2)}
-                        </span>
-                      ))}
-                    </div>
-                  </div>
-                </Link>
-              );
-            })}
+          <SectionTitle hint={<Link href="/plan#upcoming" className="hover:text-fg">Whole schedule →</Link>}>Coming up</SectionTitle>
+          <div className="divide-y divide-line">
+            {nextDays.map((d) => (
+              <div key={d} className="py-2">
+                <div className="mb-1 text-sm font-semibold">{dayName(d, t)}</div>
+                {(plan.byDate.get(d) ?? []).map((x) => (
+                  <UpcomingRow key={x.key} x={x} onToday={!before ? () => doToday(plan, x, now) : undefined} />
+                ))}
+              </div>
+            ))}
           </div>
         </section>
       )}
@@ -243,7 +186,7 @@ export function TodayView() {
         </section>
       )}
 
-      {hasProblems && ps.due.length > 0 && (
+      {ps.due.length > 0 && (
         <section className="card p-5">
           <SectionTitle hint="Practice rule 6">Re-solves due</SectionTitle>
           {ps.due.map((d) => (
@@ -252,19 +195,78 @@ export function TodayView() {
         </section>
       )}
 
+      <Heatmap now={now} />
 
-      {c.encouragement && <p className="text-sm italic leading-relaxed text-muted">{c.encouragement}</p>}
+      {pace.total > 0 && c.encouragement && <p className="text-sm italic leading-relaxed text-muted">{c.encouragement}</p>}
     </div>
   );
 }
 
-function Stat({ label, value, sub, children }: { label: string; value: string; sub: string; children?: React.ReactNode }) {
+function UpcomingRow({ x, onToday }: { x: Planned; onToday?: () => void }) {
+  return (
+    <div className="flex items-center justify-between gap-3 py-1">
+      <div className="min-w-0 text-[14px]">
+        <span className={`mr-2 text-xs font-semibold ${x.track === "main" ? "text-main" : x.track === "java" ? "text-java" : "text-ok"}`}>
+          {x.track === "main" ? "Main" : x.track === "java" ? "Java" : "Review"} W{x.n}
+        </span>
+        {x.label} <span className="text-muted">· {hoursLabel(x.hours)}</span>
+      </div>
+      {onToday && (
+        <button className="btn shrink-0 !px-2.5 !py-1 !text-[12px]" onClick={onToday}>
+          Do today
+        </button>
+      )}
+    </div>
+  );
+}
+
+/** Streak, this week's ring, pace and finish date: the numbers that keep you going. */
+function Momentum({ live }: { live: LivePlan }) {
+  const s = useStore();
+  const { plan, pace, streak } = live;
+  const target = rhythmTotal(rhythmOf(s));
+  const week = streak.thisWeek;
+  const ratio = target ? Math.min(1, week.hours / target) : 0;
+  const finish = plan.finish;
+  const baseline = pace.baselineFinish;
+  const slip = finish && baseline ? Math.round((parseDate(finish).getTime() - parseDate(baseline).getTime()) / (7 * 86_400_000)) : 0;
+  const minHit = week.sessions >= MIN_WEEK_SESSIONS;
+  return (
+    <section className="grid grid-cols-2 gap-3 sm:grid-cols-4">
+      <div className="card flex items-center gap-3 p-4">
+        <Ring value={ratio} size={56}>
+          <span className="text-xs">{Math.round(ratio * 100)}%</span>
+        </Ring>
+        <div className="min-w-0">
+          <div className="text-xs text-muted">This week</div>
+          <div className="text-lg font-semibold tabular-nums">
+            {week.hours} / {target} h
+          </div>
+          <div className="text-[11px] leading-snug text-muted">{minHit ? "Minimum week hit ✓" : `${MIN_WEEK_SESSIONS - week.sessions} more session${MIN_WEEK_SESSIONS - week.sessions > 1 ? "s" : ""} keeps the streak`}</div>
+        </div>
+      </div>
+      <Tile label="Streak" value={`${streak.current} week${streak.current === 1 ? "" : "s"}`} sub={streak.best > streak.current ? `Best: ${streak.best} weeks` : streak.current ? "Your best yet. Keep it alive." : "Two sessions this week starts one"} />
+      <Tile
+        label="Pace"
+        value={live.start > dayKey(live.today) ? "Not started" : pace.diff >= 0 ? (pace.diff === 0 ? "On track" : `${pace.diff} ahead`) : `${-pace.diff} behind`}
+        sub={`${pace.done} of ${pace.total} sessions done`}
+        tone={pace.diff >= 0 ? "ok" : "warn"}
+      />
+      <Tile
+        label="Finish"
+        value={finish ? fmt(parseDate(finish)) : "Done"}
+        sub={slip > 0 ? `${slip} week${slip > 1 ? "s" : ""} later than planned. That's fine: no cramming.` : slip < 0 ? `${-slip} week${slip < -1 ? "s" : ""} early` : "As planned"}
+      />
+    </section>
+  );
+}
+
+function Tile({ label, value, sub, tone }: { label: string; value: string; sub: string; tone?: "ok" | "warn" }) {
   return (
     <div className="card p-4">
       <div className="text-xs text-muted">{label}</div>
-      <div className="mt-1 text-2xl font-semibold tabular-nums">{value}</div>
-      {children}
-      <div className="mt-2 text-[11px] leading-snug text-muted">{sub}</div>
+      <div className={`mt-1 text-lg font-semibold tabular-nums ${tone === "ok" ? "text-ok" : tone === "warn" ? "text-warn" : ""}`}>{value}</div>
+      <div className="mt-1 text-[11px] leading-snug text-muted">{sub}</div>
     </div>
   );
 }

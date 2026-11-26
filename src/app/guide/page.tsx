@@ -4,7 +4,8 @@ import { AI_TUTOR, JAVA_CORE_RESOURCES, SETUP_JAVA, STUCK_ORDER, WHY_PAST_FAILED
 import { linksFor } from "@/data/links";
 import { CheckRow, LinkChips, SectionTitle } from "@/components/ui";
 import { TRACKS } from "@/lib/roadmap";
-import { clientContent, guideFor } from "@/server/content";
+import { guideFor } from "@/server/content";
+import { RHYTHM_PRESETS, SESSION_TEMPLATE, WEEKDAYS } from "@/lib/sessions";
 
 const links = (t: string) => linksFor(t).map((l) => ({ label: l.label, url: l.url }));
 
@@ -25,7 +26,6 @@ export default function Page() {
   const hasMain = tracks.includes("main");
   const hasJava = tracks.includes("java");
   const g = guideFor(tracks);
-  const schedule = clientContent().schedule;
   return (
     <div className="space-y-6">
       <header>
@@ -52,32 +52,38 @@ export default function Page() {
         </Card>
       </div>
 
-      <Card title="Your week, hour by hour" hint={g.hours}>
+      <Card title="Every week is eight sessions" hint={g.hours}>
         <div className="overflow-x-auto">
           <table className="w-full min-w-[520px] text-left text-sm">
             <thead className="text-xs text-muted">
               <tr>
-                <th className="py-2 pr-3 font-semibold">Day</th>
+                <th className="py-2 pr-3 font-semibold">#</th>
                 <th className="py-2 pr-3 font-semibold">Track</th>
                 <th className="py-2 pr-3 font-semibold">Time</th>
-                <th className="py-2 font-semibold">What happens</th>
+                <th className="py-2 font-semibold">Session</th>
               </tr>
             </thead>
             <tbody>
-              {schedule.map((r) => (
-                <tr key={r.day} className="border-t border-line align-top">
-                  <td className="py-2 pr-3 font-medium">{r.day}</td>
-                  <td className={`py-2 pr-3 ${r.track === "main" ? "text-main" : r.track === "java" ? "text-java" : "text-muted"}`}>{r.label}</td>
-                  <td className="py-2 pr-3 whitespace-nowrap">{r.time}</td>
-                  <td className="py-2">{r.what}</td>
+              {SESSION_TEMPLATE.map((r, i) => (
+                <tr key={i} className="border-t border-line align-top">
+                  <td className="py-2 pr-3 text-muted">{i + 1}</td>
+                  <td className={`py-2 pr-3 ${r.track === "main" ? "text-main" : r.track === "java" ? "text-java" : "text-ok"}`}>{r.track === "main" ? "Main" : r.track === "java" ? "Java + DSA" : "Review"}</td>
+                  <td className="py-2 pr-3 whitespace-nowrap">{r.hours} h</td>
+                  <td className="py-2">{r.label}</td>
                 </tr>
               ))}
             </tbody>
           </table>
         </div>
-        <p className="mt-3 text-sm text-muted">A weekday checklist item is sized for one 1.5-hour session. If it takes two sessions, that&apos;s fine: see the falling-behind rules.</p>
+        <p className="mt-3 text-sm leading-relaxed text-muted">
+          Nothing is tied to a weekday. You set how many hours you have each day, and the app fills your days from this list in order. The default is weekend-heavy:{" "}
+          {WEEKDAYS.map((d, i) => `${d} ${RHYTHM_PRESETS[0].hours[i]} h`).join(", ")}, which fits exactly one plan week into each calendar week. Change it in{" "}
+          <Link href="/settings#rhythm" className="underline">
+            Settings
+          </Link>
+          .
+        </p>
       </Card>
-
 
       <Card id="setup" title="Setup: do this before week 1" hint="Ticks are saved">
         <div className={`grid gap-x-8 ${both ? "sm:grid-cols-2" : ""}`}>
@@ -118,9 +124,6 @@ export default function Page() {
             </li>
           ))}
         </ol>
-        <p className="mt-4 text-sm text-muted">
-          The slide button and buffer weeks live in <Link href="/settings" className="underline">Settings</Link>.
-        </p>
         <div className="mt-4 border-t border-line pt-4">
           <div className="mb-2 text-sm font-semibold">When stuck on a concept, ask in this order</div>
           <ol className="flex flex-wrap items-center gap-2 text-sm">

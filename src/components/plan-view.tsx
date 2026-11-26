@@ -1,28 +1,40 @@
 "use client";
 
 import Link from "next/link";
-import { Fragment } from "react";
+import { useState } from "react";
 import { TRACK_LABEL, type Track } from "@/lib/roadmap";
-import { groupOf, useContent } from "@/lib/content";
+import { useContent } from "@/lib/content";
 import { weekProgress } from "@/lib/progress";
-import { useHydrated, useSettings, useStore, useToday } from "@/lib/store";
-import { fmtShort, position, slots, weekStartFor } from "@/lib/schedule";
-import { Bar } from "./ui";
+import { useHydrated, useStore } from "@/lib/store";
+import { usePlan } from "@/lib/use-plan";
+import { dayKey, fmt, fmtShort, parseDate } from "@/lib/schedule";
+import { Bar, Ring, SectionTitle } from "./ui";
+import { TrackTimeline } from "./big-picture";
+import { hoursLabel } from "./session-row";
 
 export function PlanView() {
   const c = useContent();
   const tracks = c.tracks;
-  const cols = tracks.length > 1 ? "sm:grid-cols-[88px_1fr_1fr]" : "sm:grid-cols-[88px_1fr]";
   const s = useStore();
   const h = useHydrated();
-  const cfg = useSettings();
-  const now = useToday();
-  const pos = now ? position(cfg.start, cfg.slide, cfg.buffers, now) : null;
-  const all = slots(cfg.buffers);
+  const live = usePlan();
+  const [days, setDays] = useState(14);
+
+  // First date of each plan week's sessions (done or planned), per track.
+  const weekDate = new Map<string, string>();
+  if (live) {
+    const planned = new Map(live.plan.planned.map((p) => [p.key, p.date]));
+    for (const x of live.plan.sessions) {
+      const d = live.plan.doneOn.get(x.key) ?? planned.get(x.key);
+      const k = `${x.track}${x.n}`;
+      if (d && (!weekDate.has(k) || d < weekDate.get(k)!)) weekDate.set(k, d);
+    }
+  }
 
   const Cell = ({ track, n }: { track: Track; n: number }) => {
     const w = c.weeks[track]![n - 1];
     const p = weekProgress(s, track, w);
+    const d = weekDate.get(`${track}${n}`);
     return (
       <Link href={`/${track}/${n}`} className="block rounded-lg p-2 hover:bg-panel-2">
         <div className="flex items-start justify-between gap-2">
@@ -30,105 +42,99 @@ export function PlanView() {
           {p.passed && <span className="shrink-0 text-xs font-semibold text-ok">✓</span>}
         </div>
         <Bar value={h ? p.ratio : 0} track={track} className="mt-1.5" />
+        {h && d && <div className="mt-1 text-[11px] text-muted">from {fmtShort(parseDate(d))}</div>}
       </Link>
     );
   };
 
-  // Which week rows start a new phase/part (for the group header rows).
-  const newGroup = new Map<number, Partial<Record<Track, boolean>>>();
-  {
-    const last: Partial<Record<Track, string>> = {};
-    for (let n = 1; n <= 36; n++) {
-      const row: Partial<Record<Track, boolean>> = {};
-      for (const t of tracks) {
-        const g = groupOf(c, t, n)!.id;
-        row[t] = g !== last[t];
-        last[t] = g;
-      }
-      newGroup.set(n, row);
-    }
-  }
+  const t = live ? dayKey(live.today) : "";
+  const horizon = live ? dayKey(new Date(live.today.getFullYear(), live.today.getMonth(), live.today.getDate() + days)) : "";
+  const soon = live ? live.plan.planned.filter((p) => p.date <= horizon) : [];
+  const soonDays = [...new Set(soon.map((p) => p.date))];
+
   return (
     <div className="space-y-6">
-      <header>
-        <h1 className="text-2xl font-bold tracking-tight sm:text-3xl">The 36-week map</h1>
-        <p className="mt-2 max-w-2xl text-[15px] text-muted">
-          {tracks.length > 1
-            ? "Two tracks in parallel: Main on Mon, Wed, Fri and Sat; Java + DSA on Tue, Thu and Sun. Find the current week, open its tab, tick today's box."
-            : `${TRACK_LABEL[tracks[0]]} on ${c.schedule.filter((r) => r.track === tracks[0]).map((r) => r.day).join(", ")}. Find the current week, open it, tick today's box.`}
-        </p>
+      <header className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
+        <div>
+          <h1 className="text-2xl font-bold tracking-tight sm:text-3xl">The big picture</h1>
+          <p className="mt-2 max-w-2xl text-[15px] leading-relaxed text-muted">
+            Two tracks that build bottom-up. Main goes from the CPU to system design, each phase explaining the layer the next one sits on. Java + DSA runs alongside it, from your first line of Java to interview-level algorithms.
+          </p>
+        </div>
+        {live && (
+          <div className="flex items-center gap-3">
+            <Ring value={live.pace.total ? live.pace.done / live.pace.total : 0} size={72} />
+            <div className="text-xs text-muted">
+              {live.pace.done} of {live.pace.total} sessions
+              <br />
+              {live.plan.finish ? `Finish ${fmt(parseDate(live.plan.finish))}` : "All done"}
+            </div>
+          </div>
+        )}
       </header>
 
-      <section className={`grid gap-3 ${tracks.length > 1 ? "sm:grid-cols-2" : ""}`}>
-        {tracks.map((t) => (
-          <div key={t} className="card p-4">
-            <div className={`mb-2 text-xs font-semibold uppercase tracking-wider ${t === "main" ? "text-main" : "text-java"}`}>{t === "main" ? "Main track phases" : "Java + DSA parts"}</div>
-            <ul className="space-y-2">
-              {c.groups[t]!.map((g) => (
-                <li key={g.id} className="text-sm">
-                  <span className="font-semibold">{g.id}</span> <span className="text-muted">(W{g.weeks[0]}-{g.weeks[g.weeks.length - 1]})</span> {g.title.replace(/\s*\(Weeks.*\)$/, "")}
-                  {c.phaseSummary[g.id] && <div className="text-xs text-muted">Unlocks: {c.phaseSummary[g.id].unlocks}</div>}
-                </li>
-              ))}
-            </ul>
-          </div>
-        ))}
-      </section>
+      {live && tracks.map((tr) => <TrackTimeline key={tr} track={tr} plan={live.plan} />)}
 
-      <div className="card overflow-hidden">
-        <div className={`hidden gap-3 border-b border-line bg-panel-2 px-4 py-2 text-xs font-semibold uppercase tracking-wider text-muted sm:grid ${cols}`}>
-          <div>Week</div>
-          {tracks.map((t) => (
-            <div key={t}>{TRACK_LABEL[t]}</div>
+      {live && soon.length > 0 && (
+        <section id="upcoming" className="card scroll-mt-20 p-5">
+          <SectionTitle
+            hint={
+              <span className="flex gap-1">
+                {[14, 28, 56].map((d) => (
+                  <button key={d} className={`chip !py-0.5 ${days === d ? "!border-accent !text-accent" : ""}`} onClick={() => setDays(d)}>
+                    {d / 7} wk
+                  </button>
+                ))}
+              </span>
+            }
+          >
+            Your schedule
+          </SectionTitle>
+          <p className="mb-2 text-sm text-muted">
+            Worked out from your weekly rhythm and what you&apos;ve done. Miss a day and it moves back; do one early and it moves up.{" "}
+            <Link href="/settings#rhythm" className="underline hover:text-fg">
+              Change your rhythm
+            </Link>
+          </p>
+          <div className="divide-y divide-line">
+            {soonDays.map((d) => (
+              <div key={d} className="grid gap-1 py-2 sm:grid-cols-[150px_1fr]">
+                <div className={`text-sm font-semibold ${d === t ? "text-accent" : ""}`}>{d === t ? "Today" : parseDate(d).toLocaleDateString(undefined, { weekday: "short", day: "numeric", month: "short" })}</div>
+                <div>
+                  {(live.plan.byDate.get(d) ?? []).map((x) => (
+                    <div key={x.key} className="text-[14px]">
+                      <Link href={x.track === "review" ? `/main/${x.n}` : `/${x.track}/${x.n}`} className={`mr-2 text-xs font-semibold ${x.track === "main" ? "text-main" : x.track === "java" ? "text-java" : "text-ok"}`}>
+                        {x.track === "main" ? "Main" : x.track === "java" ? "Java" : "Review"} W{x.n}
+                      </Link>
+                      {x.label} <span className="text-muted">· {hoursLabel(x.hours)}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            ))}
+          </div>
+        </section>
+      )}
+
+      <section>
+        <SectionTitle>All 36 weeks</SectionTitle>
+        <div className="card overflow-hidden">
+          <div className="hidden gap-3 border-b border-line bg-panel-2 px-4 py-2 text-xs font-semibold uppercase tracking-wider text-muted sm:grid sm:grid-cols-[60px_1fr_1fr]">
+            <div>Week</div>
+            {tracks.map((tr) => (
+              <div key={tr}>{TRACK_LABEL[tr]}</div>
+            ))}
+          </div>
+          {Array.from({ length: 36 }, (_, i) => i + 1).map((n) => (
+            <div key={n} id={`w${n}`} className="grid grid-cols-1 gap-1 border-b border-line px-2 py-2 last:border-b-0 sm:grid-cols-[60px_1fr_1fr] sm:gap-3 sm:px-4">
+              <div className="px-2 pt-2 text-sm font-semibold">W{n}</div>
+              {tracks.map((tr) => (
+                <Cell key={tr} track={tr} n={n} />
+              ))}
+            </div>
           ))}
         </div>
-        {all.map((slot, i) => {
-          const current = pos?.status === "active" && pos.index === i;
-          if (slot.kind === "buffer")
-            return (
-              <div key={`b${slot.after}`} className={`border-b border-line px-4 py-2 text-sm text-muted ${current ? "bg-accent-soft" : "bg-panel-2/50"}`}>
-                Optional buffer week: catch up, or revisit the Overlooked lists
-              </div>
-            );
-          const n = slot.n;
-          const ng = newGroup.get(n)!;
-          const header = tracks.some((t) => ng[t]) ? (
-            <div className={`grid grid-cols-1 gap-3 border-b border-line bg-panel-2/60 px-4 py-1.5 text-xs font-semibold text-muted ${cols}`}>
-              <div className="hidden sm:block" />
-              {tracks.map((t) => {
-                const g = groupOf(c, t, n)!;
-                return (
-                  <div key={t} className={t === "main" ? "text-main" : "text-java"}>
-                    {ng[t] ? `${g.id}: ${g.title.replace(/\s*\(Weeks.*\)$/, "")}` : ""}
-                  </div>
-                );
-              })}
-            </div>
-          ) : null;
-          return (
-            <Fragment key={n}>
-              {header}
-              <div id={`w${n}`} className={`grid grid-cols-1 gap-1 border-b border-line px-2 py-2 sm:gap-3 sm:px-4 ${cols} ${current ? "bg-accent-soft" : ""}`}>
-                <div className="px-2 pt-2 text-sm">
-                  <span className="font-semibold">W{n}</span>
-                  {h && <span className="ml-2 text-xs text-muted sm:ml-0 sm:block">{fmtShort(weekStartFor(n, cfg.start, cfg.slide, cfg.buffers))}</span>}
-                  {current && <span className="ml-2 text-xs font-semibold text-accent sm:ml-0 sm:block">Now</span>}
-                </div>
-                {tracks.map((t) => (
-                  <Cell key={t} track={t} n={n} />
-                ))}
-              </div>
-            </Fragment>
-          );
-        })}
-      </div>
-      <p className="text-sm text-muted">
-        Buffer weeks are {cfg.buffers ? "shown" : "hidden"}.{" "}
-        <Link href="/settings" className="underline hover:text-fg">
-          Change in settings
-        </Link>
-        .
-      </p>
+      </section>
     </div>
   );
 }

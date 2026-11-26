@@ -4,9 +4,10 @@ A web app for the **Zero to Deep: 36-Week Software Engineering Plan**: a Main tr
 
 ## What's in it
 
-- **Today**: works out the current plan week from your start date, shows today's session (Mon/Wed/Fri/Sat Main, Tue/Thu/Sun Java), Sunday Done-when reviews, progress for both tracks, problems done, streak and re-solves due.
-- **36-week map**: both tracks side by side with phases/parts, calendar dates, per-week progress and optional buffer weeks.
-- **72 week pages**: Why this week, daily checklist, Must know topic tree, Overlooked/niche, resources (⭐ core first), build, Sunday problems, Done-when test, phase milestone and your notes. Everything is tickable, and resource names become links.
+- **Today**: the sessions planned for today, with Swap with next, Not today and Do it today. Shows this week's hours against your rhythm, a week-based streak (two sessions makes a minimum week), pace (sessions ahead or behind) and the projected finish date, plus where you are on each track and why that phase comes now.
+- **Flexible schedule**: each plan week is eight sessions (5 Main, 3 Java + DSA, 1 review), not fixed weekdays. You set hours per weekday (default weekend-heavy: Mon-Wed 1.5 h, Thu-Fri free, Sat and Sun 5.5 h) and the app fills your days in order. Doing a session early, missing a day, swapping or changing the rhythm reflows the whole plan.
+- **Big picture**: every phase of both tracks as a timeline, with what it's for, what it unlocks, its milestone and projected dates; your schedule for the next weeks; and all 36 weeks with progress.
+- **72 week pages**: Why this week, sessions with their planned dates, Must know topic tree, Overlooked/niche, resources (⭐ core first), build, Sunday problems, Done-when test, phase milestone and your notes. Everything is tickable, and resource names become links.
 - **Problem tracker**: all 161 LeetCode problems from the Java track, linked, with status (Solved / Needed help / Stuck) and automatic re-solve reminders at 3 days and 2 weeks (practice rule 6). You can add your own problems.
 - **Journal**: the long-running "What happens when I type a URL" note (one section per phase), a mistakes log with tags, and a patterns note.
 - **How it works**: schedule, session template, setup checklist, falling-behind rules, AI-as-tutor rules, practice rules.
@@ -17,10 +18,9 @@ A web app for the **Zero to Deep: 36-Week Software Engineering Plan**: a Main tr
 - **Weekly contests** (optional): the next LeetCode weekly contest in your local time, a log of how many you solved, and a reminder on Today from Part C onward.
 - **Build briefs**: what "done" means for each week's build, plus a stretch goal.
 - **Time and money**: rough time for each week's core resource, and free alternatives wherever a paid book is linked.
-- **Catch-up**: Today notices sessions you missed this week and last, and offers to spread them one a day (free days first) or slide the calendar. After two weeks away it suggests where to resume.
 - **Search** (press / or Ctrl K): every topic, resource, chapter, build and problem you can see.
 - **Study heatmap**: the last six months of days you ticked or wrote something.
-- **Settings**: start date, slide the calendar (never cram, never skip), buffer weeks, theme, JSON export/import, Markdown export of all your notes, reset.
+- **Settings**: start date (or "I'm on week N", which ticks earlier sessions), weekly rhythm, theme, JSON export/import, Markdown export of all your notes, reset.
 
 ## Progress and sync
 

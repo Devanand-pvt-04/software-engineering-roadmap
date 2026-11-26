@@ -102,7 +102,7 @@ function Log({ kind }: { kind: Kind }) {
         <SectionTitle>{kind === "mistake" ? "Log a mistake" : "Add a pattern"}</SectionTitle>
         <p className="mb-3 text-sm text-muted">
           {kind === "mistake"
-            ? "Every off-by-one, wrong edge case or wrong pattern goes here. Review it for 15 minutes every Sunday."
+            ? "Every off-by-one, wrong edge case or wrong pattern goes here. Review it for 15 minutes in every problems session."
             : "Write which signal pointed to the pattern, e.g. “contiguous subarray + condition → sliding window”."}
         </p>
         <form onSubmit={add} className="space-y-2">

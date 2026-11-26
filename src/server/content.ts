@@ -1,7 +1,7 @@
 import "server-only";
 import data from "@/data/roadmap.json";
 import {
-  ENCOURAGEMENT, FALLING_BEHIND, JAVA_INTRO, MAIN_INTRO, PHASE_SUMMARY, PRACTICE_RULES, SCHEDULE, SETUP_MAIN, URL_NOTE_SECTIONS, WHATS_DIFFERENT, WHY_JAVA,
+  ENCOURAGEMENT, FALLING_BEHIND, JAVA_INTRO, MAIN_INTRO, PHASE_SUMMARY, PRACTICE_RULES, SETUP_MAIN, URL_NOTE_SECTIONS, WHATS_DIFFERENT, WHY_JAVA,
 } from "@/data/guide";
 import { linksFor } from "@/data/links";
 import { specsFor } from "@/data/specifics";
@@ -12,7 +12,7 @@ import { BRIEFS } from "@/data/briefs";
 import { CORE_TIME, FREE_ALTERNATIVES } from "@/data/estimates";
 import { CONTEST_INFO, PHASE2 } from "@/data/phase2";
 import type { Day } from "@/lib/constants";
-import type { ClientContent, ScheduleRow } from "@/lib/content";
+import type { ClientContent } from "@/lib/content";
 import { TRACKS, type Group, type LinkRef, type Phase2SetView, type Problem, type Track, type Week, type SpecView } from "@/lib/roadmap";
 
 interface RawWeek extends Omit<Week, "resources" | "checklist" | "after" | "quiz" | "brief"> {
@@ -22,7 +22,15 @@ interface RawWeek extends Omit<Week, "resources" | "checklist" | "after" | "quiz
 }
 
 const RAW: Record<Track, RawWeek[]> = { main: data.main as RawWeek[], java: data.java as RawWeek[] };
-const GROUPS: Record<Track, Group[]> = { main: data.mainGroups as Group[], java: data.javaGroups as Group[] };
+// Phase texts were written for fixed weekdays and buffer weeks; the app schedules sessions instead.
+const unday = (x: string) =>
+  x
+    .replace(/\s*Optional buffer week[^.]*\./g, "")
+    .replace(/Each week: Tuesday learn, Thursday build it yourself, Sunday solve problems\./, "Each week: learn it, build it yourself, then solve problems.")
+    .replace(/Same weekly rhythm: Tuesday learn, Thursday build, Sunday solve\./, "Same rhythm each week: learn, build, solve.")
+    .trim();
+const cleanGroup = (g: Group): Group => ({ ...g, title: g.title.replace(/\s*\(Weeks.*\)$/, ""), goal: unday(g.goal), milestone: unday(g.milestone) });
+const GROUPS: Record<Track, Group[]> = { main: (data.mainGroups as Group[]).map(cleanGroup), java: (data.javaGroups as Group[]).map(cleanGroup) };
 
 const links = (text: string): LinkRef[] => linksFor(text).map((l) => ({ label: l.label, url: l.url }));
 const specs = (...a: Parameters<typeof specsFor>): SpecView[] => specsFor(...a).map((s) => ({ detail: s.detail, ...(s.links ? { links: s.links } : {}) }));
@@ -62,23 +70,6 @@ export function weekFor(track: Track, n: number): Week | undefined {
   return ENRICHED[track][n - 1];
 }
 
-function scheduleFor(tracks: Track[]): ScheduleRow[] {
-  const both = tracks.length === 2;
-  const rows: ScheduleRow[] = [];
-  for (const r of SCHEDULE) {
-    const t: Track = r.track.startsWith("Main") ? "main" : "java";
-    if (r.day === "Sun") {
-      if (both) rows.push({ day: r.day, track: "java", label: r.track, time: r.time, what: r.what });
-      else if (tracks[0] === "java")
-        rows.push({ day: r.day, track: "java", label: r.track, time: r.time, what: "Practice problems; then 1 h: the week's Done-when test, tick boxes, plan next week." });
-      else rows.push({ day: r.day, track: "review", label: "Review", time: "1 h", what: "The week's Done-when test, tick boxes, plan next week." });
-      continue;
-    }
-    if (tracks.includes(t)) rows.push({ day: r.day, track: t, label: r.track, time: r.time, what: r.what });
-  }
-  return rows;
-}
-
 export function clientContent(): ClientContent {
   const tracks = TRACKS;
   const phaseSummary: ClientContent["phaseSummary"] = {};
@@ -95,7 +86,7 @@ export function clientContent(): ClientContent {
     weeks: { main: ENRICHED.main, java: ENRICHED.java },
     groups: { main: GROUPS.main, java: GROUPS.java },
     phaseSummary,
-    schedule: scheduleFor(tracks),
+    intros: { main: MAIN_INTRO, java: JAVA_INTRO },
     problems: [...ENRICHED.java.flatMap((w) => w.problems.map((p) => ({ ...p, week: w.n }))), ...phase2.flatMap((s) => s.problems.map((p) => ({ ...p, week: s.week })))],
     phase2,
     contest: CONTEST_INFO,

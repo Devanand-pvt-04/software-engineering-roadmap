@@ -4,28 +4,29 @@ import Link from "next/link";
 import { TRACK_LABEL, keys, type Brief, type SpecView, type Track } from "@/lib/roadmap";
 import { getWeek, groupOf, useContent } from "@/lib/content";
 import { weekProgress } from "@/lib/progress";
-import { useHydrated, useSettings, useStore, useToday } from "@/lib/store";
-import { addDays, fmtShort, weekStartFor, weekday } from "@/lib/schedule";
+import { useHydrated, useStore } from "@/lib/store";
+import { dayKey, fmtShort, parseDate } from "@/lib/schedule";
+import { usePlan } from "@/lib/use-plan";
+import { SessionItem } from "./session-row";
 import { CheckRow, Ring, SectionTitle } from "./ui";
 import { ProblemRow } from "./problem-row";
 import { NoteBox } from "./notes";
 import { QuizCard } from "./quiz";
-
-const DAY_OFFSET: Record<string, number> = { Mon: 0, Tue: 1, Wed: 2, Thu: 3, Fri: 4, Sat: 5, Sun: 6 };
 
 export function WeekView({ track, n }: { track: Track; n: number }) {
   const c = useContent();
   const w = getWeek(c, track, n)!;
   const s = useStore();
   const hydrated = useHydrated();
-  const cfg = useSettings();
   const p = weekProgress(s, track, w);
   const group = groupOf(c, track, n);
   const isLastOfGroup = group && group.weeks[group.weeks.length - 1] === n;
-  const start = weekStartFor(n, cfg.start, cfg.slide, cfg.buffers);
-  const today = useToday();
-  const todayName = today ? weekday(today) : "";
-  const inThisWeek = !!today && today >= start && today < addDays(start, 7);
+  const live = usePlan();
+  const planned = new Map(live?.plan.planned.map((x) => [x.key, x.date]) ?? []);
+  const mine = live ? live.plan.sessions.filter((x) => x.n === n && (x.track === track || x.track === "review")) : [];
+  const dates = mine.map((x) => live!.plan.doneOn.get(x.key) ?? planned.get(x.key)).filter(Boolean).sort() as string[];
+  const todayKey = live ? dayKey(live.today) : "";
+  const inThisWeek = live?.plan.planned.find((x) => x.track === track)?.n === n;
   const other: Track | undefined = c.tracks.find((t) => t !== track);
   const color = track;
 
@@ -41,12 +42,12 @@ export function WeekView({ track, n }: { track: Track; n: number }) {
                 {group.id}: {group.title.replace(/\s*\(Weeks.*\)$/, "")}
               </span>
             )}
-            {hydrated && (
+            {hydrated && dates.length > 0 && (
               <span>
-                · {fmtShort(start)} – {fmtShort(addDays(start, 6))}
+                · {fmtShort(parseDate(dates[0]))} – {fmtShort(parseDate(dates[dates.length - 1]))}
               </span>
             )}
-            {inThisWeek && <span className="rounded-md bg-accent-soft px-2 py-0.5 font-semibold text-accent">This week</span>}
+            {inThisWeek && <span className="rounded-md bg-accent-soft px-2 py-0.5 font-semibold text-accent">You are here</span>}
           </div>
           <h1 className="text-2xl font-bold tracking-tight sm:text-3xl">
             <span className="text-muted">Week {n}.</span> {w.title}
@@ -82,24 +83,24 @@ export function WeekView({ track, n }: { track: Track; n: number }) {
         )}
       </nav>
 
-      {/* daily checklist */}
+      {/* sessions */}
       <section className="card p-5">
-        <SectionTitle hint="One box per session">Daily checklist</SectionTitle>
-        <div>
-          {w.checklist.map((d) => (
-            <div key={d.day} className={`-mx-2 flex gap-3 rounded-lg px-2 ${inThisWeek && d.day === todayName ? "bg-accent-soft/60" : ""}`}>
-              <div className="w-10 shrink-0 pt-2 text-xs font-semibold text-muted">
-                {d.day}
-                {hydrated && <div className="font-normal">{fmtShort(addDays(start, DAY_OFFSET[d.day]))}</div>}
+        <SectionTitle hint="Planned from your weekly rhythm">Sessions</SectionTitle>
+        <div className="divide-y divide-line">
+          {mine.map((x) => {
+            const doneOn = live?.plan.doneOn.get(x.key);
+            const on = planned.get(x.key);
+            return (
+              <div key={x.key} className={`-mx-2 flex gap-3 rounded-lg px-2 ${on === todayKey ? "bg-accent-soft/60" : ""}`}>
+                <div className="w-14 shrink-0 pt-3 text-xs text-muted">
+                  {hydrated && (doneOn ? <span className="font-semibold text-ok">Done {fmtShort(parseDate(doneOn))}</span> : on ? (on === todayKey ? <span className="font-semibold text-accent">Today</span> : fmtShort(parseDate(on))) : null)}
+                </div>
+                <div className="min-w-0 flex-1">
+                  <SessionItem x={x} />
+                </div>
               </div>
-              <div className="min-w-0 flex-1">
-                <CheckRow k={keys.day(track, n, d.day)} color={color} links={d.links}>
-                  {d.text}
-                </CheckRow>
-                <Specifics specs={d.specs} />
-              </div>
-            </div>
-          ))}
+            );
+          })}
         </div>
         {w.problemNote && <p className="mt-3 text-sm text-muted">{w.problemNote}</p>}
       </section>
@@ -107,7 +108,7 @@ export function WeekView({ track, n }: { track: Track; n: number }) {
       {/* build */}
       {w.build && (
         <section className="card p-5">
-          <SectionTitle hint="Thursday">Build it yourself</SectionTitle>
+          <SectionTitle hint="Build session">Build it yourself</SectionTitle>
           <CheckRow k={keys.build(track, n)} color={color}>
             {w.build.charAt(0).toUpperCase() + w.build.slice(1)}
           </CheckRow>
@@ -115,10 +116,10 @@ export function WeekView({ track, n }: { track: Track; n: number }) {
         </section>
       )}
 
-      {/* Main-track builds live in the Friday/Saturday items; their brief gets its own card. */}
+      {/* Main-track builds live in the build sessions; their brief gets its own card. */}
       {!w.build && w.brief && (
         <section className="card p-5">
-          <SectionTitle hint="Friday and Saturday">Build brief</SectionTitle>
+          <SectionTitle hint="Build sessions">Build brief</SectionTitle>
           <p className="text-[15px] leading-relaxed">{w.checklist.find((d) => d.day === "Sat")?.text}</p>
           <BriefView brief={w.brief} />
         </section>
@@ -127,7 +128,7 @@ export function WeekView({ track, n }: { track: Track; n: number }) {
       {/* problems */}
       {w.problems.length > 0 && (
         <section className="card p-5">
-          <SectionTitle hint={<Link href="/problems" className="hover:text-fg">All problems →</Link>}>Sunday problems ({w.problems.length})</SectionTitle>
+          <SectionTitle hint={<Link href="/problems" className="hover:text-fg">All problems →</Link>}>Practice problems ({w.problems.length})</SectionTitle>
           <p className="mb-1 text-xs text-muted">Links open LeetCode. If one is locked, Striver&apos;s A2Z sheet has the same pattern. Marking “Needed help” schedules re-solves in 3 days and 2 weeks.</p>
           {w.problems.map((pr) => (
             <ProblemRow key={pr.slug} {...pr} />
@@ -248,7 +249,7 @@ export function WeekView({ track, n }: { track: Track; n: number }) {
 
       {/* notes */}
       <section className="card p-5">
-        <SectionTitle hint={track === "main" ? "Saturday" : "Sunday"}>Your notes</SectionTitle>
+        <SectionTitle hint="Write it after the week's last session">Your notes</SectionTitle>
         <p className="mb-2 text-xs text-muted">“Today I learned X. It exists because Y. It works by Z. I&apos;m still confused about W.”</p>
         <NoteBox k={keys.note(track, n)} placeholder={track === "main" ? "Explain this week to a junior…" : "What clicked, what didn't, patterns you noticed…"} />
       </section>

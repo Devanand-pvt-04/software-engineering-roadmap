@@ -9,7 +9,7 @@ import { signInGitHub, signOutAction } from "@/app/actions";
 const NAV: { href: string; label: string; icon: string; match?: string }[] = [
   { href: "/", label: "Today", icon: "M3 10l7-6 7 6v7a1 1 0 01-1 1h-4v-5H8v5H4a1 1 0 01-1-1z" },
   { href: "/search", label: "Search", icon: "M9 15a6 6 0 100-12 6 6 0 000 12zM13.5 13.5L18 18" },
-  { href: "/plan", label: "36-week map", icon: "M2 4l5-2 6 2 5-2v14l-5 2-6-2-5 2zM7 2v14M13 4v14" },
+  { href: "/plan", label: "Big picture", icon: "M2 4l5-2 6 2 5-2v14l-5 2-6-2-5 2zM7 2v14M13 4v14" },
   { href: "/main/1", label: "Main track", match: "/main", icon: "M3 3h14v4H3zM3 9h14v4H3zM3 15h9v2H3z" },
   { href: "/java/1", label: "Java + DSA", match: "/java", icon: "M6 4L2 10l4 6M14 4l4 6-4 6M11 3L9 17" },
   { href: "/review", label: "Review", icon: "M4 4h12v9H4zM7 16h6M10 13v3M7 8l2 2 4-4" },
@@ -103,7 +103,7 @@ export function Shell({ children }: { children: React.ReactNode }) {
       <aside className="sticky top-0 hidden h-screen w-60 shrink-0 flex-col border-r border-line bg-panel px-3 py-5 lg:flex">
         <Link href="/" className="mb-6 px-3">
           <div className="text-[15px] font-bold tracking-tight">Zero to Deep</div>
-          <div className="text-xs text-muted">36-week SE plan</div>
+          <div className="text-xs text-muted">Stick to the plan</div>
         </Link>
         {nav}
         <div className="mt-auto">
