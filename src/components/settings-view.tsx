@@ -4,7 +4,7 @@ import { useRef, useState, useSyncExternalStore } from "react";
 import { clearAll, getState, replaceState, useHydrated, useSettings, useSync } from "@/lib/store";
 import { mergeState, type State } from "@/lib/merge";
 import { fmt, parseDate } from "@/lib/schedule";
-import { RhythmEditor } from "./rhythm-editor";
+import { MissEditor, RhythmEditor } from "./rhythm-editor";
 import { StartPicker } from "./start-picker";
 import { useContent } from "@/lib/content";
 import { download, notesMarkdown } from "@/lib/notes-export";
@@ -76,7 +76,7 @@ export function SettingsView() {
         <div className="grid gap-5 sm:grid-cols-2">
           <div className="sm:col-span-2">
             <span className="mb-2 block text-sm font-medium">
-              Start date{h && <span className="font-normal text-muted">: currently {fmt(parseDate(cfg.start))}{!cfg.startSet && " (not chosen yet, using this week)"}</span>}
+              Start date{h && <span className="font-normal text-muted">: currently {fmt(parseDate(cfg.start))}{!cfg.startSet && " (not chosen yet, using today)"}</span>}
             </span>
             <StartPicker />
           </div>
@@ -84,6 +84,8 @@ export function SettingsView() {
       </section>
 
       <RhythmEditor />
+
+      <MissEditor />
 
       <section className="card p-5">
         <SectionTitle>Account and sync</SectionTitle>

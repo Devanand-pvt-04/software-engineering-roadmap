@@ -4,6 +4,7 @@ import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { useSync } from "@/lib/store";
+import { AliasMigrate } from "./alias-migrate";
 import { signInGitHub, signOutAction } from "@/app/actions";
 
 const NAV: { href: string; label: string; icon: string; match?: string }[] = [
@@ -127,6 +128,7 @@ export function Shell({ children }: { children: React.ReactNode }) {
         </div>
       )}
       <main className="min-w-0 flex-1 px-4 py-6 sm:px-8 lg:py-10">
+        <AliasMigrate />
         <div className="mx-auto max-w-4xl">{children}</div>
       </main>
     </div>

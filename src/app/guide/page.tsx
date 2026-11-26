@@ -52,7 +52,7 @@ export default function Page() {
         </Card>
       </div>
 
-      <Card title="Every week is eight sessions" hint={g.hours}>
+      <Card title="How a week is laid out" hint={g.hours}>
         <div className="overflow-x-auto">
           <table className="w-full min-w-[520px] text-left text-sm">
             <thead className="text-xs text-muted">
@@ -76,8 +76,8 @@ export default function Page() {
           </table>
         </div>
         <p className="mt-3 text-sm leading-relaxed text-muted">
-          Nothing is tied to a weekday. You set how many hours you have each day, and the app fills your days from this list in order. The default is weekend-heavy:{" "}
-          {WEEKDAYS.map((d, i) => `${d} ${RHYTHM_PRESETS[0].hours[i]} h`).join(", ")}, which fits exactly one plan week into each calendar week. Change it in{" "}
+          Nothing is tied to a weekday. You set how many hours you have each day, and the app fills your days from this list in order. One preset is weekend-heavy:{" "}
+          {WEEKDAYS.map((d, i) => `${d} ${RHYTHM_PRESETS[0].hours[i]} h`).join(", ")}, which fits one plan week into each calendar week. Pick your own days and hours, and what happens when you miss a day, in{" "}
           <Link href="/settings#rhythm" className="underline">
             Settings
           </Link>

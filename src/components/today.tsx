@@ -5,13 +5,15 @@ import { useContent } from "@/lib/content";
 import { problemStats } from "@/lib/progress";
 import { useStore } from "@/lib/store";
 import { usePlan, type LivePlan } from "@/lib/use-plan";
-import { currentWeek, dayHoursKey, MIN_WEEK_SESSIONS, rhythmOf, rhythmTotal, weekdayIndex, type Planned } from "@/lib/sessions";
+import { currentWeek, planLength, dayHoursKey, RHYTHM_KEY, MISS_KEY, missPolicyOf, MIN_WEEK_SESSIONS, rhythmOf, rhythmTotal, weekdayIndex, type Planned } from "@/lib/sessions";
 import { doToday, resetDay, skipDay, swapSessions } from "@/lib/plan-actions";
 import { addDays, dayKey, fmt, parseDate } from "@/lib/schedule";
 import { dueCards } from "@/lib/quiz";
 import { contestNudge, fmtContest } from "@/lib/contest";
 import { Ring, SectionTitle } from "./ui";
 import { StartPicker } from "./start-picker";
+import { MissEditor, RhythmEditor } from "./rhythm-editor";
+import { setEntry } from "@/lib/store";
 import { ProblemRow } from "./problem-row";
 import { Heatmap } from "./heatmap";
 import { SessionItem, hoursLabel } from "./session-row";
@@ -44,6 +46,7 @@ function Today({ live }: { live: LivePlan }) {
   const rhythm = rhythmOf(s);
   const plannedHoursToday = rhythm[weekdayIndex(now)];
   const n = currentWeek(plan);
+  const len = planLength(c);
   const ps = problemStats(s, now, c.problems);
   const quizDue = dueCards(s, c, t);
   const contest = c.contest && currentWeek(plan, "java") > c.contest.startAfterWeek ? contestNudge(c.contest, s, now) : null;
@@ -52,12 +55,12 @@ function Today({ live }: { live: LivePlan }) {
   const headline = before
     ? `Week 1 starts ${fmt(parseDate(live.start))}`
     : finished
-      ? "You finished all 36 weeks"
+      ? `You finished all ${len} weeks`
       : todays.length
-        ? `Week ${n} of 36 · ${todays.reduce((a, x) => a + x.hours, 0)} h today`
+        ? `Week ${n} of ${len} · ${todays.reduce((a, x) => a + x.hours, 0)} h today`
         : doneToday.length
-          ? `Week ${n} of 36 · done for today`
-          : `Week ${n} of 36 · free day`;
+          ? `Week ${n} of ${len} · done for today`
+          : `Week ${n} of ${len} · free day`;
 
   return (
     <div className="space-y-6">
@@ -66,15 +69,7 @@ function Today({ live }: { live: LivePlan }) {
         <h1 className="mt-1 text-2xl font-bold tracking-tight sm:text-3xl">{headline}</h1>
       </header>
 
-      {!live.startSet && (
-        <section className="card border-2 border-accent p-5">
-          <SectionTitle>When does your plan start?</SectionTitle>
-          <p className="mb-4 text-[15px] leading-relaxed text-muted">
-            Until you choose, the plan assumes you start this week. Pick a start date, or say how far you&apos;ve already got, and every date in the app follows.
-          </p>
-          <StartPicker />
-        </section>
-      )}
+      {!s.entries["cfg:setup"]?.v && <SetupCard start={live.start} startSet={live.startSet} />}
 
       {before && (
         <section className="card p-5">
@@ -120,6 +115,16 @@ function Today({ live }: { live: LivePlan }) {
               ))}
             </div>
           )}
+          {plan.catchUp.size > 0 && (
+            <p className="mt-2 rounded-lg bg-warn-soft px-3 py-2 text-sm">
+              Catching up {Math.round(plan.missed * 2) / 2} h missed in the last two weeks:{" "}
+              {[...plan.catchUp].slice(0, 4).map(([d, hrs]) => `+${hrs} h ${d === t ? "today" : parseDate(d).toLocaleDateString(undefined, { weekday: "short", day: "numeric", month: "short" })}`).join(", ")}
+              {plan.catchUp.size > 4 ? ", …" : ""}.{" "}
+              <Link href="/settings#missed" className="underline">
+                Change
+              </Link>
+            </p>
+          )}
           {todays.length === 0 && next && (
             <div className="mt-2 rounded-xl bg-panel-2 p-4">
               <p className="text-[15px]">
@@ -134,7 +139,7 @@ function Today({ live }: { live: LivePlan }) {
         </section>
       )}
 
-      {!finished && <Momentum live={live} />}
+      {!finished && !!s.entries["cfg:setup"]?.v && <Momentum live={live} />}
 
       {!finished && <YouAreHere plan={plan} />}
 
@@ -268,5 +273,39 @@ function Tile({ label, value, sub, tone }: { label: string; value: string; sub: 
       <div className={`mt-1 text-lg font-semibold tabular-nums ${tone === "ok" ? "text-ok" : tone === "warn" ? "text-warn" : ""}`}>{value}</div>
       <div className="mt-1 text-[11px] leading-snug text-muted">{sub}</div>
     </div>
+  );
+}
+
+/** First run: when to start, which days and hours, and what to do on a missed day. */
+function SetupCard({ start, startSet }: { start: string; startSet: boolean }) {
+  const s = useStore();
+  const save = () => {
+    if (!startSet) setEntry("cfg:start", start);
+    setEntry(RHYTHM_KEY, rhythmOf(s));
+    if (s.entries[MISS_KEY]?.v == null) setEntry(MISS_KEY, missPolicyOf(s));
+    setEntry("cfg:setup", true);
+  };
+  return (
+    <section className="card border-2 border-accent p-5">
+      <h2 className="text-lg font-semibold">Set up your plan</h2>
+      <p className="mb-5 mt-1 text-[15px] leading-relaxed text-muted">The content is fixed; your pace isn&apos;t. Pick when you start, the days and hours you can give, and what should happen when life gets in the way. You can change all of it later in Settings.</p>
+      <ol className="space-y-6">
+        <li>
+          <div className="mb-2 text-sm font-semibold">1. When do you start?</div>
+          <StartPicker />
+        </li>
+        <li>
+          <div className="mb-2 text-sm font-semibold">2. Which days, and how many hours?</div>
+          <RhythmEditor bare />
+        </li>
+        <li>
+          <div className="mb-2 text-sm font-semibold">3. When you miss a day</div>
+          <MissEditor bare />
+        </li>
+      </ol>
+      <button className="btn btn-primary mt-6" onClick={save}>
+        Save my plan
+      </button>
+    </section>
   );
 }

@@ -33,6 +33,14 @@ export function useContent(): ClientContent {
   return c;
 }
 
+/** Number of weeks in the longest track. */
+export function planLength(c: ClientContent): number {
+  return Math.max(0, ...c.tracks.map((t) => c.weeks[t]?.length ?? 0));
+}
+export function trackLength(c: ClientContent, t: Track): number {
+  return c.weeks[t]?.length ?? 0;
+}
+
 export function weeksOf(c: ClientContent, t: Track): Week[] {
   return c.weeks[t] ?? [];
 }

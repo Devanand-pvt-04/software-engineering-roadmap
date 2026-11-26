@@ -9,11 +9,11 @@ export interface ProblemRec {
   notes?: string;
 }
 
-export function weekProgress(s: State, track: Track, w: Pick<Week, "n" | "mustKnow" | "checklist" | "doneWhen">) {
-  const req = requiredKeys(track, w);
+export function weekProgress(s: State, track: Track, w: Pick<Week, "id" | "mustKnow" | "checklist" | "doneWhen" | "sessions">) {
+  const req = requiredKeys(w);
   let done = 0;
   for (const k of req) if (s.entries[k]?.v) done++;
-  const passed = !!s.entries[keys.done(track, w.n)]?.v;
+  const passed = !!s.entries[keys.done(w.id)]?.v;
   return { done, total: req.length, ratio: req.length ? done / req.length : 0, passed };
 }
 

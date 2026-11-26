@@ -22,7 +22,7 @@ export function ReviewView() {
     for (const w of c.weeks[t] ?? [])
       w.quiz.forEach((_, i) => {
         total++;
-        if (quizRec(s, keys.quiz(t, w.n, i))) answered++;
+        if (quizRec(s, keys.quiz(w.id, i))) answered++;
       });
   return (
     <div className="space-y-6">

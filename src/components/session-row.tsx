@@ -13,7 +13,8 @@ export const hoursLabel = (h: number) => (h === 1 ? "1 h" : `${h} h`);
 export function SessionItem({ x, actions, detail = true }: { x: Session; actions?: React.ReactNode; detail?: boolean }) {
   const c = useContent();
   const text = sessionText(c, x);
-  const item = x.track === "review" ? undefined : getWeek(c, x.track, x.n)?.checklist.find((d) => d.day === x.from);
+  const item = x.track === "review" || !x.from ? undefined : getWeek(c, x.track, x.n)?.checklist.find((d) => d.day === x.from);
+  const links = item?.links ?? x.links;
   const color = x.track === "review" ? "ok" : x.track;
   return (
     <div className="py-2">
@@ -26,7 +27,7 @@ export function SessionItem({ x, actions, detail = true }: { x: Session; actions
         <span className="font-medium text-fg">{x.label}</span>
         <span>· {hoursLabel(x.hours)}</span>
       </div>
-      <CheckRow k={x.key} color={color} links={detail ? item?.links : undefined}>
+      <CheckRow k={x.key} color={color} links={detail ? links : undefined}>
         {text}
       </CheckRow>
       {detail && item && <Specifics specs={item.specs} />}
@@ -44,7 +45,7 @@ function ReviewChecks({ n }: { n: number }) {
         const w = getWeek(c, t, n);
         if (!w?.doneWhen) return null;
         return (
-          <CheckRow key={t} k={keys.done(t, n)} color="ok">
+          <CheckRow key={t} k={keys.done(w.id)} color="ok">
             <span className="mr-1 font-medium">{t === "main" ? "Main" : "Java"}:</span>
             {"you can " + w.doneWhen.replace(/^you can /i, "")}
           </CheckRow>

@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { useContent, type ClientContent } from "@/lib/content";
 import { TRACK_LABEL, type Group, type Track } from "@/lib/roadmap";
-import { currentWeek, type Plan } from "@/lib/sessions";
+import { currentWeek, planLength, type Plan } from "@/lib/sessions";
 import { fmtShort, parseDate } from "@/lib/schedule";
 import { SectionTitle } from "./ui";
 
@@ -20,7 +20,7 @@ export interface PhaseInfo {
 /** Each phase (Main) or part (Java) of a track, with progress and its dates from the live plan. */
 export function phasesOf(c: ClientContent, plan: Plan, track: Track): { phases: PhaseInfo[]; week: number; finished: boolean } {
   const finished = !plan.planned.some((p) => p.track === track);
-  const week = finished ? 36 : currentWeek(plan, track);
+  const week = currentWeek(plan, track);
   const planned = new Map(plan.planned.map((p) => [p.key, p.date]));
   const phases = (c.groups[track] ?? []).map((g, index): PhaseInfo => {
     const xs = plan.sessions.filter((x) => x.track === track && g.weeks.includes(x.n));
@@ -79,7 +79,7 @@ export function YouAreHere({ plan }: { plan: Plan }) {
                     {cur.g.id} of {phases.length}: {cur.g.title}
                   </p>
                   <p className="text-sm text-muted">
-                    Week {week} of 36{w ? `, ${w.title}` : ""}. Week {cur.g.weeks.indexOf(week) + 1} of {cur.g.weeks.length} in this {unit(t).toLowerCase()}.
+                    Week {week} of {c.weeks[t]?.length ?? planLength(c)}{w ? `, ${w.title}` : ""}. Week {cur.g.weeks.indexOf(week) + 1} of {cur.g.weeks.length} in this {unit(t).toLowerCase()}.
                   </p>
                   <p className="mt-2 text-sm leading-relaxed">
                     <span className="font-semibold">Why this, now: </span>

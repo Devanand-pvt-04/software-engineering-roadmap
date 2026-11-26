@@ -10,6 +10,7 @@ import { usePlan } from "@/lib/use-plan";
 import { dayKey, fmt, fmtShort, parseDate } from "@/lib/schedule";
 import { Bar, Ring, SectionTitle } from "./ui";
 import { TrackTimeline } from "./big-picture";
+import { planLength } from "@/lib/sessions";
 import { hoursLabel } from "./session-row";
 
 export function PlanView() {
@@ -117,7 +118,7 @@ export function PlanView() {
       )}
 
       <section>
-        <SectionTitle>All 36 weeks</SectionTitle>
+        <SectionTitle>All {planLength(c)} weeks</SectionTitle>
         <div className="card overflow-hidden">
           <div className="hidden gap-3 border-b border-line bg-panel-2 px-4 py-2 text-xs font-semibold uppercase tracking-wider text-muted sm:grid sm:grid-cols-[60px_1fr_1fr]">
             <div>Week</div>
@@ -125,12 +126,10 @@ export function PlanView() {
               <div key={tr}>{TRACK_LABEL[tr]}</div>
             ))}
           </div>
-          {Array.from({ length: 36 }, (_, i) => i + 1).map((n) => (
+          {Array.from({ length: planLength(c) }, (_, i) => i + 1).map((n) => (
             <div key={n} id={`w${n}`} className="grid grid-cols-1 gap-1 border-b border-line px-2 py-2 last:border-b-0 sm:grid-cols-[60px_1fr_1fr] sm:gap-3 sm:px-4">
               <div className="px-2 pt-2 text-sm font-semibold">W{n}</div>
-              {tracks.map((tr) => (
-                <Cell key={tr} track={tr} n={n} />
-              ))}
+              {tracks.map((tr) => (c.weeks[tr]?.[n - 1] ? <Cell key={tr} track={tr} n={n} /> : <div key={tr} />))}
             </div>
           ))}
         </div>

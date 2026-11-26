@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { GLOSSARY } from "@/data/guide";
+import { posOf } from "@/server/content";
 
 export const metadata: Metadata = { title: "Glossary" };
 
@@ -22,9 +23,11 @@ export default function Page() {
             <div className="flex flex-wrap gap-1.5">
               {g.weeks.map((w) => {
                 const track = w[0] === "M" ? "main" : "java";
+                const pos = posOf(track, w);
+                if (!pos) return null;
                 return (
-                  <Link key={w} href={`/${track}/${w.slice(1)}`} className={`rounded-md px-2 py-0.5 text-xs font-semibold ${track === "main" ? "bg-main-soft text-main" : "bg-java-soft text-java"}`}>
-                    {track === "main" ? "Main" : "Java"} W{w.slice(1)}
+                  <Link key={w} href={`/${track}/${pos}`} className={`rounded-md px-2 py-0.5 text-xs font-semibold ${track === "main" ? "bg-main-soft text-main" : "bg-java-soft text-java"}`}>
+                    {track === "main" ? "Main" : "Java"} W{pos}
                   </Link>
                 );
               })}

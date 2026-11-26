@@ -70,7 +70,7 @@ export function WeekView({ track, n }: { track: Track; n: number }) {
               ← Week {n - 1}
             </Link>
           )}
-          {n < 36 && (
+          {n < (c.weeks[track]?.length ?? 0) && (
             <Link className="btn" href={`/${track}/${n + 1}`}>
               Week {n + 1} →
             </Link>
@@ -109,7 +109,7 @@ export function WeekView({ track, n }: { track: Track; n: number }) {
       {w.build && (
         <section className="card p-5">
           <SectionTitle hint="Build session">Build it yourself</SectionTitle>
-          <CheckRow k={keys.build(track, n)} color={color}>
+          <CheckRow k={keys.build(w.id)} color={color}>
             {w.build.charAt(0).toUpperCase() + w.build.slice(1)}
           </CheckRow>
           {w.brief && <BriefView brief={w.brief} />}
@@ -155,14 +155,14 @@ export function WeekView({ track, n }: { track: Track; n: number }) {
                   <div className="text-[15px] font-semibold">{m.t}</div>
                   <div className="ml-1 border-l border-line pl-4">
                     {m.c.map((c, j) => (
-                      <CheckRow key={j} k={keys.must(track, n, i, j)} color={color}>
+                      <CheckRow key={j} k={keys.must(w.id, i, j)} color={color}>
                         {c}
                       </CheckRow>
                     ))}
                   </div>
                 </div>
               ) : (
-                <CheckRow key={i} k={keys.must(track, n, i)} color={color}>
+                <CheckRow key={i} k={keys.must(w.id, i)} color={color}>
                   {m.t}
                 </CheckRow>
               ),
@@ -176,7 +176,7 @@ export function WeekView({ track, n }: { track: Track; n: number }) {
         <section className="card p-5">
           <SectionTitle hint="Read, note, come back later. Optional now.">Overlooked / niche</SectionTitle>
           {w.niche.map((t, i) => (
-            <CheckRow key={i} k={keys.niche(track, n, i)} color="ok" muted>
+            <CheckRow key={i} k={keys.niche(w.id, i)} color="ok" muted>
               {t}
             </CheckRow>
           ))}
@@ -189,7 +189,7 @@ export function WeekView({ track, n }: { track: Track; n: number }) {
           <SectionTitle hint="⭐ = do this one first">Resources</SectionTitle>
           {w.resources.map((r, i) => (
             <div key={i}>
-              <CheckRow k={keys.res(track, n, i)} color="ok" links={r.links}>
+              <CheckRow k={keys.res(w.id, i)} color="ok" links={r.links}>
                 {(r.core ? "⭐ " : "") + r.text}
               </CheckRow>
               <Specifics specs={r.specs} />
@@ -217,7 +217,7 @@ export function WeekView({ track, n }: { track: Track; n: number }) {
       {w.doneWhen && (
         <section className="card border-2 p-5" style={{ borderColor: p.passed ? "var(--ok)" : undefined }}>
           <SectionTitle hint="Pass it and move on">Done when</SectionTitle>
-          <CheckRow k={keys.done(track, n)} color="ok">
+          <CheckRow k={keys.done(w.id)} color="ok">
             {"You can " + w.doneWhen.replace(/^you can /i, "")}
           </CheckRow>
         </section>
@@ -229,7 +229,7 @@ export function WeekView({ track, n }: { track: Track; n: number }) {
           <SectionTitle hint={<Link href="/review" className="hover:text-fg">Review due questions →</Link>}>Self-check ({w.quiz.length})</SectionTitle>
           <p className="text-xs text-muted">Answer from memory first, out loud or on paper. Then reveal and rate yourself; anything shaky comes back for review.</p>
           {w.quiz.map((q, i) => (
-            <QuizCard key={i} k={keys.quiz(track, n, i)} q={q.q} a={q.a} />
+            <QuizCard key={i} k={keys.quiz(w.id, i)} q={q.q} a={q.a} />
           ))}
         </section>
       )}
@@ -251,12 +251,12 @@ export function WeekView({ track, n }: { track: Track; n: number }) {
       <section className="card p-5">
         <SectionTitle hint="Write it after the week's last session">Your notes</SectionTitle>
         <p className="mb-2 text-xs text-muted">“Today I learned X. It exists because Y. It works by Z. I&apos;m still confused about W.”</p>
-        <NoteBox k={keys.note(track, n)} placeholder={track === "main" ? "Explain this week to a junior…" : "What clicked, what didn't, patterns you noticed…"} />
+        <NoteBox k={keys.note(w.id)} placeholder={track === "main" ? "Explain this week to a junior…" : "What clicked, what didn't, patterns you noticed…"} />
       </section>
 
       {w.after.length > 0 && (
         <section className="card p-5">
-          <SectionTitle>After week 36</SectionTitle>
+          <SectionTitle>After the last week</SectionTitle>
           {track === "main" && <p className="mb-2 text-sm text-muted">Pick 1-2 per quarter, not all at once.</p>}
           {w.after.map((a, i) => (
             <CheckRow key={i} k={`af:${track}:${i}`} color="ok" links={a.links}>
