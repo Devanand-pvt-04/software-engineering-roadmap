@@ -121,7 +121,7 @@ export function WeekView({ track, n }: { track: Track; n: number }) {
       {!w.build && w.brief && (
         <section className="card p-5">
           <SectionTitle hint="Build sessions">Build brief</SectionTitle>
-          <p className="text-[15px] leading-relaxed">{w.checklist.find((d) => d.day === "Sat")?.text}</p>
+          {w.checklist.find((d) => d.day === "Sat") && <p className="text-[15px] leading-relaxed">{w.checklist.find((d) => d.day === "Sat")?.text}</p>}
           <BriefView brief={w.brief} />
         </section>
       )}

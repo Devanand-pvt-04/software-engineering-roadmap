@@ -13,7 +13,7 @@ const geistMono = Geist_Mono({ variable: "--font-geist-mono", subsets: ["latin"]
 
 export const metadata: Metadata = {
   title: { default: "Zero to Deep", template: "%s · Zero to Deep" },
-  description: "A 36-week software engineering plan with daily checklists, trackers and links.",
+  description: "A software engineering plan from absolute zero with daily checklists, trackers and links.",
 };
 export const viewport: Viewport = {
   themeColor: [

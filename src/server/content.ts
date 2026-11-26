@@ -8,7 +8,7 @@ import { specsFor } from "@/data/specifics";
 import { QUIZ_MAIN } from "@/data/quiz-main";
 import { QUIZ_JAVA } from "@/data/quiz-java";
 import { HINTS } from "@/data/hints";
-import { BRIEFS } from "@/data/briefs";
+import { BRIEFS, type Brief } from "@/data/briefs";
 import { CORE_TIME, FREE_ALTERNATIVES } from "@/data/estimates";
 import { CONTEST_INFO, PHASE2 } from "@/data/phase2";
 import { EXPLAIN } from "@/data/explain";
@@ -21,6 +21,7 @@ interface RawWeek extends Omit<Week, "id" | "n" | "resources" | "checklist" | "a
   id?: string;
   /** Legacy week number from the original plan. Position comes from array order. */
   n?: number;
+  aliases?: string[];
   sessions?: { label: string; hours: number; text: string }[];
   resources: { text: string; core: boolean }[];
   checklist: { day: Day; text: string }[];
@@ -41,15 +42,15 @@ const POS: Record<Track, Map<string, number>> = { main: new Map(), java: new Map
 for (const t of TRACKS)
   RAW[t].forEach((w, i) => {
     POS[t].set(idOf(t, w), i + 1);
-    for (const a of (w as { aliases?: string[] }).aliases ?? []) if (!POS[t].has(a)) POS[t].set(a, i + 1);
+    for (const a of w.aliases ?? []) if (!POS[t].has(a)) POS[t].set(a, i + 1);
   });
 /** A legacy number (meaning that M/J week) or an id string, to the week's current position. */
 export const posOf = (t: Track, ref: number | string) => POS[t].get(typeof ref === "number" ? legacyId(t, ref) : ref);
 const cleanGroup = (t: Track) => (g: Omit<Group, "weeks"> & { weeks: (number | string)[] }): Group => ({
   ...g,
   title: g.title.replace(/\s*\(Weeks.*\)$/, ""),
-  goal: unday(g.goal),
-  milestone: unday(g.milestone),
+  goal: renumber(t, unday(g.goal)),
+  milestone: renumber(t, unday(g.milestone)),
   weeks: [...new Set(g.weeks.map((x) => posOf(t, x)).filter((x): x is number => !!x))].sort((a, b) => a - b),
 });
 const GROUPS: Record<Track, Group[]> = { main: data.mainGroups.map(cleanGroup("main")), java: data.javaGroups.map(cleanGroup("java")) };
@@ -64,28 +65,66 @@ function freeFor(text: string): LinkRef[] | undefined {
   return alts.length ? alts : undefined;
 }
 
+/**
+ * Content refers to other weeks by their original number ("Week 7", "Main track week 13"). Weeks were
+ * inserted and merged since, so each reference is rewritten to that week's current position.
+ */
+function renumber(track: Track, text: string): string {
+  return text.replace(
+    /\b(Main(?: track)? |Java(?: track)? |DSA track,? )?(Weeks?|weeks?) (\d+)(?:(-|–)(\d+))?\b/g,
+    (all, pre: string | undefined, word: string, a: string, dash: string | undefined, b: string | undefined) => {
+      const t: Track = pre?.startsWith("Main") ? "main" : pre?.startsWith("Java") || pre?.startsWith("DSA") ? "java" : track;
+      const pa = posOf(t, Number(a));
+      const pb = b ? posOf(t, Number(b)) : undefined;
+      if (!pa || (b && !pb)) return all;
+      return `${pre ?? ""}${word} ${pa}${b ? `${dash}${pb}` : ""}`;
+    },
+  );
+}
+/** Apply renumber to every string in a value, leaving ids, slugs, keys and URLs alone. */
+function renumberAll<T>(track: Track, v: T): T {
+  if (typeof v === "string") return renumber(track, v) as T;
+  if (Array.isArray(v)) return v.map((x) => renumberAll(track, x)) as T;
+  if (v && typeof v === "object")
+    return Object.fromEntries(
+      Object.entries(v).map(([k, x]) => [k, ["id", "aliases", "slug", "url", "day", "key"].includes(k) ? x : renumberAll(track, x)]),
+    ) as T;
+  return v;
+}
+
+/** Merge the briefs of a week and the weeks merged into it. */
+function briefFor(ids: string[]): Brief | undefined {
+  const all = ids.map((x) => BRIEFS[x]).filter((x): x is Brief => !!x);
+  if (!all.length) return undefined;
+  return { done: all.flatMap((x) => x.done), ...(all[0].stretch ? { stretch: all[0].stretch } : {}) };
+}
+
 function enrich(track: Track, w: RawWeek, i: number): Week {
   const id = idOf(track, w);
-  const num = Number(id.slice(1)) || 0; // per-week data files are keyed by the id's number
-  return {
+  const ids = [id, ...(w.aliases ?? [])];
+  // Per-week data files are keyed by the id's number; a merged week also takes its old weeks' entries.
+  const nums = ids.map((x) => Number(x.slice(1)) || 0);
+  const specsAll = (where: "res" | "day", text: string) => nums.flatMap((num) => specs(track, num, where, text));
+  const out: Week = {
     ...w,
     id,
     n: i + 1,
     mustKnow: w.mustKnow.map((m, j) => (EXPLAIN[`${id}:${j}`] ? { ...m, x: EXPLAIN[`${id}:${j}`] } : m)),
-    quiz: (QUIZ[track][num] ?? []).map(([q, a]) => ({ q, a })),
-    brief: BRIEFS[id],
+    quiz: nums.flatMap((num) => QUIZ[track][num] ?? []).map(([q, a]) => ({ q, a })),
+    brief: briefFor(ids),
     problems: w.problems.map((p) => ({ ...p, hint: HINTS[p.slug] })),
     resources: w.resources.map((r) => ({
       ...r,
       links: links(r.text),
-      specs: specs(track, num, "res", r.text),
+      specs: specsAll("res", r.text),
       ...(r.core && CORE_TIME[id] ? { time: CORE_TIME[id] } : {}),
       ...(freeFor(r.text) ? { free: freeFor(r.text) } : {}),
     })),
-    checklist: w.checklist.map((c) => ({ ...c, links: links(c.text), specs: specs(track, num, "day", c.day) })),
+    checklist: w.checklist.map((c) => ({ ...c, links: links(c.text), specs: specsAll("day", c.day) })),
     after: w.after.map((a) => ({ text: a, links: links(a) })),
     sessions: w.sessions?.length ? w.sessions.map((x) => ({ ...x, links: links(x.text) })) : undefined,
   };
+  return renumberAll(track, out);
 }
 
 const ENRICHED: Record<Track, Week[]> = { main: RAW.main.map((w, i) => enrich("main", w, i)), java: RAW.java.map((w, i) => enrich("java", w, i)) };
@@ -105,7 +144,7 @@ export function clientContent(): ClientContent {
     id: set.id,
     title: set.title,
     week: posOf("java", set.week) ?? 0,
-    why: set.why,
+    why: renumber("java", set.why),
     problems: set.problems.map((x): Problem => ({ slug: x.slug, name: x.name, note: "", difficulty: x.difficulty, phase2: true, hint: x.hint })),
   }));
   return {
@@ -116,7 +155,7 @@ export function clientContent(): ClientContent {
     intros: { main: MAIN_INTRO, java: JAVA_INTRO },
     problems: [...ENRICHED.java.flatMap((w) => w.problems.map((p) => ({ ...p, week: w.n }))), ...phase2.flatMap((s) => s.problems.map((p) => ({ ...p, week: s.week })))],
     phase2,
-    contest: CONTEST_INFO,
+    contest: renumberAll("java", { ...CONTEST_INFO, startAfterWeek: posOf("java", CONTEST_INFO.startAfterWeek) ?? CONTEST_INFO.startAfterWeek }),
     practiceRules: PRACTICE_RULES,
     urlNoteSections: URL_NOTE_SECTIONS,
     urlNoteTitle: "What happens when I type a URL",
@@ -130,10 +169,10 @@ export function guideFor(tracks: Track[]) {
   const main = tracks.includes("main");
   const java = tracks.includes("java");
   const lead = both
-    ? "Two tracks for 36 weeks: a Main track (how software actually works, from the CPU to Kubernetes) and a Java + DSA track."
+    ? `Two tracks: a Main track of ${RAW.main.length} weeks (how software actually works, from your first program to the cloud) and a Java + DSA track of ${RAW.java.length} weeks.`
     : main
-      ? "36 weeks on how software actually works, from the CPU to Kubernetes."
-      : "36 weeks of Java, object-oriented programming, data structures and algorithms, starting from zero.";
+      ? `${RAW.main.length} weeks on how software actually works, from your first program to the cloud.`
+      : `${RAW.java.length} weeks of Java, object-oriented design, Spring Boot, data structures and algorithms, starting from zero.`;
   const whatsDifferent = WHATS_DIFFERENT.map((x) =>
     !both && x.includes("Java week 1 assumes zero") ? "Nothing assumes knowledge you haven't built yet. Week 1 assumes zero." : x,
   );

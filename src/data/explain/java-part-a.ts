@@ -484,7 +484,7 @@ export const EXPLAIN_JAVA_PART_A: ExplainMap = {
     problem: "Choosing the wrong one, for example LinkedList for random access, can make a program hundreds of times slower.",
     how: "Know the data structure behind each implementation and what each operation costs.",
     tech: "ArrayList: dynamic array; get O(1), add at end amortized O(1), insert or remove in the middle O(n). LinkedList: doubly linked list; add and remove at the ends O(1) but get(i) O(n), and poor cache behaviour. HashSet and HashMap: hash table; average O(1), no order. LinkedHashSet and LinkedHashMap: hash table plus a linked list, so iteration follows insertion order. TreeSet and TreeMap: red-black tree; O(log n), keeps keys sorted, supports floor and ceiling. ArrayDeque: circular array; the best stack and queue. PriorityQueue: binary heap; peek O(1), add and poll O(log n).",
-    cost: "In practice ArrayList beats LinkedList almost always because of cache locality. You will build each of these in Part B to see why.",
+    cost: "In practice ArrayList beats LinkedList almost always because of cache locality. You will build each of these in Part C to see why.",
     buildsOn: "Java week 7: The Collections hierarchy",
   },
   "J7:5": {
