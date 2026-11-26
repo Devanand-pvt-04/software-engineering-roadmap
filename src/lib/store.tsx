@@ -42,16 +42,20 @@ export function replaceState(next: State, fromRemote = false) {
   emit();
   if (!fromRemote) onLocalChange?.();
 }
+/** A timestamp newer than the key's current one, so a write always wins last-writer-wins merges (even after a reset stamped ahead of this clock). */
+const nextT = (key: string, now = Date.now()) => Math.max(now, (state.entries[key]?.t ?? 0) + 1);
+
 export function setEntry(key: string, v: unknown) {
-  const e: Entry = { v, t: Date.now() };
+  load();
+  const e: Entry = { v, t: nextT(key) };
   replaceState({ ...state, entries: { ...state.entries, [key]: e } });
 }
-/** Write several entries at once, each with its own timestamp (e.g. back-dating sessions already done). */
+/** Write several entries at once. `t` keeps an entry's original time (when copying one), but never below the key's current time. */
 export function setEntries(list: { key: string; v: unknown; t?: number }[]) {
   load();
   const entries = { ...state.entries };
   const now = Date.now();
-  for (const x of list) entries[x.key] = { v: x.v, t: x.t ?? now };
+  for (const x of list) entries[x.key] = { v: x.v, t: Math.max(x.t ?? now, (entries[x.key]?.t ?? 0) + 1) };
   replaceState({ ...state, entries });
 }
 /**
@@ -62,7 +66,10 @@ export function setEntries(list: { key: string; v: unknown; t?: number }[]) {
  */
 export function clearAll(also?: State) {
   load();
-  const t = Date.now();
+  // Newer than every entry on either side, so the reset wins even over an entry stamped in the
+  // future (a device with its clock ahead, or a back-dated tick that landed after today).
+  let t = Date.now();
+  for (const e of [...Object.values(state.entries), ...Object.values(also?.entries ?? {})]) if (e.t >= t) t = e.t + 1;
   const entries: Record<string, Entry> = {};
   for (const k of new Set([...Object.keys(state.entries), ...Object.keys(also?.entries ?? {})])) entries[k] = { v: null, t };
   replaceState({ version: 1, entries });
@@ -122,7 +129,8 @@ export function useValue<T>(key: string, fallback: T): [T, (v: T) => void] {
   return [v, set];
 }
 export function useCheck(key: string): [boolean, (v: boolean) => void] {
-  return useValue<boolean>(key, false);
+  const [v, set] = useValue<unknown>(key, false);
+  return [!!v, set as (v: boolean) => void];
 }
 export function isChecked(s: State, key: string) {
   return !!s.entries[key]?.v;

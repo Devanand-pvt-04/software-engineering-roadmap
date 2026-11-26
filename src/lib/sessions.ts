@@ -6,6 +6,7 @@
 // all just reflow the queue, so the plan never piles up as "overdue".
 import type { ClientContent } from "./content";
 import type { State } from "./merge";
+import { entryDay } from "./day";
 import { keys, type LinkRef, type Track } from "./roadmap";
 import { addDays, dayKey, parseDate } from "./schedule";
 import type { Day } from "./constants";
@@ -144,7 +145,7 @@ export const weekdayIndex = (d: Date) => (d.getDay() + 6) % 7;
 export const rhythmTotal = (r: Rhythm) => r.reduce((a, b) => a + b, 0);
 
 const done = (s: State, k: string) => !!s.entries[k]?.v;
-const doneDay = (s: State, k: string) => dayKey(new Date(s.entries[k]!.t));
+const doneDay = (s: State, k: string) => entryDay(s.entries[k]!);
 const order = (s: State, x: Session) => {
   const v = s.entries[orderKey(x.key)]?.v;
   return typeof v === "number" ? v : x.base;

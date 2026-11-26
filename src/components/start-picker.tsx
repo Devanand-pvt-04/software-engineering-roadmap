@@ -28,7 +28,8 @@ export function StartPicker({ compact = false, onDone }: { compact?: boolean; on
     const s = getState();
     const marks = baselinePlan(c, s, start)
       .filter((p) => p.n < week && !s.entries[p.key]?.v)
-      .map((p) => ({ key: p.key, v: true, t: parseDate(p.date).getTime() + 12 * 3_600_000 }));
+      // The value is the day it was planned (at the latest yesterday), so streaks and stats count it then.
+      .map((p) => ({ key: p.key, v: p.date < dayKey(today) ? p.date : dayKey(addDays(today, -1)) }));
     setEntries(marks);
     setMsg(week > 1 ? `Marked ${marks.length} sessions from weeks 1–${week - 1} as done.` : "");
     onDone?.();
