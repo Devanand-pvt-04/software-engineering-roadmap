@@ -1,29 +1,45 @@
 "use client";
 
 import { useState } from "react";
-import { setEntry, useSettings, useToday } from "@/lib/store";
+import { useContent } from "@/lib/content";
+import { getState, setEntries, setEntry, useSettings, useToday } from "@/lib/store";
+import { baselinePlan, planLength } from "@/lib/sessions";
 import { addDays, dayKey, fmt, mondayOf, parseDate, startForWeek } from "@/lib/schedule";
 
-/** Lets the person choose when their 36 weeks start: a date, next Monday, or "I'm already on week N". */
+/** Lets the person choose when their plan starts: a date, next Monday, or "I've already done N weeks". */
 export function StartPicker({ compact = false, onDone }: { compact?: boolean; onDone?: () => void }) {
   const today = useToday();
   const cfg = useSettings();
+  const c = useContent();
   const [week, setWeek] = useState(1);
+  const [msg, setMsg] = useState("");
+  const len = planLength(c);
   if (!today) return null;
-  const thisMon = mondayOf(today);
-  const nextMon = dayKey(addDays(parseDate(thisMon), 7));
+  const todayKey = dayKey(today);
+  const nextMon = dayKey(addDays(parseDate(mondayOf(today)), 7));
   const save = (iso: string) => {
-    setEntry("cfg:start", mondayOf(parseDate(iso)));
-    setEntry("cfg:slide", 0);
+    setEntry("cfg:start", iso);
+    onDone?.();
+  };
+  /** Start far enough back that this is week N, and mark every session before week N as done on the day it was planned. */
+  const already = () => {
+    const start = startForWeek(today, week);
+    setEntry("cfg:start", start);
+    const s = getState();
+    const marks = baselinePlan(c, s, start)
+      .filter((p) => p.n < week && !s.entries[p.key]?.v)
+      .map((p) => ({ key: p.key, v: true, t: parseDate(p.date).getTime() + 12 * 3_600_000 }));
+    setEntries(marks);
+    setMsg(week > 1 ? `Marked ${marks.length} sessions from weeks 1–${week - 1} as done.` : "");
     onDone?.();
   };
   return (
     <div className="space-y-4">
       <div className="flex flex-wrap gap-2">
-        <button className="btn btn-primary" onClick={() => save(thisMon)}>
-          This week (Mon {fmt(parseDate(thisMon))})
+        <button className={`btn ${cfg.start === todayKey ? "btn-primary" : ""}`} onClick={() => save(todayKey)}>
+          Today ({fmt(today)})
         </button>
-        <button className="btn" onClick={() => save(nextMon)}>
+        <button className={`btn ${cfg.start === nextMon ? "btn-primary" : ""}`} onClick={() => save(nextMon)}>
           Next Monday ({fmt(parseDate(nextMon))})
         </button>
       </div>
@@ -31,7 +47,6 @@ export function StartPicker({ compact = false, onDone }: { compact?: boolean; on
         <label className="block">
           <span className="mb-1 block text-sm font-medium">Pick a date</span>
           <input type="date" className="input" value={cfg.start} onChange={(e) => e.target.value && save(e.target.value)} />
-          <span className="mt-1 block text-xs text-muted">Any date snaps to the Monday of its week.</span>
         </label>
         <div>
           <span className="mb-1 block text-sm font-medium">Already started? I&apos;m on week…</span>
@@ -39,17 +54,17 @@ export function StartPicker({ compact = false, onDone }: { compact?: boolean; on
             <input
               type="number"
               min={1}
-              max={36}
+              max={len}
               className="input w-24"
               value={week}
-              onChange={(e) => setWeek(Math.min(36, Math.max(1, Number(e.target.value) || 1)))}
+              onChange={(e) => setWeek(Math.min(len, Math.max(1, Number(e.target.value) || 1)))}
               aria-label="Current week number"
             />
-            <button className="btn" onClick={() => save(startForWeek(today, week))}>
+            <button className="btn" onClick={already}>
               Set
             </button>
           </div>
-          <span className="mt-1 block text-xs text-muted">Works back to the right start date, so this week becomes week {week}.</span>
+          <span className="mt-1 block text-xs text-muted">{msg || `Sets the start date so this is week ${week}, and ticks the sessions of the weeks before it.`}</span>
         </div>
       </div>
     </div>

@@ -17,10 +17,10 @@ export function notesMarkdown(s: State, c: ClientContent, today: string): string
   };
   const out: string[] = [`# Zero to Deep notes`, ``, `Exported ${today}.`, ``];
   for (const t of c.tracks) {
-    const weeks = (c.weeks[t] ?? []).filter((w) => text(keys.note(t, w.n)));
+    const weeks = (c.weeks[t] ?? []).filter((w) => text(keys.note(w.id)));
     if (!weeks.length) continue;
     out.push(`## ${TRACK_LABEL[t]}`, ``);
-    for (const w of weeks) out.push(`### Week ${w.n}: ${w.title}`, ``, text(keys.note(t, w.n)), ``);
+    for (const w of weeks) out.push(`### Week ${w.n}: ${w.title}`, ``, text(keys.note(w.id)), ``);
   }
   const url = c.urlNoteSections.filter((x) => text(`url:${x.id}`));
   if (url.length) {

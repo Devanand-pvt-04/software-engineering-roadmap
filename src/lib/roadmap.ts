@@ -79,8 +79,23 @@ export interface ContestInfo {
   startAfterWeek: number;
   rules: string[];
 }
+/** One sitting of study, in the order the person does them. */
+export interface SessionDef {
+  label: string;
+  /** Estimated hours (decimal: 1.5 is 1 h 30 min). */
+  hours: number;
+  text: string;
+  links: LinkRef[];
+}
 export interface Week {
+  /** Stable id used in every progress key ("M15", "J3", or a new id like "M37"). Never changes when weeks are inserted or reordered. */
+  id: string;
+  /** Older ids whose ticks this week takes over (when two weeks were merged). */
+  aliases?: string[];
+  /** Position in the track, from 1. Used for URLs and labels only. */
   n: number;
+  /** Sessions for this week. Weeks without them use the original weekday checklist. */
+  sessions?: SessionDef[];
   title: string;
   why: string;
   mustKnow: TopicNode[];
@@ -107,29 +122,33 @@ export interface Group {
 export const TRACK_LABEL: Record<Track, string> = { main: "Main track", java: "Java + DSA" };
 export const TRACK_SHORT: Record<Track, string> = { main: "M", java: "J" };
 
-// ---- Checkable keys ----
-export const wk = (track: Track, n: number) => `${TRACK_SHORT[track]}${n}`;
+/** Default id for a week from the original 36 + 36. */
+export const legacyId = (track: Track, n: number) => `${TRACK_SHORT[track]}${n}`;
+
+// ---- Checkable keys (by stable week id) ----
 export const keys = {
-  must: (t: Track, n: number, i: number, j?: number) => `mk:${wk(t, n)}:${i}${j === undefined ? "" : "." + j}`,
-  niche: (t: Track, n: number, i: number) => `ni:${wk(t, n)}:${i}`,
-  res: (t: Track, n: number, i: number) => `rs:${wk(t, n)}:${i}`,
-  day: (t: Track, n: number, d: string) => `cl:${wk(t, n)}:${d}`,
-  done: (t: Track, n: number) => `dw:${wk(t, n)}`,
-  build: (t: Track, n: number) => `bd:${wk(t, n)}`,
-  note: (t: Track, n: number) => `nt:${wk(t, n)}`,
+  must: (id: string, i: number, j?: number) => `mk:${id}:${i}${j === undefined ? "" : "." + j}`,
+  niche: (id: string, i: number) => `ni:${id}:${i}`,
+  res: (id: string, i: number) => `rs:${id}:${i}`,
+  day: (id: string, d: string) => `cl:${id}:${d}`,
+  session: (id: string, i: number) => `ss:${id}:${i}`,
+  done: (id: string) => `dw:${id}`,
+  build: (id: string) => `bd:${id}`,
+  note: (id: string) => `nt:${id}`,
   problem: (slug: string) => `pr:${slug}`,
-  quiz: (t: Track, n: number, i: number) => `qz:${wk(t, n)}:${i}`,
+  quiz: (id: string, i: number) => `qz:${id}:${i}`,
   contest: (date: string) => `ct:${date}`,
 };
 
 /** Keys that count toward a week's "required" progress (niche + resources are optional). */
-export function requiredKeys(track: Track, w: Pick<Week, "n" | "mustKnow" | "checklist" | "doneWhen">): string[] {
+export function requiredKeys(w: Pick<Week, "id" | "mustKnow" | "checklist" | "doneWhen" | "sessions">): string[] {
   const out: string[] = [];
   w.mustKnow.forEach((m, i) => {
-    if (m.c.length) m.c.forEach((_, j) => out.push(keys.must(track, w.n, i, j)));
-    else out.push(keys.must(track, w.n, i));
+    if (m.c.length) m.c.forEach((_, j) => out.push(keys.must(w.id, i, j)));
+    else out.push(keys.must(w.id, i));
   });
-  w.checklist.forEach((c) => out.push(keys.day(track, w.n, c.day)));
-  if (w.doneWhen) out.push(keys.done(track, w.n));
+  if (w.sessions?.length) w.sessions.forEach((_, i) => out.push(keys.session(w.id, i)));
+  else w.checklist.forEach((c) => out.push(keys.day(w.id, c.day)));
+  if (w.doneWhen) out.push(keys.done(w.id));
   return out;
 }

@@ -33,7 +33,7 @@ export function dueCards(s: State, c: ClientContent, today: string): DueCard[] {
   for (const t of c.tracks)
     for (const w of c.weeks[t] ?? [])
       w.quiz.forEach((q, i) => {
-        const k = keys.quiz(t, w.n, i);
+        const k = keys.quiz(w.id, i);
         const rec = quizRec(s, k);
         if (!rec) return;
         const due = dueOn(rec);

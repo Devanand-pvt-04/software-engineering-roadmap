@@ -1,9 +1,10 @@
 "use client";
 
 import { useRef, useState, useSyncExternalStore } from "react";
-import { clearAll, getState, replaceState, setEntry, useHydrated, useSettings, useSync } from "@/lib/store";
+import { clearAll, getState, replaceState, useHydrated, useSettings, useSync } from "@/lib/store";
 import { mergeState, type State } from "@/lib/merge";
-import { endDate, fmt, parseDate } from "@/lib/schedule";
+import { fmt, parseDate } from "@/lib/schedule";
+import { MissEditor, RhythmEditor } from "./rhythm-editor";
 import { StartPicker } from "./start-picker";
 import { useContent } from "@/lib/content";
 import { download, notesMarkdown } from "@/lib/notes-export";
@@ -38,7 +39,7 @@ function useTheme(): [string, (t: string) => void] {
 export function SettingsView() {
   const cfg = useSettings();
   const content = useContent();
-  const backup = content.features.includes("backup");
+  const backup = true;
   const h = useHydrated();
   const sync = useSync();
   const [theme, setTheme] = useTheme();
@@ -71,37 +72,20 @@ export function SettingsView() {
       </header>
 
       <section className="card p-5">
-        <SectionTitle>Calendar</SectionTitle>
+        <SectionTitle>Start date</SectionTitle>
         <div className="grid gap-5 sm:grid-cols-2">
           <div className="sm:col-span-2">
             <span className="mb-2 block text-sm font-medium">
-              Start date{h && <span className="font-normal text-muted">: currently {fmt(parseDate(cfg.start))}{!cfg.startSet && " (not chosen yet, using this week)"}</span>}
+              Start date{h && <span className="font-normal text-muted">: currently {fmt(parseDate(cfg.start))}{!cfg.startSet && " (not chosen yet, using today)"}</span>}
             </span>
             <StartPicker />
           </div>
-          <div>
-            <span className="mb-1 block text-sm font-medium">Slide the calendar</span>
-            <div className="flex items-center gap-2">
-              <button className="btn" onClick={() => setEntry("cfg:slide", Math.max(0, cfg.slide - 1))} disabled={cfg.slide === 0} aria-label="Slide back one week">
-                −
-              </button>
-              <span className="w-24 text-center tabular-nums">{h ? `${cfg.slide} week${cfg.slide === 1 ? "" : "s"}` : "0 weeks"}</span>
-              <button className="btn" onClick={() => setEntry("cfg:slide", cfg.slide + 1)} aria-label="Slide forward one week">
-                +
-              </button>
-            </div>
-            <span className="mt-1 block text-xs text-muted">Missed days? Slide the whole calendar by a week. Never cram, never skip.</span>
-          </div>
-          <label className="flex items-start gap-3 sm:col-span-2">
-            <input type="checkbox" className="mt-1 size-4 accent-[var(--accent)]" checked={h && cfg.buffers} onChange={(e) => setEntry("cfg:buffers", e.target.checked)} />
-            <span>
-              <span className="block text-sm font-medium">Include buffer weeks</span>
-              <span className="block text-xs text-muted">Optional catch-up weeks after weeks 6, 12, 18, 24 and 30. Makes the plan 41 weeks; that&apos;s normal and expected.</span>
-            </span>
-          </label>
         </div>
-        {h && <p className="mt-4 text-sm">Your plan ends on <b>{fmt(endDate(cfg.start, cfg.slide, cfg.buffers))}</b>.</p>}
       </section>
+
+      <RhythmEditor />
+
+      <MissEditor />
 
       <section className="card p-5">
         <SectionTitle>Account and sync</SectionTitle>

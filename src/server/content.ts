@@ -1,7 +1,7 @@
 import "server-only";
 import data from "@/data/roadmap.json";
 import {
-  ENCOURAGEMENT, FALLING_BEHIND, GLOSSARY, JAVA_INTRO, MAIN_INTRO, PHASE_SUMMARY, PRACTICE_RULES, SCHEDULE, SETUP_MAIN, URL_NOTE_SECTIONS, WHATS_DIFFERENT, WHY_JAVA,
+  ENCOURAGEMENT, FALLING_BEHIND, JAVA_INTRO, MAIN_INTRO, PHASE_SUMMARY, PRACTICE_RULES, SETUP_MAIN, URL_NOTE_SECTIONS, WHATS_DIFFERENT, WHY_JAVA,
 } from "@/data/guide";
 import { linksFor } from "@/data/links";
 import { specsFor } from "@/data/specifics";
@@ -13,18 +13,46 @@ import { CORE_TIME, FREE_ALTERNATIVES } from "@/data/estimates";
 import { CONTEST_INFO, PHASE2 } from "@/data/phase2";
 import { EXPLAIN } from "@/data/explain";
 import type { Day } from "@/lib/constants";
-import type { ClientContent, Role, ScheduleRow } from "@/lib/content";
-import type { FeatureId } from "@/lib/features";
-import type { Group, LinkRef, Phase2SetView, Problem, Track, Week, SpecView } from "@/lib/roadmap";
+import type { ClientContent } from "@/lib/content";
+import { TRACKS, legacyId, type Group, type LinkRef, type Phase2SetView, type Problem, type Track, type Week, type SpecView } from "@/lib/roadmap";
 
-interface RawWeek extends Omit<Week, "resources" | "checklist" | "after" | "quiz" | "brief"> {
+interface RawWeek extends Omit<Week, "id" | "n" | "resources" | "checklist" | "after" | "quiz" | "brief" | "sessions"> {
+  /** Stable id; defaults to M<n> / J<n> from the legacy number. */
+  id?: string;
+  /** Legacy week number from the original plan. Position comes from array order. */
+  n?: number;
+  sessions?: { label: string; hours: number; text: string }[];
   resources: { text: string; core: boolean }[];
   checklist: { day: Day; text: string }[];
   after: string[];
 }
 
 const RAW: Record<Track, RawWeek[]> = { main: data.main as RawWeek[], java: data.java as RawWeek[] };
-const GROUPS: Record<Track, Group[]> = { main: data.mainGroups as Group[], java: data.javaGroups as Group[] };
+// Phase texts were written for fixed weekdays and buffer weeks; the app schedules sessions instead.
+const unday = (x: string) =>
+  x
+    .replace(/\s*Optional buffer week[^.]*\./g, "")
+    .replace(/Each week: Tuesday learn, Thursday build it yourself, Sunday solve problems\./, "Each week: learn it, build it yourself, then solve problems.")
+    .replace(/Same weekly rhythm: Tuesday learn, Thursday build, Sunday solve\./, "Same rhythm each week: learn, build, solve.")
+    .trim();
+const idOf = (track: Track, w: RawWeek) => w.id ?? legacyId(track, w.n!);
+/** Position (from 1) of every week id, aliases included. */
+const POS: Record<Track, Map<string, number>> = { main: new Map(), java: new Map() };
+for (const t of TRACKS)
+  RAW[t].forEach((w, i) => {
+    POS[t].set(idOf(t, w), i + 1);
+    for (const a of (w as { aliases?: string[] }).aliases ?? []) if (!POS[t].has(a)) POS[t].set(a, i + 1);
+  });
+/** A legacy number (meaning that M/J week) or an id string, to the week's current position. */
+export const posOf = (t: Track, ref: number | string) => POS[t].get(typeof ref === "number" ? legacyId(t, ref) : ref);
+const cleanGroup = (t: Track) => (g: Omit<Group, "weeks"> & { weeks: (number | string)[] }): Group => ({
+  ...g,
+  title: g.title.replace(/\s*\(Weeks.*\)$/, ""),
+  goal: unday(g.goal),
+  milestone: unday(g.milestone),
+  weeks: [...new Set(g.weeks.map((x) => posOf(t, x)).filter((x): x is number => !!x))].sort((a, b) => a - b),
+});
+const GROUPS: Record<Track, Group[]> = { main: data.mainGroups.map(cleanGroup("main")), java: data.javaGroups.map(cleanGroup("java")) };
 
 const links = (text: string): LinkRef[] => linksFor(text).map((l) => ({ label: l.label, url: l.url }));
 const specs = (...a: Parameters<typeof specsFor>): SpecView[] => specsFor(...a).map((s) => ({ detail: s.detail, ...(s.links ? { links: s.links } : {}) }));
@@ -36,31 +64,31 @@ function freeFor(text: string): LinkRef[] | undefined {
   return alts.length ? alts : undefined;
 }
 
-function enrich(track: Track, w: RawWeek): Week {
-  const id = `${track === "main" ? "M" : "J"}${w.n}`;
+function enrich(track: Track, w: RawWeek, i: number): Week {
+  const id = idOf(track, w);
+  const num = Number(id.slice(1)) || 0; // per-week data files are keyed by the id's number
   return {
     ...w,
-    mustKnow: w.mustKnow.map((m, i) => (EXPLAIN[`${id}:${i}`] ? { ...m, x: EXPLAIN[`${id}:${i}`] } : m)),
-    quiz: (QUIZ[track][w.n] ?? []).map(([q, a]) => ({ q, a })),
+    id,
+    n: i + 1,
+    mustKnow: w.mustKnow.map((m, j) => (EXPLAIN[`${id}:${j}`] ? { ...m, x: EXPLAIN[`${id}:${j}`] } : m)),
+    quiz: (QUIZ[track][num] ?? []).map(([q, a]) => ({ q, a })),
     brief: BRIEFS[id],
     problems: w.problems.map((p) => ({ ...p, hint: HINTS[p.slug] })),
     resources: w.resources.map((r) => ({
       ...r,
       links: links(r.text),
-      specs: specs(track, w.n, "res", r.text),
+      specs: specs(track, num, "res", r.text),
       ...(r.core && CORE_TIME[id] ? { time: CORE_TIME[id] } : {}),
       ...(freeFor(r.text) ? { free: freeFor(r.text) } : {}),
     })),
-    checklist: w.checklist.map((c) => ({ ...c, links: links(c.text), specs: specs(track, w.n, "day", c.day) })),
+    checklist: w.checklist.map((c) => ({ ...c, links: links(c.text), specs: specs(track, num, "day", c.day) })),
     after: w.after.map((a) => ({ text: a, links: links(a) })),
+    sessions: w.sessions?.length ? w.sessions.map((x) => ({ ...x, links: links(x.text) })) : undefined,
   };
 }
 
-const ENRICHED: Record<Track, Week[]> = { main: RAW.main.map((w) => enrich("main", w)), java: RAW.java.map((w) => enrich("java", w)) };
-
-export function tracksFor(features: FeatureId[]): Track[] {
-  return (["main", "java"] as Track[]).filter((t) => features.includes(`track:${t}`));
-}
+const ENRICHED: Record<Track, Week[]> = { main: RAW.main.map((w, i) => enrich("main", w, i)), java: RAW.java.map((w, i) => enrich("java", w, i)) };
 
 export function allWeeks(track: Track): Week[] {
   return ENRICHED[track];
@@ -69,80 +97,31 @@ export function weekFor(track: Track, n: number): Week | undefined {
   return ENRICHED[track][n - 1];
 }
 
-function scheduleFor(tracks: Track[]): ScheduleRow[] {
-  const both = tracks.length === 2;
-  const rows: ScheduleRow[] = [];
-  for (const r of SCHEDULE) {
-    const t: Track = r.track.startsWith("Main") ? "main" : "java";
-    if (r.day === "Sun") {
-      if (both) rows.push({ day: r.day, track: "java", label: r.track, time: r.time, what: r.what });
-      else if (tracks[0] === "java")
-        rows.push({ day: r.day, track: "java", label: r.track, time: r.time, what: "Practice problems; then 1 h: the week's Done-when test, tick boxes, plan next week." });
-      else rows.push({ day: r.day, track: "review", label: "Review", time: "1 h", what: "The week's Done-when test, tick boxes, plan next week." });
-      continue;
-    }
-    if (tracks.includes(t)) rows.push({ day: r.day, track: t, label: r.track, time: r.time, what: r.what });
-  }
-  return rows;
-}
-
-export function clientContent(opts: { role: Role; login: string | null; previewAs: string | null; features: FeatureId[] }): ClientContent {
-  const tracks = tracksFor(opts.features);
-  const weeks: ClientContent["weeks"] = {};
-  const groups: ClientContent["groups"] = {};
+export function clientContent(): ClientContent {
+  const tracks = TRACKS;
   const phaseSummary: ClientContent["phaseSummary"] = {};
-  const quizzes = opts.features.includes("quizzes");
-  const hints = opts.features.includes("hints");
-  const slice = (w: Week): Week => ({
-    ...w,
-    quiz: quizzes ? w.quiz : [],
-    problems: hints ? w.problems : w.problems.map((p) => ({ slug: p.slug, name: p.name, note: p.note })),
-  });
-  for (const t of tracks) {
-    weeks[t] = ENRICHED[t].map(slice);
-    groups[t] = GROUPS[t];
-    for (const g of GROUPS[t]) if (PHASE_SUMMARY[g.id]) phaseSummary[g.id] = PHASE_SUMMARY[g.id];
-  }
-  const java = tracks.includes("java");
-  const main = tracks.includes("main");
-  const problemsOn = java && opts.features.includes("problems");
-  const phase2: Phase2SetView[] =
-    problemsOn && opts.features.includes("phase2")
-      ? PHASE2.map((set) => ({
-          id: set.id,
-          title: set.title,
-          week: set.week,
-          why: set.why,
-          problems: set.problems.map((x): Problem => ({ slug: x.slug, name: x.name, note: "", difficulty: x.difficulty, phase2: true, ...(hints ? { hint: x.hint } : {}) })),
-        }))
-      : [];
-  const isOwner = opts.role === "owner" || opts.role === "open";
+  for (const t of tracks) for (const g of GROUPS[t]) if (PHASE_SUMMARY[g.id]) phaseSummary[g.id] = PHASE_SUMMARY[g.id];
+  const phase2: Phase2SetView[] = PHASE2.map((set) => ({
+    id: set.id,
+    title: set.title,
+    week: posOf("java", set.week) ?? 0,
+    why: set.why,
+    problems: set.problems.map((x): Problem => ({ slug: x.slug, name: x.name, note: "", difficulty: x.difficulty, phase2: true, hint: x.hint })),
+  }));
   return {
-    role: opts.role,
-    login: opts.login,
-    previewAs: opts.previewAs,
     tracks,
-    features: opts.features,
-    weeks,
-    groups,
+    weeks: { main: ENRICHED.main, java: ENRICHED.java },
+    groups: { main: GROUPS.main, java: GROUPS.java },
     phaseSummary,
-    schedule: scheduleFor(tracks),
-    problems: problemsOn
-      ? [...(weeks.java ?? []).flatMap((w) => w.problems.map((p) => ({ ...p, week: w.n }))), ...phase2.flatMap((s) => s.problems.map((p) => ({ ...p, week: s.week })))]
-      : [],
+    intros: { main: MAIN_INTRO, java: JAVA_INTRO },
+    problems: [...ENRICHED.java.flatMap((w) => w.problems.map((p) => ({ ...p, week: w.n }))), ...phase2.flatMap((s) => s.problems.map((p) => ({ ...p, week: s.week })))],
     phase2,
-    contest: problemsOn && opts.features.includes("contests") ? CONTEST_INFO : null,
-    practiceRules: java ? PRACTICE_RULES : [],
-    urlNoteSections: main && opts.features.includes("journal") ? URL_NOTE_SECTIONS : [],
-    urlNoteTitle: main ? "What happens when I type a URL" : "",
-    // Written for the plan's original reader, so only they see it.
-    encouragement: isOwner && !opts.previewAs ? ENCOURAGEMENT : null,
+    contest: CONTEST_INFO,
+    practiceRules: PRACTICE_RULES,
+    urlNoteSections: URL_NOTE_SECTIONS,
+    urlNoteTitle: "What happens when I type a URL",
+    encouragement: ENCOURAGEMENT,
   };
-}
-
-export function glossaryFor(tracks: Track[]) {
-  const ok = (w: string) => tracks.includes(w[0] === "M" ? "main" : "java");
-  return GLOSSARY.map((g) => ({ ...g, weeks: g.weeks.filter(ok) })).filter((g) => g.weeks.length);
 }
 
 /** "How it works" text, rewritten where it assumes both tracks. */

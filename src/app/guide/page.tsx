@@ -1,17 +1,15 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { AI_TUTOR, JAVA_CORE_RESOURCES, SESSION_TEMPLATE, SETUP_JAVA, STUCK_ORDER, WHY_PAST_FAILED, AFTER_JAVA_RHYTHM } from "@/data/guide";
+import { AI_TUTOR, JAVA_CORE_RESOURCES, SETUP_JAVA, STUCK_ORDER, WHY_PAST_FAILED, AFTER_JAVA_RHYTHM } from "@/data/guide";
 import { linksFor } from "@/data/links";
 import { CheckRow, LinkChips, SectionTitle } from "@/components/ui";
-import { allowed, titleFor } from "@/server/access";
-import { Missing } from "@/components/missing";
-import { clientContent, guideFor, tracksFor } from "@/server/content";
+import { TRACKS } from "@/lib/roadmap";
+import { guideFor } from "@/server/content";
+import { RHYTHM_PRESETS, SESSION_TEMPLATE, WEEKDAYS } from "@/lib/sessions";
 
 const links = (t: string) => linksFor(t).map((l) => ({ label: l.label, url: l.url }));
 
-export async function generateMetadata(): Promise<Metadata> {
-  return titleFor("How it works", "guide");
-}
+export const metadata: Metadata = { title: "How it works" };
 
 function Card({ id, title, hint, children }: { id?: string; title: string; hint?: string; children: React.ReactNode }) {
   return (
@@ -22,15 +20,12 @@ function Card({ id, title, hint, children }: { id?: string; title: string; hint?
   );
 }
 
-export default async function Page() {
-  const a = await allowed("guide");
-  if (!a) return <Missing />;
-  const tracks = tracksFor(a.features);
+export default function Page() {
+  const tracks = TRACKS;
   const both = tracks.length > 1;
   const hasMain = tracks.includes("main");
   const hasJava = tracks.includes("java");
   const g = guideFor(tracks);
-  const schedule = clientContent({ role: "member", login: null, previewAs: null, features: a.features }).schedule;
   return (
     <div className="space-y-6">
       <header>
@@ -57,43 +52,37 @@ export default async function Page() {
         </Card>
       </div>
 
-      <Card title="Your week, hour by hour" hint={g.hours}>
+      <Card title="How a week is laid out" hint={g.hours}>
         <div className="overflow-x-auto">
           <table className="w-full min-w-[520px] text-left text-sm">
             <thead className="text-xs text-muted">
               <tr>
-                <th className="py-2 pr-3 font-semibold">Day</th>
+                <th className="py-2 pr-3 font-semibold">#</th>
                 <th className="py-2 pr-3 font-semibold">Track</th>
                 <th className="py-2 pr-3 font-semibold">Time</th>
-                <th className="py-2 font-semibold">What happens</th>
+                <th className="py-2 font-semibold">Session</th>
               </tr>
             </thead>
             <tbody>
-              {schedule.map((r) => (
-                <tr key={r.day} className="border-t border-line align-top">
-                  <td className="py-2 pr-3 font-medium">{r.day}</td>
-                  <td className={`py-2 pr-3 ${r.track === "main" ? "text-main" : r.track === "java" ? "text-java" : "text-muted"}`}>{r.label}</td>
-                  <td className="py-2 pr-3 whitespace-nowrap">{r.time}</td>
-                  <td className="py-2">{r.what}</td>
+              {SESSION_TEMPLATE.map((r, i) => (
+                <tr key={i} className="border-t border-line align-top">
+                  <td className="py-2 pr-3 text-muted">{i + 1}</td>
+                  <td className={`py-2 pr-3 ${r.track === "main" ? "text-main" : r.track === "java" ? "text-java" : "text-ok"}`}>{r.track === "main" ? "Main" : r.track === "java" ? "Java + DSA" : "Review"}</td>
+                  <td className="py-2 pr-3 whitespace-nowrap">{r.hours} h</td>
+                  <td className="py-2">{r.label}</td>
                 </tr>
               ))}
             </tbody>
           </table>
         </div>
-        <p className="mt-3 text-sm text-muted">A weekday checklist item is sized for one 1.5-hour session. If it takes two sessions, that&apos;s fine: see the falling-behind rules.</p>
-      </Card>
-
-      <Card title="The template for every session" hint="Use the timer on the Today page">
-        <ol className="space-y-2">
-          {SESSION_TEMPLATE.map((s, i) => (
-            <li key={s.name} className="flex gap-3 text-[15px] leading-relaxed">
-              <span className="grid size-6 shrink-0 place-items-center rounded-full bg-accent-soft text-xs font-semibold text-accent">{i + 1}</span>
-              <span>
-                <b>{s.name}</b> <span className="text-muted">({s.minutes} min)</span>: {s.text}
-              </span>
-            </li>
-          ))}
-        </ol>
+        <p className="mt-3 text-sm leading-relaxed text-muted">
+          Nothing is tied to a weekday. You set how many hours you have each day, and the app fills your days from this list in order. One preset is weekend-heavy:{" "}
+          {WEEKDAYS.map((d, i) => `${d} ${RHYTHM_PRESETS[0].hours[i]} h`).join(", ")}, which fits one plan week into each calendar week. Pick your own days and hours, and what happens when you miss a day, in{" "}
+          <Link href="/settings#rhythm" className="underline">
+            Settings
+          </Link>
+          .
+        </p>
       </Card>
 
       <Card id="setup" title="Setup: do this before week 1" hint="Ticks are saved">
@@ -135,9 +124,6 @@ export default async function Page() {
             </li>
           ))}
         </ol>
-        <p className="mt-4 text-sm text-muted">
-          The slide button and buffer weeks live in <Link href="/settings" className="underline">Settings</Link>.
-        </p>
         <div className="mt-4 border-t border-line pt-4">
           <div className="mb-2 text-sm font-semibold">When stuck on a concept, ask in this order</div>
           <ol className="flex flex-wrap items-center gap-2 text-sm">

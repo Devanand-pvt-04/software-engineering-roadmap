@@ -4,29 +4,30 @@ import Link from "next/link";
 import { TRACK_LABEL, keys, type Brief, type SpecView, type Track } from "@/lib/roadmap";
 import { getWeek, groupOf, useContent } from "@/lib/content";
 import { weekProgress } from "@/lib/progress";
-import { useHydrated, useSettings, useStore, useToday } from "@/lib/store";
-import { addDays, fmtShort, weekStartFor, weekday } from "@/lib/schedule";
+import { useHydrated, useStore } from "@/lib/store";
+import { dayKey, fmtShort, parseDate } from "@/lib/schedule";
+import { usePlan } from "@/lib/use-plan";
+import { SessionItem } from "./session-row";
 import { CheckRow, Ring, SectionTitle } from "./ui";
 import { ProblemRow } from "./problem-row";
 import { NoteBox } from "./notes";
 import { QuizCard } from "./quiz";
 import { Explain } from "./explain";
 
-const DAY_OFFSET: Record<string, number> = { Mon: 0, Tue: 1, Wed: 2, Thu: 3, Fri: 4, Sat: 5, Sun: 6 };
-
 export function WeekView({ track, n }: { track: Track; n: number }) {
   const c = useContent();
   const w = getWeek(c, track, n)!;
   const s = useStore();
   const hydrated = useHydrated();
-  const cfg = useSettings();
   const p = weekProgress(s, track, w);
   const group = groupOf(c, track, n);
   const isLastOfGroup = group && group.weeks[group.weeks.length - 1] === n;
-  const start = weekStartFor(n, cfg.start, cfg.slide, cfg.buffers);
-  const today = useToday();
-  const todayName = today ? weekday(today) : "";
-  const inThisWeek = !!today && today >= start && today < addDays(start, 7);
+  const live = usePlan();
+  const planned = new Map(live?.plan.planned.map((x) => [x.key, x.date]) ?? []);
+  const mine = live ? live.plan.sessions.filter((x) => x.n === n && (x.track === track || x.track === "review")) : [];
+  const dates = mine.map((x) => live!.plan.doneOn.get(x.key) ?? planned.get(x.key)).filter(Boolean).sort() as string[];
+  const todayKey = live ? dayKey(live.today) : "";
+  const inThisWeek = live?.plan.planned.find((x) => x.track === track)?.n === n;
   const other: Track | undefined = c.tracks.find((t) => t !== track);
   const color = track;
 
@@ -42,12 +43,12 @@ export function WeekView({ track, n }: { track: Track; n: number }) {
                 {group.id}: {group.title.replace(/\s*\(Weeks.*\)$/, "")}
               </span>
             )}
-            {hydrated && (
+            {hydrated && dates.length > 0 && (
               <span>
-                · {fmtShort(start)} – {fmtShort(addDays(start, 6))}
+                · {fmtShort(parseDate(dates[0]))} – {fmtShort(parseDate(dates[dates.length - 1]))}
               </span>
             )}
-            {inThisWeek && <span className="rounded-md bg-accent-soft px-2 py-0.5 font-semibold text-accent">This week</span>}
+            {inThisWeek && <span className="rounded-md bg-accent-soft px-2 py-0.5 font-semibold text-accent">You are here</span>}
           </div>
           <h1 className="text-2xl font-bold tracking-tight sm:text-3xl">
             <span className="text-muted">Week {n}.</span> {w.title}
@@ -70,7 +71,7 @@ export function WeekView({ track, n }: { track: Track; n: number }) {
               ← Week {n - 1}
             </Link>
           )}
-          {n < 36 && (
+          {n < (c.weeks[track]?.length ?? 0) && (
             <Link className="btn" href={`/${track}/${n + 1}`}>
               Week {n + 1} →
             </Link>
@@ -83,24 +84,24 @@ export function WeekView({ track, n }: { track: Track; n: number }) {
         )}
       </nav>
 
-      {/* daily checklist */}
+      {/* sessions */}
       <section className="card p-5">
-        <SectionTitle hint="One box per session">Daily checklist</SectionTitle>
-        <div>
-          {w.checklist.map((d) => (
-            <div key={d.day} className={`-mx-2 flex gap-3 rounded-lg px-2 ${inThisWeek && d.day === todayName ? "bg-accent-soft/60" : ""}`}>
-              <div className="w-10 shrink-0 pt-2 text-xs font-semibold text-muted">
-                {d.day}
-                {hydrated && <div className="font-normal">{fmtShort(addDays(start, DAY_OFFSET[d.day]))}</div>}
+        <SectionTitle hint="Planned from your weekly rhythm">Sessions</SectionTitle>
+        <div className="divide-y divide-line">
+          {mine.map((x) => {
+            const doneOn = live?.plan.doneOn.get(x.key);
+            const on = planned.get(x.key);
+            return (
+              <div key={x.key} className={`-mx-2 flex gap-3 rounded-lg px-2 ${on === todayKey ? "bg-accent-soft/60" : ""}`}>
+                <div className="w-14 shrink-0 pt-3 text-xs text-muted">
+                  {hydrated && (doneOn ? <span className="font-semibold text-ok">Done {fmtShort(parseDate(doneOn))}</span> : on ? (on === todayKey ? <span className="font-semibold text-accent">Today</span> : fmtShort(parseDate(on))) : null)}
+                </div>
+                <div className="min-w-0 flex-1">
+                  <SessionItem x={x} />
+                </div>
               </div>
-              <div className="min-w-0 flex-1">
-                <CheckRow k={keys.day(track, n, d.day)} color={color} links={d.links}>
-                  {d.text}
-                </CheckRow>
-                <Specifics specs={d.specs} />
-              </div>
-            </div>
-          ))}
+            );
+          })}
         </div>
         {w.problemNote && <p className="mt-3 text-sm text-muted">{w.problemNote}</p>}
       </section>
@@ -108,18 +109,18 @@ export function WeekView({ track, n }: { track: Track; n: number }) {
       {/* build */}
       {w.build && (
         <section className="card p-5">
-          <SectionTitle hint="Thursday">Build it yourself</SectionTitle>
-          <CheckRow k={keys.build(track, n)} color={color}>
+          <SectionTitle hint="Build session">Build it yourself</SectionTitle>
+          <CheckRow k={keys.build(w.id)} color={color}>
             {w.build.charAt(0).toUpperCase() + w.build.slice(1)}
           </CheckRow>
           {w.brief && <BriefView brief={w.brief} />}
         </section>
       )}
 
-      {/* Main-track builds live in the Friday/Saturday items; their brief gets its own card. */}
+      {/* Main-track builds live in the build sessions; their brief gets its own card. */}
       {!w.build && w.brief && (
         <section className="card p-5">
-          <SectionTitle hint="Friday and Saturday">Build brief</SectionTitle>
+          <SectionTitle hint="Build sessions">Build brief</SectionTitle>
           <p className="text-[15px] leading-relaxed">{w.checklist.find((d) => d.day === "Sat")?.text}</p>
           <BriefView brief={w.brief} />
         </section>
@@ -128,7 +129,7 @@ export function WeekView({ track, n }: { track: Track; n: number }) {
       {/* problems */}
       {w.problems.length > 0 && (
         <section className="card p-5">
-          <SectionTitle hint={<Link href="/problems" className="hover:text-fg">All problems →</Link>}>Sunday problems ({w.problems.length})</SectionTitle>
+          <SectionTitle hint={<Link href="/problems" className="hover:text-fg">All problems →</Link>}>Practice problems ({w.problems.length})</SectionTitle>
           <p className="mb-1 text-xs text-muted">Links open LeetCode. If one is locked, Striver&apos;s A2Z sheet has the same pattern. Marking “Needed help” schedules re-solves in 3 days and 2 weeks.</p>
           {w.problems.map((pr) => (
             <ProblemRow key={pr.slug} {...pr} />
@@ -156,7 +157,7 @@ export function WeekView({ track, n }: { track: Track; n: number }) {
                   <Explain x={m.x} />
                   <div className="ml-1 border-l border-line pl-4">
                     {m.c.map((c, j) => (
-                      <CheckRow key={j} k={keys.must(track, n, i, j)} color={color}>
+                      <CheckRow key={j} k={keys.must(w.id, i, j)} color={color}>
                         {c}
                       </CheckRow>
                     ))}
@@ -164,7 +165,7 @@ export function WeekView({ track, n }: { track: Track; n: number }) {
                 </div>
               ) : (
                 <div key={i}>
-                  <CheckRow k={keys.must(track, n, i)} color={color}>
+                  <CheckRow k={keys.must(w.id, i)} color={color}>
                     {m.t}
                   </CheckRow>
                   <Explain x={m.x} />
@@ -180,7 +181,7 @@ export function WeekView({ track, n }: { track: Track; n: number }) {
         <section className="card p-5">
           <SectionTitle hint="Read, note, come back later. Optional now.">Overlooked / niche</SectionTitle>
           {w.niche.map((t, i) => (
-            <CheckRow key={i} k={keys.niche(track, n, i)} color="ok" muted>
+            <CheckRow key={i} k={keys.niche(w.id, i)} color="ok" muted>
               {t}
             </CheckRow>
           ))}
@@ -193,7 +194,7 @@ export function WeekView({ track, n }: { track: Track; n: number }) {
           <SectionTitle hint="⭐ = do this one first">Resources</SectionTitle>
           {w.resources.map((r, i) => (
             <div key={i}>
-              <CheckRow k={keys.res(track, n, i)} color="ok" links={r.links}>
+              <CheckRow k={keys.res(w.id, i)} color="ok" links={r.links}>
                 {(r.core ? "⭐ " : "") + r.text}
               </CheckRow>
               <Specifics specs={r.specs} />
@@ -221,7 +222,7 @@ export function WeekView({ track, n }: { track: Track; n: number }) {
       {w.doneWhen && (
         <section className="card border-2 p-5" style={{ borderColor: p.passed ? "var(--ok)" : undefined }}>
           <SectionTitle hint="Pass it and move on">Done when</SectionTitle>
-          <CheckRow k={keys.done(track, n)} color="ok">
+          <CheckRow k={keys.done(w.id)} color="ok">
             {"You can " + w.doneWhen.replace(/^you can /i, "")}
           </CheckRow>
         </section>
@@ -233,7 +234,7 @@ export function WeekView({ track, n }: { track: Track; n: number }) {
           <SectionTitle hint={<Link href="/review" className="hover:text-fg">Review due questions →</Link>}>Self-check ({w.quiz.length})</SectionTitle>
           <p className="text-xs text-muted">Answer from memory first, out loud or on paper. Then reveal and rate yourself; anything shaky comes back for review.</p>
           {w.quiz.map((q, i) => (
-            <QuizCard key={i} k={keys.quiz(track, n, i)} q={q.q} a={q.a} />
+            <QuizCard key={i} k={keys.quiz(w.id, i)} q={q.q} a={q.a} />
           ))}
         </section>
       )}
@@ -253,14 +254,14 @@ export function WeekView({ track, n }: { track: Track; n: number }) {
 
       {/* notes */}
       <section className="card p-5">
-        <SectionTitle hint={track === "main" ? "Saturday" : "Sunday"}>Your notes</SectionTitle>
+        <SectionTitle hint="Write it after the week's last session">Your notes</SectionTitle>
         <p className="mb-2 text-xs text-muted">“Today I learned X. It exists because Y. It works by Z. I&apos;m still confused about W.”</p>
-        <NoteBox k={keys.note(track, n)} placeholder={track === "main" ? "Explain this week to a junior…" : "What clicked, what didn't, patterns you noticed…"} />
+        <NoteBox k={keys.note(w.id)} placeholder={track === "main" ? "Explain this week to a junior…" : "What clicked, what didn't, patterns you noticed…"} />
       </section>
 
       {w.after.length > 0 && (
         <section className="card p-5">
-          <SectionTitle>After week 36</SectionTitle>
+          <SectionTitle>After the last week</SectionTitle>
           {track === "main" && <p className="mb-2 text-sm text-muted">Pick 1-2 per quarter, not all at once.</p>}
           {w.after.map((a, i) => (
             <CheckRow key={i} k={`af:${track}:${i}`} color="ok" links={a.links}>
