@@ -8,10 +8,11 @@ export const TRACKS: Track[] = ["main", "java"];
 /** Ground-up explainer: why it exists, the problem, how, the mechanism, and the cost. */
 export interface ExplainView {
   why: string;
-  problem: string;
+  problem?: string;
   how: string;
-  tech: string;
+  tech: string[];
   cost: string;
+  tryIt?: string;
   buildsOn?: string;
 }
 export interface TopicNode {
