@@ -1,33 +1,16 @@
 "use client";
-// The per-person slice of the plan, computed on the server (src/server/content.ts) and handed to client
-// components through context. Nothing outside this slice ever reaches the browser.
+// The plan content, assembled on the server (src/server/content.ts) and handed to client components through context.
 
 import { createContext, useContext } from "react";
-import type { Day } from "./constants";
-import type { FeatureId } from "./features";
 import type { ContestInfo, Group, Phase2SetView, Problem, Track, Week } from "./roadmap";
 
-export type Role = "open" | "owner" | "admin" | "member";
-
-export interface ScheduleRow {
-  day: Day;
-  track: Track | "review";
-  label: string;
-  time: string;
-  what: string;
-}
-
 export interface ClientContent {
-  role: Role;
-  login: string | null;
-  /** Set when an admin is previewing the app as one of their members. */
-  previewAs: string | null;
   tracks: Track[];
-  features: FeatureId[];
   weeks: Partial<Record<Track, Week[]>>;
   groups: Partial<Record<Track, Group[]>>;
   phaseSummary: Record<string, { unlocks: string; milestone: string }>;
-  schedule: ScheduleRow[];
+  /** Why each track runs in the order it does. */
+  intros: Record<Track, string>;
   /** Core problems, then Phase 2 ones (flagged phase2) when that feature is on. */
   problems: (Problem & { week: number })[];
   phase2: Phase2SetView[];
@@ -50,9 +33,12 @@ export function useContent(): ClientContent {
   return c;
 }
 
-export function useCan() {
-  const c = useContent();
-  return (f: FeatureId) => c.features.includes(f);
+/** Number of weeks in the longest track. */
+export function planLength(c: ClientContent): number {
+  return Math.max(0, ...c.tracks.map((t) => c.weeks[t]?.length ?? 0));
+}
+export function trackLength(c: ClientContent, t: Track): number {
+  return c.weeks[t]?.length ?? 0;
 }
 
 export function weeksOf(c: ClientContent, t: Track): Week[] {

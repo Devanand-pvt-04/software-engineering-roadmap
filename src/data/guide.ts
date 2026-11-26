@@ -1,6 +1,6 @@
 import "server-only";
 import type { Day } from "@/lib/constants";
-export { DEFAULT_START, BUFFER_AFTER, SESSION_TEMPLATE, DAYS, type Day } from "@/lib/constants";
+export { DEFAULT_START, DAYS, type Day } from "@/lib/constants";
 
 // Hand-transcribed intro content from "Zero to Deep: 36-Week Software Engineering Plan".
 
@@ -15,7 +15,7 @@ export const WHY_PAST_FAILED = [
 ];
 
 export const WHATS_DIFFERENT = [
-  "Every week has a checklist, day by day. Open the week, do today's box, tick it. That's all you have to decide.",
+  "Every week is a short list of sessions, and the app puts them on your days. Open Today, do the session it shows, tick it. That's all you have to decide.",
   'Every week has a "Done when" test. If you pass it, move on, even if you didn\'t read every link.',
   "Every topic list has two levels. Must know is what you learn this week. Overlooked / niche is what most developers never learn; read it, note it, and come back later.",
   "Nothing assumes knowledge you haven't built yet. Java week 1 assumes zero. Main track week 1 assumes zero.",
@@ -42,7 +42,7 @@ export const SETUP_MAIN = [
   "Install VS Code (main track) and IntelliJ IDEA Community (Java track)",
   "Install Anki on your phone; add 5 cards per week from your notes",
   "Block the time slots in your calendar as recurring events",
-  "Tell one person (friend, colleague) you're doing this; send them your Sunday ticks each week",
+  "Tell one person (friend, colleague) you're doing this; send them your week's ticks every Sunday",
 ];
 
 export const SETUP_JAVA = [
@@ -61,11 +61,11 @@ export const AI_TUTOR = {
 
 export const FALLING_BEHIND: { title: string; text: string }[] = [
   { title: "The minimum week", text: "In a terrible week (illness, deadline at work), do only two things: one Main track session and one DSA session. A minimum week still counts. Zero weeks are the only thing to avoid." },
-  { title: 'Never "catch up" by cramming', text: "If you miss days, slide the whole calendar by a week. The plan has no deadline you have to hit; 40 weeks of real understanding beats 36 of skimming." },
-  { title: "Slide, don't skip", text: "Never skip a week to stay on schedule. Each week is a foundation for later ones." },
+  { title: "Never cram", text: "Missed a day? Don't double up. The app moves everything back to your next study day by itself and shows the new finish date. The plan has no deadline you have to hit; 40 weeks of real understanding beats 36 of skimming." },
+  { title: "Reorder, don't skip", text: "Never skip a week to stay on schedule; each week is a foundation for later ones. If a session doesn't suit today, swap it with the next one or push it back. Do tomorrow's session today and everything just moves up." },
   { title: "The two-session rule for being stuck", text: "If a topic hasn't clicked after two sessions, write down the exact question, try one different resource (a video instead of a book, or vice versa), and if it still hasn't clicked, move on and mark it. Most confusion resolves itself two or three weeks later." },
   { title: "Done-when beats completeness", text: "You don't need to read every resource or tick every niche topic. If you pass the week's Done-when test, the week is done." },
-  { title: "Every 6 weeks, take a buffer week", text: "Weeks after 6, 12, 18, 24 and 30 are optional catch-up or review weeks. If you're on schedule, use them to revisit the Overlooked lists. (Including them makes the plan 41 weeks; that's normal and expected.)" },
+  { title: "Keep the streak, not the calendar", text: "A week counts toward your streak when you do at least two sessions. That's the minimum week. Zero weeks are the only thing to avoid." },
   { title: "Restarting after a gap", text: "If you stop for two weeks or more, don't start where you left off. Spend one session re-doing the last week's Done-when test, then continue." },
 ];
 
@@ -91,7 +91,7 @@ export const MAIN_INTRO =
   "The Main track goes bottom-up: each phase explains the layer the next one sits on. By week 36 you can trace a request from a keypress, through the network and every piece of infrastructure, into your code and database, and back to pixels on the screen.";
 
 export const JAVA_INTRO =
-  "This track runs on Tuesday, Thursday and Sunday (about 6 hours a week), in parallel with the Main track. It starts from absolute zero: no Java, no OOP, no programming assumptions. By week 36 you'll be comfortable with Java, OOP and functional programming, and able to solve medium-level algorithm problems and reason about their cost.";
+  "This track is about 6 hours a week (learn, build, solve), in parallel with the Main track. It starts from absolute zero: no Java, no OOP, no programming assumptions. By week 36 you'll be comfortable with Java, OOP and functional programming, and able to solve medium-level algorithm problems and reason about their cost.";
 
 export const WHY_JAVA = [
   "It's statically typed and explicit: you see every type and every object, which makes OOP and data structures concrete.",
@@ -172,7 +172,7 @@ export const GLOSSARY: { term: string; meaning: string; weeks: string[] }[] = [
 ];
 
 export const AFTER_JAVA_RHYTHM = [
-  "Tuesday (1.5 h): learn the concept (reading/video), type every example yourself.",
-  "Thursday (1.5 h): implement the structure or algorithm from scratch, with tests.",
-  "Sunday (3 h): problems (number given each week), then 15 minutes reviewing your mistakes note.",
+  "Learn (1.5 h): learn the concept (reading/video), type every example yourself.",
+  "Build (1.5 h): implement the structure or algorithm from scratch, with tests.",
+  "Solve (3 h): problems (number given each week), then 15 minutes reviewing your mistakes note.",
 ];

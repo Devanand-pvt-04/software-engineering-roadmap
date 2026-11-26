@@ -40,7 +40,7 @@ export function SearchView({ initial }: { initial: string }) {
         add("Build", w.build, 2, w.brief ? [...w.brief.done, w.brief.stretch ?? ""].join(" ") : "");
         w.quiz.forEach((q) => add("Self-check", q.q, 1, q.a));
         add("Done when", w.doneWhen, 2);
-        if (c.features.includes("problems")) w.problems.forEach((p) => add("Problem", p.name, 3, p.note, `https://leetcode.com/problems/${p.slug}/`, true));
+        w.problems.forEach((p) => add("Problem", p.name, 3, p.note, `https://leetcode.com/problems/${p.slug}/`, true));
       }
     }
     for (const set of c.phase2)

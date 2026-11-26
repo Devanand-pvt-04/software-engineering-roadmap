@@ -34,7 +34,7 @@ export function JournalView() {
       <header>
         <div className="flex flex-wrap items-center justify-between gap-2">
           <h1 className="text-2xl font-bold tracking-tight sm:text-3xl">Journal</h1>
-          {c.features.includes("backup") && (
+          {(
             <button className="btn" onClick={() => download(`zero-to-deep-notes-${dayKey()}.md`, notesMarkdown(getState(), c, dayKey()), "text/markdown")}>
               Export all notes (Markdown)
             </button>
@@ -102,7 +102,7 @@ function Log({ kind }: { kind: Kind }) {
         <SectionTitle>{kind === "mistake" ? "Log a mistake" : "Add a pattern"}</SectionTitle>
         <p className="mb-3 text-sm text-muted">
           {kind === "mistake"
-            ? "Every off-by-one, wrong edge case or wrong pattern goes here. Review it for 15 minutes every Sunday."
+            ? "Every off-by-one, wrong edge case or wrong pattern goes here. Review it for 15 minutes in every problems session."
             : "Write which signal pointed to the pattern, e.g. “contiguous subarray + condition → sliding window”."}
         </p>
         <form onSubmit={add} className="space-y-2">

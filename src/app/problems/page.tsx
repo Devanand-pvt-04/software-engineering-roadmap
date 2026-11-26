@@ -1,11 +1,6 @@
 import { ProblemsView } from "@/components/problems-view";
-import { allowed, titleFor } from "@/server/access";
-import { Missing } from "@/components/missing";
-export async function generateMetadata() {
-  return titleFor("Problem tracker", "problems");
-}
+export const metadata = { title: "Problem tracker" };
 
-export default async function Page() {
-  if (!(await allowed("problems"))) return <Missing />;
+export default function Page() {
   return <ProblemsView />;
 }

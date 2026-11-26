@@ -2,7 +2,7 @@
 
 import { createContext, useCallback, useContext, useEffect, useRef, useState, useSyncExternalStore } from "react";
 import { DEFAULT_START } from "./constants";
-import { mondayOf } from "./schedule";
+import { dayKey } from "./schedule";
 import { mergeState, emptyState, type Entry, type State } from "./merge";
 
 const LS_KEY = "ztd:v1";
@@ -45,6 +45,14 @@ export function replaceState(next: State, fromRemote = false) {
 export function setEntry(key: string, v: unknown) {
   const e: Entry = { v, t: Date.now() };
   replaceState({ ...state, entries: { ...state.entries, [key]: e } });
+}
+/** Write several entries at once, each with its own timestamp (e.g. back-dating sessions already done). */
+export function setEntries(list: { key: string; v: unknown; t?: number }[]) {
+  load();
+  const entries = { ...state.entries };
+  const now = Date.now();
+  for (const x of list) entries[x.key] = { v: x.v, t: x.t ?? now };
+  replaceState({ ...state, entries });
 }
 /**
  * Clear every saved entry: ticks, quiz marks, notes, problems, settings. Each key becomes an empty
@@ -122,20 +130,16 @@ export function isChecked(s: State, key: string) {
 
 export interface Settings {
   start: string;
-  /** False until the person picks a start date; until then the plan starts this week. */
+  /** False until the person picks a start date; until then the plan starts today. */
   startSet: boolean;
-  slide: number;
-  buffers: boolean;
 }
 export function useSettings(): Settings {
   const s = useStore();
   const today = useToday();
   const chosen = s.entries["cfg:start"]?.v as string | undefined;
   return {
-    start: chosen || (today ? mondayOf(today) : DEFAULT_START),
+    start: chosen || (today ? dayKey(today) : DEFAULT_START),
     startSet: !!chosen,
-    slide: (s.entries["cfg:slide"]?.v as number) || 0,
-    buffers: !!s.entries["cfg:buffers"]?.v,
   };
 }
 
