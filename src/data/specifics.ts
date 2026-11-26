@@ -33,11 +33,11 @@ const a11y = (n: number, t: string, slug: string): SpecLink => ({ label: `${n}. 
 const css = (t: string, slug: string): SpecLink => ({ label: t, url: `https://web.dev/learn/css/${slug}` });
 const ji = (t: string, slug: string): SpecLink => ({ label: t, url: `https://javascript.info/${slug}` });
 const yd = (book: string, n: number, t: string): SpecLink => ({ label: `Ch ${n} ${t}`, url: `https://github.com/getify/You-Dont-Know-JS/blob/2nd-ed/${book}/ch${n}.md` });
-const DDIA = "https://www.oreilly.com/library/view/designing-data-intensive-applications/9781491903063/";
+const DDIA = "https://www.oreilly.com/library/view/designing-data-intensive-applications/9781098119058/";
 const dd = (n: number, t: string): SpecLink => ({ label: `Ch ${n} ${t}`, url: `${DDIA}ch${String(n).padStart(2, "0")}.html` });
 const sre = (n: number, t: string, slug: string): SpecLink => ({ label: `Ch ${n} ${t}`, url: `https://sre.google/sre-book/${slug}/` });
 const algs = (s: string, t: string, slug: string): SpecLink => ({ label: `${s} ${t}`, url: `https://algs4.cs.princeton.edu/${slug}` });
-const mooc = (n: number): SpecLink => ({ label: `Part ${n}`, url: `https://java-programming.mooc.fi/part-${n}` });
+const dj = (t: string, path: string): SpecLink => ({ label: t, url: `https://dev.java/learn/${path}/` });
 const HFJ = "https://www.oreilly.com/library/view/head-first-java/9781492091646/";
 const hfj = (n: number, t: string): SpecLink => ({ label: `Ch ${n} ${t}`, url: `${HFJ}ch${String(n).padStart(2, "0")}.html` });
 const react = (t: string, slug: string): SpecLink => ({ label: t, url: `https://react.dev/learn/${slug}` });
@@ -213,9 +213,9 @@ export const SPECIFICS: Spec[] = [
   },
 
   // ---------- Main week 19-21 ----------
-  { track: "main", week: 19, where: "res", match: "DDIA chapters 3", detail: "1st edition: ch 3 Storage and Retrieval, ch 7 Transactions.", links: [dd(3, "Storage and Retrieval"), dd(7, "Transactions")] },
+  { track: "main", week: 19, where: "res", match: "DDIA (2nd ed.) chapters 4", detail: "2nd edition: ch 4 Storage and Retrieval, ch 8 Transactions.", links: [dd(4, "Storage and Retrieval"), dd(8, "Transactions")] },
   { track: "main", week: 19, where: "res", match: "PostgreSQL docs: MVCC", detail: "", links: [{ label: "Concurrency Control (MVCC)", url: "https://www.postgresql.org/docs/current/mvcc.html" }, { label: "Using EXPLAIN", url: "https://www.postgresql.org/docs/current/using-explain.html" }] },
-  { track: "main", week: 20, where: "res", match: "DDIA chapters 1-2", detail: "1st edition: ch 1 Reliable, Scalable, and Maintainable Applications, ch 2 Data Models and Query Languages, ch 11 Stream Processing (first half).", links: [dd(1, "Reliable, Scalable, Maintainable"), dd(2, "Data Models and Query Languages"), dd(11, "Stream Processing")] },
+  { track: "main", week: 20, where: "res", match: "DDIA (2nd ed.) chapters 1-3", detail: "2nd edition: ch 1 Trade-Offs in Data Systems Architecture, ch 2 Defining Nonfunctional Requirements, ch 3 Data Models and Query Languages, ch 12 Stream Processing (first half).", links: [dd(1, "Trade-Offs in Data Systems Architecture"), dd(2, "Defining Nonfunctional Requirements"), dd(3, "Data Models and Query Languages"), dd(12, "Stream Processing")] },
   { track: "main", week: 21, where: "res", match: "Khorikov", detail: "First half = Part 1 The bigger picture (ch 1 The goal of unit testing, 2 What is a unit test?, 3 The anatomy of a unit test) and Part 2 Making your tests work for you (ch 4 The four pillars of a good unit test, 5 Mocks and test fragility, 6 Styles of unit testing, 7 Refactoring toward valuable unit tests)." },
 
   // ---------- Main week 23-26 ----------
@@ -229,9 +229,9 @@ export const SPECIFICS: Spec[] = [
 
   // ---------- Main week 32-35 ----------
   { track: "main", week: 32, where: "res", match: "Site Reliability Engineering", detail: "Ch 4 Service Level Objectives, ch 6 Monitoring Distributed Systems, ch 15 Postmortem Culture: Learning from Failure.", links: [sre(4, "Service Level Objectives", "service-level-objectives"), sre(6, "Monitoring Distributed Systems", "monitoring-distributed-systems"), sre(15, "Postmortem Culture", "postmortem-culture")] },
-  { track: "main", week: 33, where: "res", match: "DDIA chapters 5", detail: "1st edition: ch 5 Replication, 6 Partitioning, 8 The Trouble with Distributed Systems.", links: [dd(5, "Replication"), dd(6, "Partitioning"), dd(8, "The Trouble with Distributed Systems")] },
+  { track: "main", week: 33, where: "res", match: "DDIA (2nd ed.) chapters 6", detail: "2nd edition: ch 6 Replication, 7 Sharding, 9 The Trouble with Distributed Systems.", links: [dd(6, "Replication"), dd(7, "Sharding"), dd(9, "The Trouble with Distributed Systems")] },
   { track: "main", week: 33, where: "res", match: "System Design Interview Vol. 1", detail: "Vol. 1 ch 1 Scale From Zero To Millions Of Users, ch 2 Back-of-the-envelope Estimation, ch 5 Design Consistent Hashing.", links: [bbg("Scale From Zero To Millions", "scale-from-zero-to-millions-of-users"), bbg("Back-of-the-envelope Estimation", "back-of-the-envelope-estimation"), bbg("Consistent Hashing", "design-consistent-hashing")] },
-  { track: "main", week: 34, where: "res", match: "DDIA chapters 9", detail: "1st edition: ch 9 Consistency and Consensus, 11 Stream Processing, 12 The Future of Data Systems.", links: [dd(9, "Consistency and Consensus"), dd(11, "Stream Processing"), dd(12, "The Future of Data Systems")] },
+  { track: "main", week: 34, where: "res", match: "DDIA (2nd ed.) chapters 10", detail: "2nd edition: ch 10 Consistency and Consensus, 12 Stream Processing, 13 A Philosophy of Streaming Systems.", links: [dd(10, "Consistency and Consensus"), dd(12, "Stream Processing"), dd(13, "A Philosophy of Streaming Systems")] },
   { track: "main", week: 35, where: "res", match: "System Design Interview Vol. 1 and Vol. 2", detail: "Vol. 1 ch 3 is the 4-step framework used every session.", links: [bbg("A Framework For System Design Interviews", "a-framework-for-system-design-interviews")] },
   { track: "main", week: 35, where: "day", match: "Mon", detail: "Compare with Vol. 1 ch 8 Design A URL Shortener.", links: [bbg("Design A URL Shortener", "design-a-url-shortener")] },
   { track: "main", week: 35, where: "day", match: "Wed", detail: "Vol. 1 ch 4 Design A Rate Limiter and ch 10 Design A Notification System.", links: [bbg("Design A Rate Limiter", "design-a-rate-limiter"), bbg("Design A Notification System", "design-a-notification-system")] },
@@ -239,20 +239,20 @@ export const SPECIFICS: Spec[] = [
   { track: "main", week: 35, where: "day", match: "Sat", detail: "Compare with Vol. 1 ch 11 Design A News Feed System.", links: [bbg("Design A News Feed System", "design-a-news-feed-system")] },
 
   // ---------- Java Part A ----------
-  { track: "java", week: 1, where: "res", match: "MOOC", detail: "", links: [mooc(1)] },
+  { track: "java", week: 1, where: "res", match: "dev.java Learn", detail: "", links: [dj("Your First Steps in Java", "first-steps"), dj("Language Basics", "language/constructs")] },
   { track: "java", week: 1, where: "res", match: "Head First Java", detail: "3rd ed. ch 1 Breaking the Surface, ch 2 A Trip to Objectville.", links: [hfj(1, "Breaking the Surface"), hfj(2, "A Trip to Objectville")] },
-  { track: "java", week: 2, where: "res", match: "MOOC", detail: "", links: [mooc(2)] },
+  { track: "java", week: 2, where: "res", match: "dev.java Learn", detail: "", links: [dj("Language Basics", "language/constructs")] },
   { track: "java", week: 2, where: "res", match: "Head First Java", detail: "3rd ed. ch 3 Know Your Variables, ch 4 How Objects Behave, ch 5 Extra-Strength Methods.", links: [hfj(3, "Know Your Variables"), hfj(4, "How Objects Behave"), hfj(5, "Extra-Strength Methods")] },
-  { track: "java", week: 3, where: "res", match: "MOOC", detail: "", links: [mooc(3)] },
+  { track: "java", week: 3, where: "res", match: "dev.java Learn", detail: "", links: [dj("Language Basics", "language/constructs")] },
   { track: "java", week: 3, where: "res", match: "Head First Java", detail: "3rd ed. has no single arrays/strings chapter: arrays are in ch 3 Know Your Variables, ArrayList and the String API in ch 6 Using the Java Library.", links: [hfj(3, "Know Your Variables"), hfj(6, "Using the Java Library")] },
-  { track: "java", week: 4, where: "res", match: "MOOC", detail: "", links: [mooc(4), mooc(5)] },
+  { track: "java", week: 4, where: "res", match: "dev.java Learn", detail: "", links: [dj("Object-Oriented Programming", "language/oop")] },
   { track: "java", week: 4, where: "res", match: "Head First Java", detail: "3rd ed. ch 2 A Trip to Objectville (classes and objects), ch 4 How Objects Behave, ch 9 Life and Death of an Object (constructors).", links: [hfj(2, "A Trip to Objectville"), hfj(4, "How Objects Behave"), hfj(9, "Life and Death of an Object")] },
-  { track: "java", week: 5, where: "res", match: "MOOC", detail: "", links: [mooc(9), mooc(5)] },
+  { track: "java", week: 5, where: "res", match: "dev.java Learn", detail: "", links: [dj("Object-Oriented Programming", "language/oop"), dj("Generics, Lambdas and Pattern Matching", "language/fp")] },
   { track: "java", week: 5, where: "res", match: "Head First Java", detail: "3rd ed. ch 7 Better Living in Objectville (inheritance and polymorphism), ch 8 Serious Polymorphism (interfaces and abstract classes).", links: [hfj(7, "Inheritance and Polymorphism"), hfj(8, "Interfaces and Abstract Classes")] },
-  { track: "java", week: 6, where: "res", match: "MOOC", detail: "", links: [mooc(6), mooc(11)] },
+  { track: "java", week: 6, where: "res", match: "dev.java Learn", detail: "", links: [dj("Annotations and Exceptions", "language/annotations-exceptions")] },
   { track: "java", week: 6, where: "res", match: "Head First Design Patterns", detail: "2nd ed. ch 1 Strategy (Welcome to Design Patterns), ch 2 Observer, ch 3 Decorator, ch 4 Factory. Exceptions: Head First Java ch 13 Risky Behavior.", links: [hfj(13, "Risky Behavior (exceptions)")] },
-  { track: "java", week: 7, where: "res", match: "MOOC", detail: "Head First Java ch 11 Data Structures (Collections and Generics) covers the same ground.", links: [mooc(8), mooc(12), hfj(11, "Collections and Generics")] },
-  { track: "java", week: 8, where: "res", match: "MOOC", detail: "Head First Java ch 12 Lambdas and Streams is a gentler intro.", links: [mooc(10), hfj(12, "Lambdas and Streams")] },
+  { track: "java", week: 7, where: "res", match: "dev.java Learn", detail: "Head First Java ch 11 Data Structures (Collections and Generics) covers the same ground.", links: [dj("Generics, Lambdas and Pattern Matching", "language/fp"), dj("Collections and Streams", "api/collections-and-streams"), hfj(11, "Collections and Generics")] },
+  { track: "java", week: 8, where: "res", match: "dev.java Learn", detail: "Head First Java ch 12 Lambdas and Streams is a gentler intro.", links: [dj("Generics, Lambdas and Pattern Matching", "language/fp"), dj("Collections and Streams", "api/collections-and-streams"), hfj(12, "Lambdas and Streams")] },
   { track: "java", week: 8, where: "res", match: "Modern Java in Action", detail: "Ch 1 Java 8, 9, 10, and 11: what's happening?, 2 Passing code with behavior parameterization, 3 Lambda expressions, 4 Introducing streams, 5 Working with streams, 6 Collecting data with streams." },
   { track: "java", week: 9, where: "res", match: "Java Performance", detail: "2nd ed. ch 4 Working with the JIT Compiler, ch 5 An Introduction to Garbage Collection, ch 6 Garbage Collection Algorithms." },
   { track: "java", week: 10, where: "res", match: "Sedgewick", detail: "", links: [algs("1.4", "Analysis of Algorithms", "14analysis")] },
@@ -274,16 +274,8 @@ export const SPECIFICS: Spec[] = [
   { track: "java", week: 34, where: "res", match: "Java Concurrency in Practice", detail: "Ch 1 Introduction, then Part I Fundamentals: 2 Thread Safety, 3 Sharing Objects, 4 Composing Objects, 5 Building Blocks." },
 ];
 
-/** Links derived from the text itself, e.g. "MOOC Part 4" → that part's page. */
-function autoSpecs(track: "main" | "java", week: number, where: "res" | "day", text: string): Spec[] {
-  if (!/\bMOOC\b/.test(text)) return [];
-  const parts = [...new Set(Array.from(text.matchAll(/\bParts? (\d+)/g), (m) => Number(m[1])).filter((n) => n >= 1 && n <= 14))];
-  return parts.length ? [{ track, week, where, match: "", detail: "", links: parts.map(mooc) }] : [];
-}
-
-/** `text` is the day name (Mon…) or resource text; `fullText` is the item's text for auto links. */
-export function specsFor(track: "main" | "java", week: number, where: "res" | "day", text: string, fullText?: string): Spec[] {
+/** `text` is the day name (Mon…) or resource text. */
+export function specsFor(track: "main" | "java", week: number, where: "res" | "day", text: string): Spec[] {
   const manual = SPECIFICS.filter((s) => s.track === track && s.week === week && s.where === where && (where === "day" ? s.match === text : text.includes(s.match)));
-  if (manual.some((s) => s.links?.some((l) => l.url.includes("java-programming.mooc.fi")))) return manual;
-  return [...manual, ...autoSpecs(track, week, where, fullText ?? text)];
+  return manual;
 }

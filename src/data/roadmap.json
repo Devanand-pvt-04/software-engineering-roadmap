@@ -240,7 +240,7 @@
     },
     {
      "day": "Sat",
-     "text": "In C or Python: two threads incrementing a shared counter 1M times without a lock (see the wrong result), then with a lock. Then strace a Node.js script that reads a file."
+     "text": "In Java, C or Python: two threads incrementing a shared counter 1M times without a lock (see the wrong result), then with a lock. Then strace a Node.js script that reads a file."
     }
    ],
    "doneWhen": "you can explain what a file descriptor is, why a race condition happens, and how one thread can handle thousands of connections with epoll.",
@@ -306,7 +306,7 @@
    ],
    "resources": [
     {
-     "text": "MIT Missing Semester — lectures 1-5 (shell, scripting, editors, data wrangling, command-line environment)",
+     "text": "MIT Missing Semester — lectures 1, 2, 4 and 5 (shell, scripting, data wrangling, command-line environment); lecture 3 on Vim is optional",
      "core": true
     },
     {
@@ -516,7 +516,7 @@
     },
     {
      "day": "Sat",
-     "text": "Build a TCP echo server and client with Node's net module. Capture the traffic in Wireshark; find SYN, SYN-ACK, ACK and FIN."
+     "text": "Build a TCP echo server and client in Java (ServerSocket and Socket, from your Java track), or with Node's net module if you already know JavaScript. Capture the traffic in Wireshark; find SYN, SYN-ACK, ACK and FIN."
     }
    ],
    "doneWhen": "you can explain everything that happens between pressing Enter and the first byte of a TCP connection being sent, including DNS.",
@@ -601,6 +601,10 @@
     {
      "text": "CodeCrafters \"Build your own HTTP server\" (optional guided version)",
      "core": false
+    },
+    {
+     "text": "HTTP/3 explained (Daniel Stenberg, free): HPBN predates HTTP/3 and QUIC",
+     "core": false
     }
    ],
    "checklist": [
@@ -618,7 +622,7 @@
     },
     {
      "day": "Sat",
-     "text": "Build an HTTP/1.1 server on raw TCP (Node net, no http module): parse requests, serve static files with correct Content-Type, 404s, keep-alive, and an ETag - based 304. Test with curl -v and a browser."
+     "text": "Build an HTTP/1.1 server on raw TCP (Java ServerSocket or Node net; no HTTP library): parse requests, serve static files with correct Content-Type, 404s, keep-alive, and an ETag - based 304. Test with curl -v and a browser."
     }
    ],
    "doneWhen": "your server serves a real HTML page to a browser, and you can explain the full journey: DNS → TCP → TLS → HTTP request → response.",
@@ -1226,7 +1230,7 @@
      "core": false
     },
     {
-     "text": "Effective TypeScript (Dan Vanderkam) for later depth",
+     "text": "Effective TypeScript (Dan Vanderkam, 2nd ed.) for later depth",
      "core": false
     }
    ],
@@ -1319,7 +1323,7 @@
      "core": true
     },
     {
-     "text": "Node.js Design Patterns (Casciaro & Mammino, 3rd ed.) — chapters 1-6",
+     "text": "Node.js Design Patterns (Casciaro & Mammino, 4th ed., 2025) — chapters 1-6",
      "core": false
     },
     {
@@ -1640,7 +1644,7 @@
      ]
     },
     {
-     "t": "LSM trees vs B-trees (DDIA ch. 3): why Cassandra/RocksDB write fast",
+     "t": "LSM trees vs B-trees (DDIA ch. 4): why Cassandra/RocksDB write fast",
      "c": []
     },
     {
@@ -1673,7 +1677,7 @@
      "core": true
     },
     {
-     "text": "DDIA chapters 3 (storage and retrieval) and 7 (transactions)",
+     "text": "DDIA (2nd ed.) chapters 4 (storage and retrieval) and 8 (transactions)",
      "core": false
     },
     {
@@ -1692,11 +1696,11 @@
     },
     {
      "day": "Wed",
-     "text": "DDIA ch. 3. Draw a B+tree and an LSM tree."
+     "text": "DDIA ch. 4. Draw a B+tree and an LSM tree."
     },
     {
      "day": "Fri",
-     "text": "DDIA ch. 7 (transactions). Write down an example of each anomaly."
+     "text": "DDIA ch. 8 (transactions). Write down an example of each anomaly."
     },
     {
      "day": "Sat",
@@ -1749,11 +1753,12 @@
     "The outbox pattern for reliably publishing events after a DB write",
     "Kafka ordering is only per partition",
     "Rate limiting algorithms: token bucket, leaky bucket, fixed window, sliding window log/counter",
-    "Search basics: inverted indexes, tokenization, relevance scoring (BM25)"
+    "Search basics: inverted indexes, tokenization, relevance scoring (BM25)",
+    "Valkey: the open-source fork of Redis after its 2024 licence change; same commands and data types"
    ],
    "resources": [
     {
-     "text": "DDIA chapters 1-2 (foundations, data models) and 11 (stream processing — first half)",
+     "text": "DDIA (2nd ed.) chapters 1-3 (trade-offs, nonfunctional requirements, data models) and 12 (stream processing, first half)",
      "core": true
     },
     {
@@ -1772,7 +1777,7 @@
    "checklist": [
     {
      "day": "Mon",
-     "text": "DDIA ch. 1-2."
+     "text": "DDIA ch. 1-3."
     },
     {
      "day": "Wed",
@@ -1838,7 +1843,7 @@
    ],
    "resources": [
     {
-     "text": "Unit Testing: Principles, Practices, and Patterns (Vladimir Khorikov) — first half",
+     "text": "Unit Testing: Principles, Practices, and Patterns (Vladimir Khorikov) — first half; examples are in C# but every idea carries over",
      "core": true
     },
     {
@@ -1933,15 +1938,11 @@
    ],
    "resources": [
     {
-     "text": "webpack docs: Concepts and Code Splitting",
+     "text": "Vite docs: Why Vite, Features and Building for Production + Ronen Amiel's talk Build Your Own Webpack and his minipack repo",
      "core": true
     },
     {
-     "text": "Ronen Amiel's talk Build Your Own Webpack (YouTube) and his minipack repo on GitHub",
-     "core": false
-    },
-    {
-     "text": "Vite docs: Why Vite",
+     "text": "webpack docs: Concepts and Code Splitting (the classic model every bundler borrows)",
      "core": false
     },
     {
@@ -1952,7 +1953,7 @@
    "checklist": [
     {
      "day": "Mon",
-     "text": "webpack Concepts pages. Paste code into AST Explorer and inspect an import node."
+     "text": "Vite docs: Why Vite + Features; skim webpack Concepts for the vocabulary. Paste code into AST Explorer and inspect an import node."
     },
     {
      "day": "Wed",
@@ -1960,7 +1961,7 @@
     },
     {
      "day": "Fri",
-     "text": "Code Splitting guide + Why Vite. Build a tiny webpack project with a dynamic import() and look at the output files and the Network tab."
+     "text": "Code Splitting guide + Why Vite. Build a tiny Vite project with a dynamic import() and look at the output files and the Network tab."
     },
     {
      "day": "Sat",
@@ -1977,7 +1978,7 @@
   {
    "n": 23,
    "title": "React internals I — elements, reconciliation, Fiber",
-   "why": "you used React for 1.5 years. This week you'll see what it actually does when you call setState.",
+   "why": "most developers use React every day without knowing what it does. This week you'll see what actually happens when you call setState.",
    "mustKnow": [
     {
      "t": "The problem React solves: keeping UI in sync with state without manual DOM updates (your Week 14 todo app pain)",
@@ -2245,7 +2246,7 @@
   {
    "n": 26,
    "title": "Next.js II — RSC, caching, chunks and performance",
-   "why": "this is the depth you asked for: what Next actually sends over the wire and why.",
+   "why": "this is where Next.js stops being magic: what it actually sends over the wire, and why.",
    "mustKnow": [
     {
      "t": "React Server Components",
@@ -2266,7 +2267,7 @@
      ]
     },
     {
-     "t": "Caching layers: request memoization, data cache, full route cache, router cache; revalidation (time-based, on-demand with tags)",
+     "t": "Caching in Next.js 16: Cache Components, the \"use cache\" directive, cacheLife and cacheTag, revalidation (time-based and on-demand with tags); how earlier versions' implicit fetch cache and router cache differed",
      "c": []
     },
     {
@@ -2296,7 +2297,7 @@
    ],
    "resources": [
     {
-     "text": "Next.js docs: Server and Client Components, Caching, Optimizing, Deploying",
+     "text": "Next.js docs: Server and Client Components, Cache Components, Optimizing, Deploying",
      "core": true
     },
     {
@@ -2319,7 +2320,7 @@
     },
     {
      "day": "Wed",
-     "text": "Next docs Caching (read twice). Draw the four caches and when each is used."
+     "text": "Next docs on Cache Components and the \"use cache\" directive (Next.js 16). Draw what is prerendered, what is cached and what streams at request time."
     },
     {
      "day": "Fri",
@@ -2340,7 +2341,7 @@
   {
    "n": 27,
    "title": "Proxies, NGINX and load balancers",
-   "why": "NGINX sits in front of a huge share of the web, and Ingress controllers are often NGINX. After this week it's just a config file you can read.",
+   "why": "NGINX sits in front of a huge share of the web, and most Kubernetes traffic still enters through a proxy configured exactly like it. After this week it's just a config file you can read.",
    "mustKnow": [
     {
      "t": "Forward proxy vs reverse proxy; why reverse proxies exist (TLS termination, static files, buffering slow clients, load balancing, hiding internals)",
@@ -2422,7 +2423,7 @@
   {
    "n": 28,
    "title": "CDN, API gateway, APIM and WAF",
-   "why": "these are the remaining terms from your first message. Each is a specialized reverse proxy.",
+   "why": "CDNs, API gateways, API management and WAFs appear in almost every production architecture diagram. Each is a specialized reverse proxy.",
    "mustKnow": [
     {
      "t": "CDN",
@@ -2478,7 +2479,7 @@
      "core": false
     },
     {
-     "text": "OWASP ModSecurity Core Rule Set documentation",
+     "text": "OWASP Core Rule Set documentation + Coraza (OWASP's maintained WAF engine; ModSecurity has reached end of life)",
      "core": false
     },
     {
@@ -2501,7 +2502,7 @@
     },
     {
      "day": "Sat",
-     "text": "Run Kong (or NGINX) as a gateway in front of two services with JWT validation and rate limits. Add ModSecurity + OWASP CRS to NGINX and fire SQL injection attempts at it; watch it block them, then find one false positive."
+     "text": "Run Kong (or NGINX) as a gateway in front of two services with JWT validation and rate limits. Put Coraza with the OWASP Core Rule Set in front of your API (for example the Coraza Caddy plugin or Coraza on Envoy) and fire SQL injection attempts at it; watch it block them, then find one false positive."
     }
    ],
    "doneWhen": "you can draw the full edge stack (DNS → CDN → WAF → LB → gateway → service) and say what each layer does and what breaks without it.",
@@ -2598,7 +2599,7 @@
     },
     {
      "day": "Sat",
-     "text": "Follow Liz Rice's talk and write your own mini container runtime in Go. Then Docker Compose your whole stack: Next.js + API + Postgres + Redis + NGINX."
+     "text": "Follow Liz Rice's talk and type her mini container runtime along with her (it's in Go; she explains each line, and you don't need to know Go). Stretch: extend it yourself. Then Docker Compose your whole stack: Next.js + API + Postgres + Redis + NGINX."
     }
    ],
    "doneWhen": "you can explain why a container is not a VM, show the namespaces of a running container from the host, and explain why Dockerfile line order changes build time.",
@@ -2719,11 +2720,11 @@
      "c": []
     },
     {
-     "t": "Ingress controller: the actual program (ingress-nginx, Traefik, cloud controllers) that watches Ingress objects and configures itself — it's NGINX from Week 27 reconfigured automatically",
+     "t": "Ingress controller: the actual program (Traefik, cloud controllers, and formerly ingress-nginx, retired in March 2026) that watches Ingress objects and configures a proxy like the NGINX from Week 27",
      "c": []
     },
     {
-     "t": "Gateway API: the newer successor to Ingress",
+     "t": "Gateway API: the successor to Ingress and what new clusters should use (GatewayClass, Gateway, HTTPRoute); implementations such as Envoy Gateway",
      "c": []
     },
     {
@@ -2764,7 +2765,7 @@
      "core": true
     },
     {
-     "text": "ingress-nginx docs (Basic usage)",
+     "text": "Kubernetes Gateway API docs + Envoy Gateway quickstart (ingress-nginx was retired in March 2026)",
      "core": false
     },
     {
@@ -2783,7 +2784,7 @@
     },
     {
      "day": "Wed",
-     "text": "Install ingress-nginx on kind; route /api and / to two services with an Ingress. Read the generated nginx.conf inside the controller pod."
+     "text": "Install Envoy Gateway on kind; route /api and / to two services with a Gateway and HTTPRoutes. Then read one Ingress manifest and map each field to its Gateway API equivalent."
     },
     {
      "day": "Fri",
@@ -2853,7 +2854,8 @@
     "Sampling strategies for traces",
     "Supply chain security in CI: pinning actions by SHA, OIDC to cloud instead of long-lived keys",
     "DORA metrics (deployment frequency, lead time, change failure rate, time to restore)",
-    "Database migrations in deployment pipelines (expand/contract from Week 18)"
+    "Database migrations in deployment pipelines (expand/contract from Week 18)",
+    "OpenTofu: the open-source fork of Terraform after its licence change; same language and workflow"
    ],
    "resources": [
     {
@@ -2940,7 +2942,7 @@
    ],
    "resources": [
     {
-     "text": "DDIA chapters 5 (replication), 6 (partitioning), 8 (the trouble with distributed systems)",
+     "text": "DDIA (2nd ed.) chapters 6 (replication), 7 (sharding), 9 (the trouble with distributed systems)",
      "core": true
     },
     {
@@ -2955,15 +2957,15 @@
    "checklist": [
     {
      "day": "Mon",
-     "text": "DDIA ch. 5."
+     "text": "DDIA ch. 6."
     },
     {
      "day": "Wed",
-     "text": "DDIA ch. 6. Draw hash vs range partitioning with a hot-spot example."
+     "text": "DDIA ch. 7 (sharding). Draw hash vs range partitioning with a hot-spot example."
     },
     {
      "day": "Fri",
-     "text": "DDIA ch. 8."
+     "text": "DDIA ch. 9."
     },
     {
      "day": "Sat",
@@ -3020,7 +3022,7 @@
    ],
    "resources": [
     {
-     "text": "DDIA chapters 9 (consistency and consensus) and 11-12 (streams, the future of data systems)",
+     "text": "DDIA (2nd ed.) chapters 10 (consistency and consensus), 12 (stream processing) and 13 (a philosophy of streaming systems)",
      "core": true
     },
     {
@@ -3035,15 +3037,15 @@
    "checklist": [
     {
      "day": "Mon",
-     "text": "DDIA ch. 9 (first half). Play with the Raft visualization."
+     "text": "DDIA ch. 10 (first half). Play with the Raft visualization."
     },
     {
      "day": "Wed",
-     "text": "DDIA ch. 9 (second half) + saga and circuit breaker patterns."
+     "text": "DDIA ch. 10 (second half) + saga and circuit breaker patterns."
     },
     {
      "day": "Fri",
-     "text": "DDIA ch. 11 + the outbox pattern again (Week 20). Read the fallacies of distributed computing."
+     "text": "DDIA ch. 12 + the outbox pattern again (Week 20). Read the fallacies of distributed computing."
     },
     {
      "day": "Sat",
@@ -3161,7 +3163,7 @@
    "checklist": [
     {
      "day": "Mon",
-     "text": "Pick the capstone: one real system end to end. A strong choice is a feature from your own work that you never understood, rebuilt from scratch. Write the requirements doc."
+     "text": "Pick the capstone: one real system end to end. A strong choice is a real product you use every day (or a feature from a job or internship), rebuilt from scratch. Write the requirements doc."
     },
     {
      "day": "Wed",
@@ -3249,30 +3251,30 @@
    ],
    "resources": [
     {
-     "text": "MOOC Java Programming I, Part 1",
+     "text": "dev.java Learn: Your First Steps in Java + Language Basics (variables, primitive types, operators)",
      "core": true
     },
     {
-     "text": "Head First Java ch. 1-2",
+     "text": "Head First Java (3rd ed.) ch. 1-2",
      "core": false
     },
     {
-     "text": "Kunal Kushwaha's first Java videos",
+     "text": "Exercism Java track (free, self-checking exercises you run in IntelliJ): the first concept exercises (basics, strings, numbers)",
      "core": false
     }
    ],
    "checklist": [
     {
      "day": "Tue",
-     "text": "Install the JDK and IntelliJ. Write Hello World and compile it by hand with javac and java in the terminal. Run javap -c on the class file."
+     "text": "Install the JDK (latest LTS) and IntelliJ. Write Hello World and compile it by hand with javac and java in the terminal. Run javap -c on the class file. Install the Exercism CLI, download your first Java exercise, open it in IntelliJ and make its tests pass."
     },
     {
      "day": "Thu",
-     "text": "MOOC Part 1: printing, reading input, variables, calculations. Do every exercise."
+     "text": "dev.java First Steps + Language Basics: printing, reading input, variables, operators. Type every example yourself, then do the matching Exercism exercises until their tests pass."
     },
     {
      "day": "Sun",
-     "text": "Finish MOOC Part 1. Write a program that converts temperatures and one that shows integer overflow. Note 5 things you learned."
+     "text": "Finish this week's Exercism exercises. Write a program that converts temperatures and one that shows integer overflow. Note 5 things you learned."
     }
    ],
    "doneWhen": "you can explain what happens from writing Hello.java to seeing output, and pick the right primitive type for a value.",
@@ -3333,22 +3335,22 @@
    ],
    "resources": [
     {
-     "text": "MOOC Part 2",
+     "text": "dev.java Learn: Language Basics (control flow statements) + Head First Java ch. 3-5 for methods",
      "core": true
     },
     {
-     "text": "Head First Java ch. 3-5",
+     "text": "Exercism Java track (free, self-checking exercises you run in IntelliJ): conditionals, loops and methods exercises",
      "core": false
     }
    ],
    "checklist": [
     {
      "day": "Tue",
-     "text": "MOOC Part 2: conditionals, loops. Do every exercise."
+     "text": "dev.java Language Basics: control flow (if, switch expressions, loops). Do the matching Exercism exercises."
     },
     {
      "day": "Thu",
-     "text": "MOOC Part 2: methods. Draw the call stack for a method that calls two others."
+     "text": "Methods: Head First Java ch. 5 + Exercism methods exercises. Draw the call stack for a method that calls two others."
     },
     {
      "day": "Sun",
@@ -3413,22 +3415,26 @@
    ],
    "resources": [
     {
-     "text": "MOOC Part 3",
+     "text": "dev.java Learn: Language Basics (arrays) + Numbers and Strings",
      "core": true
     },
     {
      "text": "Head First Java ch. on arrays and strings",
+     "core": false
+    },
+    {
+     "text": "Exercism Java track (free, self-checking exercises you run in IntelliJ): arrays, strings and StringBuilder exercises",
      "core": false
     }
    ],
    "checklist": [
     {
      "day": "Tue",
-     "text": "MOOC Part 3: lists and arrays."
+     "text": "dev.java Language Basics: arrays. Exercism arrays exercises."
     },
     {
      "day": "Thu",
-     "text": "MOOC Part 3: strings. Draw stack and heap for a method that creates an array and a String."
+     "text": "dev.java Numbers and Strings + StringBuilder. Exercism strings exercises. Draw stack and heap for a method that creates an array and a String."
     },
     {
      "day": "Sun",
@@ -3497,22 +3503,26 @@
    ],
    "resources": [
     {
-     "text": "MOOC Part 4 and Part 5 (first half)",
+     "text": "dev.java Learn: Object-Oriented Programming (classes and objects, records)",
      "core": true
     },
     {
      "text": "Head First Java ch. on objects and classes",
+     "core": false
+    },
+    {
+     "text": "Exercism Java track (free, self-checking exercises you run in IntelliJ): classes and objects exercises",
      "core": false
     }
    ],
    "checklist": [
     {
      "day": "Tue",
-     "text": "MOOC Part 4: introduction to object-oriented programming."
+     "text": "dev.java Object-Oriented Programming: classes and objects. Exercism classes exercises."
     },
     {
      "day": "Thu",
-     "text": "MOOC Part 5 first half: more OOP, primitive vs reference variables."
+     "text": "dev.java: more on classes (static, final, nested classes) and records; primitive vs reference variables."
     },
     {
      "day": "Sun",
@@ -3578,22 +3588,26 @@
    ],
    "resources": [
     {
-     "text": "MOOC Java Programming II, Part 9 (inheritance, interfaces, polymorphism) and Part 5 second half (object equality)",
+     "text": "dev.java Learn: Object-Oriented Programming (inheritance, interfaces, Object methods) + Pattern Matching",
      "core": true
     },
     {
      "text": "Head First Java ch. on inheritance, polymorphism and interfaces",
+     "core": false
+    },
+    {
+     "text": "Exercism Java track (free, self-checking exercises you run in IntelliJ): inheritance and interfaces exercises",
      "core": false
     }
    ],
    "checklist": [
     {
      "day": "Tue",
-     "text": "MOOC Part 5 second half (equals) + Part 9 inheritance."
+     "text": "dev.java: inheritance and the Object class (equals, hashCode, toString)."
     },
     {
      "day": "Thu",
-     "text": "MOOC Part 9 interfaces and polymorphism. Write equals and hashCode by hand for your Student class."
+     "text": "dev.java: interfaces and polymorphism, then Pattern Matching (instanceof and switch). Write equals and hashCode by hand for your Student class."
     },
     {
      "day": "Sun",
@@ -3657,26 +3671,26 @@
    ],
    "resources": [
     {
-     "text": "MOOC Part 6 and Part 11 (class diagrams, packages, exceptions)",
+     "text": "dev.java Learn: Annotations and Exceptions + Head First Design Patterns (2nd ed.), Strategy, Observer, Decorator, Factory chapters",
      "core": true
     },
     {
-     "text": "Head First Design Patterns (2nd ed.), Strategy, Observer, Decorator, Factory chapters",
+     "text": "refactoring.guru (free, clear diagrams)",
      "core": false
     },
     {
-     "text": "refactoring.guru (free, clear diagrams)",
+     "text": "Exercism Java track (free, self-checking exercises you run in IntelliJ): exceptions exercises",
      "core": false
     }
    ],
    "checklist": [
     {
      "day": "Tue",
-     "text": "MOOC Part 6. Read about SOLID (refactoring.guru or any good article)."
+     "text": "Read about SOLID (refactoring.guru or any good article). Head First Design Patterns ch. 1 (Strategy)."
     },
     {
      "day": "Thu",
-     "text": "MOOC Part 11: class diagrams and exceptions. Write a custom checked and unchecked exception."
+     "text": "dev.java Exceptions; draw a UML class diagram of your week 5 Shape hierarchy. Write a custom checked and unchecked exception."
     },
     {
      "day": "Sun",
@@ -3739,22 +3753,22 @@
    ],
    "resources": [
     {
-     "text": "MOOC Part 8 (HashMap, object similarity) and Part 12 (type parameters)",
+     "text": "dev.java Learn: Generics + Collections and Streams (the collections part)",
      "core": true
     },
     {
-     "text": "Oracle/dev.java Collections and Generics tutorials",
+     "text": "Exercism Java track (free, self-checking exercises you run in IntelliJ): generics, lists, sets and maps exercises",
      "core": false
     }
    ],
    "checklist": [
     {
      "day": "Tue",
-     "text": "MOOC Part 12 type parameters + dev.java Generics tutorial."
+     "text": "dev.java Generics. Exercism generics exercises."
     },
     {
      "day": "Thu",
-     "text": "MOOC Part 8 + dev.java Collections overview. Make a table: each implementation, ordering, duplicates, typical operation costs."
+     "text": "dev.java Collections Framework. Make a table: each implementation, ordering, duplicates, typical operation costs."
     },
     {
      "day": "Sun",
@@ -3807,7 +3821,7 @@
    ],
    "resources": [
     {
-     "text": "MOOC Part 10 (streams, Comparable)",
+     "text": "dev.java Learn: Lambdas + Collections and Streams (the streams part)",
      "core": true
     },
     {
@@ -3815,7 +3829,7 @@
      "core": false
     },
     {
-     "text": "dev.java Lambda Expressions and Streams tutorials",
+     "text": "Exercism Java track (free, self-checking exercises you run in IntelliJ): lambdas and streams exercises",
      "core": false
     }
    ],
@@ -3826,7 +3840,7 @@
     },
     {
      "day": "Thu",
-     "text": "MOOC Part 10 + dev.java lambdas and streams."
+     "text": "dev.java Lambdas + Streams. Exercism lambdas and streams exercises."
     },
     {
      "day": "Sun",
@@ -3866,7 +3880,7 @@
      "c": []
     },
     {
-     "t": "Testing with JUnit 5: assertions, test lifecycle, parameterized tests; why test your data structures",
+     "t": "Testing with JUnit (6, or 5 in older projects): assertions, test lifecycle, parameterized tests; why test your data structures",
      "c": []
     }
    ],
@@ -3879,7 +3893,7 @@
    ],
    "resources": [
     {
-     "text": "dev.java Learn section on the JVM + JUnit 5 user guide",
+     "text": "dev.java Learn section on the JVM + JUnit 6 user guide",
      "core": true
     },
     {
@@ -3902,7 +3916,7 @@
     },
     {
      "day": "Sun",
-     "text": "Convert your java-dsa folder into a Maven or Gradle project with JUnit 5. Write tests for 5 earlier exercises. Run a naive timing benchmark twice and observe JIT warm-up."
+     "text": "Convert your java-dsa folder into a Maven or Gradle project with JUnit 6. Write tests for 5 earlier exercises. Run a naive timing benchmark twice and observe JIT warm-up."
     }
    ],
    "doneWhen": "you can explain where objects, local variables and class metadata live in the JVM, and run tests from the command line.",
@@ -4022,10 +4036,6 @@
      "core": true
     },
     {
-     "text": "Striver A2Z Step 3 (arrays)",
-     "core": false
-    },
-    {
      "text": "VisuAlgo array page",
      "core": false
     }
@@ -4113,10 +4123,6 @@
     {
      "text": "NeetCode roadmap: Two Pointers + Sliding Window",
      "core": true
-    },
-    {
-     "text": "Striver A2Z strings section",
-     "core": false
     }
    ],
    "checklist": [
@@ -4318,11 +4324,11 @@
    ],
    "resources": [
     {
-     "text": "Striver A2Z (arrays medium, bit manipulation)",
+     "text": "NeetCode roadmap: Bit Manipulation, plus NeetCode's video for each of this week's prefix-sum and matrix problems",
      "core": true
     },
     {
-     "text": "NeetCode roadmap: Bit Manipulation",
+     "text": "CP-Algorithms (cp-algorithms.com) page on bit manipulation",
      "core": false
     }
    ],
@@ -4415,14 +4421,6 @@
     {
      "text": "Sedgewick 1.3 (linked lists)",
      "core": true
-    },
-    {
-     "text": "Kunal Kushwaha's linked list videos",
-     "core": false
-    },
-    {
-     "text": "Striver A2Z Step 6",
-     "core": false
     }
    ],
    "checklist": [
@@ -4528,11 +4526,7 @@
      "core": true
     },
     {
-     "text": "NeetCode roadmap: Stack",
-     "core": false
-    },
-    {
-     "text": "Striver A2Z Step 9",
+     "text": "NeetCode roadmap: Stack (use its video for each of this week's problems as the explanation)",
      "core": false
     }
    ],
@@ -4631,11 +4625,7 @@
      "core": true
     },
     {
-     "text": "NeetCode roadmap: Backtracking",
-     "core": false
-    },
-    {
-     "text": "Striver A2Z Step 7",
+     "text": "NeetCode roadmap: Backtracking (use its video for each of this week's problems as the explanation)",
      "core": false
     }
    ],
@@ -4828,11 +4818,7 @@
      "core": true
     },
     {
-     "text": "NeetCode roadmap: Binary Search",
-     "core": false
-    },
-    {
-     "text": "Striver A2Z Step 4",
+     "text": "NeetCode roadmap: Binary Search (use its video for each of this week's problems as the explanation)",
      "core": false
     }
    ],
@@ -5030,14 +5016,6 @@
     {
      "text": "NeetCode roadmap: Trees",
      "core": true
-    },
-    {
-     "text": "Striver A2Z Step 13",
-     "core": false
-    },
-    {
-     "text": "Kunal Kushwaha's trees videos",
-     "core": false
     }
    ],
    "checklist": [
@@ -5251,7 +5229,7 @@
      "core": true
     },
     {
-     "text": "NeetCode roadmap: Heap / Priority Queue",
+     "text": "NeetCode roadmap: Heap / Priority Queue (use its video for each of this week's problems as the explanation)",
      "core": false
     }
    ],
@@ -5358,7 +5336,7 @@
      "core": false
     },
     {
-     "text": "NeetCode roadmap: Tries",
+     "text": "NeetCode roadmap: Tries (use its video for each of this week's problems as the explanation)",
      "core": false
     }
    ],
@@ -5456,11 +5434,7 @@
      "core": true
     },
     {
-     "text": "NeetCode roadmap: Graphs",
-     "core": false
-    },
-    {
-     "text": "Striver A2Z graph series (YouTube)",
+     "text": "NeetCode roadmap: Graphs (use its video for each of this week's problems as the explanation)",
      "core": false
     }
    ],
@@ -5559,7 +5533,7 @@
      "core": true
     },
     {
-     "text": "NeetCode roadmap: Advanced Graphs",
+     "text": "NeetCode roadmap: Advanced Graphs (use its video for each of this week's problems as the explanation)",
      "core": false
     }
    ],
@@ -5755,7 +5729,7 @@
      "core": true
     },
     {
-     "text": "NeetCode roadmap: Greedy",
+     "text": "NeetCode roadmap: Greedy (use its video for each of this week's problems as the explanation)",
      "core": false
     }
    ],
@@ -5874,7 +5848,7 @@
      "core": true
     },
     {
-     "text": "NeetCode roadmap: 1-D DP",
+     "text": "NeetCode roadmap: 1-D DP (use its video for each of this week's problems as the explanation)",
      "core": false
     },
     {
@@ -5977,7 +5951,7 @@
      "core": true
     },
     {
-     "text": "NeetCode roadmap: 2-D DP",
+     "text": "NeetCode roadmap: 2-D DP (use its video for each of this week's problems as the explanation)",
      "core": false
     }
    ],
@@ -6079,7 +6053,7 @@
      "core": true
     },
     {
-     "text": "NeetCode roadmap: 2-D DP (rest)",
+     "text": "NeetCode roadmap: 2-D DP (rest) (use its video for each of this week's problems as the explanation)",
      "core": false
     }
    ],
@@ -6393,6 +6367,10 @@
      "core": true
     },
     {
+     "text": "dev.java Learn: Virtual Threads (Java 21+); JCiP predates them",
+     "core": false
+    },
+    {
      "text": "dev.java Concurrency tutorials",
      "core": false
     },
@@ -6515,7 +6493,7 @@
    "problems": [],
    "problemNote": "",
    "after": [
-    "Keep 3-4 problems a week so the skill stays sharp; Striver's A2Z sheet has plenty left",
+    "Keep 3-4 problems a week so the skill stays sharp; the optional Phase 2 set and the weekly contest have plenty left",
     "Read Effective Java one item at a time",
     "If you enjoy it: competitive programming on Codeforces or AtCoder, with Competitive Programmer's Handbook (Antti Laaksonen, free PDF)",
     "Princeton Algorithms II remaining lectures (strings, regex, data compression, reductions, intractability)"
@@ -6557,7 +6535,7 @@
   {
    "id": "Phase 3",
    "title": "Backend and Databases (Weeks 15-21)",
-   "goal": "you can build a production-shaped API and explain what happens inside Node and inside the database for every request. The main book for this phase is Designing Data- Intensive Applications (DDIA) by Martin Kleppmann; get it now (2nd edition if available).",
+   "goal": "you can build a production-shaped API and explain what happens inside Node and inside the database for every request. The main book for this phase is Designing Data- Intensive Applications (DDIA) by Martin Kleppmann and Chris Riccomini; get the 2nd edition (2026), which every chapter number in this plan refers to.",
    "milestone": "a Node + Postgres + Redis API with auth, validation, pagination, rate limiting, background jobs, tests and logging, in your foundations repo. Add the server half to What happens when I type a URL. Optional buffer week.",
    "weeks": [
     15,
@@ -6613,7 +6591,7 @@
   {
    "id": "Part A",
    "title": "Programming in Java, OOP and Paradigms (Weeks 1-10)",
-   "goal": "go from never having written Java to writing clean, object-oriented and functional Java, knowing how the JVM runs it, and analyzing an algorithm's cost. The Helsinki MOOC is your daily guide here; its exercises check themselves, so you always know if you've got it.",
+   "goal": "go from never having written Java to writing clean, object-oriented and functional Java, knowing how the JVM runs it, and analyzing an algorithm's cost. dev.java (Oracle's official tutorials for current Java) is your daily guide, and Exercism's Java exercises check themselves in IntelliJ, so you always know if you've got it.",
    "milestone": "you can write well-structured Java with classes, interfaces, generics, collections and streams, explain the four pillars of OOP and the main paradigms, and analyze complexity. Optional buffer week before Part B.",
    "weeks": [
     1,

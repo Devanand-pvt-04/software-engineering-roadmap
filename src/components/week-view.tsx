@@ -12,6 +12,7 @@ import { CheckRow, Ring, SectionTitle } from "./ui";
 import { ProblemRow } from "./problem-row";
 import { NoteBox } from "./notes";
 import { QuizCard } from "./quiz";
+import { Explain } from "./explain";
 
 export function WeekView({ track, n }: { track: Track; n: number }) {
   const c = useContent();
@@ -153,6 +154,7 @@ export function WeekView({ track, n }: { track: Track; n: number }) {
               m.c.length ? (
                 <div key={i} className="pt-2">
                   <div className="text-[15px] font-semibold">{m.t}</div>
+                  <Explain x={m.x} />
                   <div className="ml-1 border-l border-line pl-4">
                     {m.c.map((c, j) => (
                       <CheckRow key={j} k={keys.must(w.id, i, j)} color={color}>
@@ -162,9 +164,12 @@ export function WeekView({ track, n }: { track: Track; n: number }) {
                   </div>
                 </div>
               ) : (
-                <CheckRow key={i} k={keys.must(w.id, i)} color={color}>
-                  {m.t}
-                </CheckRow>
+                <div key={i}>
+                  <CheckRow k={keys.must(w.id, i)} color={color}>
+                    {m.t}
+                  </CheckRow>
+                  <Explain x={m.x} />
+                </div>
               ),
             )}
           </div>

@@ -11,6 +11,7 @@ import { HINTS } from "@/data/hints";
 import { BRIEFS } from "@/data/briefs";
 import { CORE_TIME, FREE_ALTERNATIVES } from "@/data/estimates";
 import { CONTEST_INFO, PHASE2 } from "@/data/phase2";
+import { EXPLAIN } from "@/data/explain";
 import type { Day } from "@/lib/constants";
 import type { ClientContent } from "@/lib/content";
 import { TRACKS, legacyId, type Group, type LinkRef, type Phase2SetView, type Problem, type Track, type Week, type SpecView } from "@/lib/roadmap";
@@ -70,6 +71,7 @@ function enrich(track: Track, w: RawWeek, i: number): Week {
     ...w,
     id,
     n: i + 1,
+    mustKnow: w.mustKnow.map((m, j) => (EXPLAIN[`${id}:${j}`] ? { ...m, x: EXPLAIN[`${id}:${j}`] } : m)),
     quiz: (QUIZ[track][num] ?? []).map(([q, a]) => ({ q, a })),
     brief: BRIEFS[id],
     problems: w.problems.map((p) => ({ ...p, hint: HINTS[p.slug] })),
@@ -80,7 +82,7 @@ function enrich(track: Track, w: RawWeek, i: number): Week {
       ...(r.core && CORE_TIME[id] ? { time: CORE_TIME[id] } : {}),
       ...(freeFor(r.text) ? { free: freeFor(r.text) } : {}),
     })),
-    checklist: w.checklist.map((c) => ({ ...c, links: links(c.text), specs: specs(track, num, "day", c.day, c.text) })),
+    checklist: w.checklist.map((c) => ({ ...c, links: links(c.text), specs: specs(track, num, "day", c.day) })),
     after: w.after.map((a) => ({ text: a, links: links(a) })),
     sessions: w.sessions?.length ? w.sessions.map((x) => ({ ...x, links: links(x.text) })) : undefined,
   };
