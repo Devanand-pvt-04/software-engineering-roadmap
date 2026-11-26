@@ -4,6 +4,8 @@ import { EXPLAIN_MAIN_START } from "./main-start";
 import { EXPLAIN_MAIN_PHASE1 } from "./main-phase1";
 import { EXPLAIN_JAVA_PART_A } from "./java-part-a";
 import { EXPLAIN_JAVA_PART_B } from "./java-part-b";
+import { EXPLAIN_JAVA_PART_C1 } from "./java-part-c1";
+import { EXPLAIN_JAVA_PART_C2 } from "./java-part-c2";
 import { EXPLAIN_MAIN_BROWSER } from "./main-browser";
 import { EXPLAIN_MAIN_JS } from "./main-js";
 import { EXPLAIN_MAIN_BACKEND } from "./main-backend";
@@ -27,4 +29,6 @@ export const EXPLAIN: ExplainMap = {
   ...EXPLAIN_MAIN_DESIGN,
   ...EXPLAIN_JAVA_PART_A,
   ...EXPLAIN_JAVA_PART_B,
+  ...EXPLAIN_JAVA_PART_C1,
+  ...EXPLAIN_JAVA_PART_C2,
 };
