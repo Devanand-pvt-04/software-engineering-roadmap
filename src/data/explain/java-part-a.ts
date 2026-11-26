@@ -5,652 +5,1194 @@ export const EXPLAIN_JAVA_PART_A: ExplainMap = {
   // ---- Week 1: How Java runs; variables and types ----
   "J1:0": {
     why: "A computer only runs machine code: numbered instructions for its CPU. People need a way to describe what they want in words and symbols they can read.",
-    problem: "Writing machine code by hand is slow, error-prone and tied to one kind of CPU. A program written that way cannot be read by a colleague or moved to another machine.",
+    problem:
+      "Writing machine code by hand is slow, error-prone and tied to one kind of CPU. A program written that way cannot be read by a colleague or moved to another machine.",
     how: "A programming language is a precise, human-readable notation for instructions. A tool then translates it to something the machine runs, either all at once ahead of time (compiling) or step by step while it runs (interpreting).",
-    tech: "A program is a sequence of instructions that transforms input into output. A compiler (C, Go, Rust) translates the whole program to machine code before it runs. An interpreter (classic Python, shell) reads and performs code as it goes. Java does both: it compiles to bytecode, then the JVM interprets that and compiles hot parts to machine code at runtime (JIT).",
+    tech: [
+      "A program is a sequence of instructions that transforms input into output.",
+      "A compiler (C, Go, Rust) translates the whole program to machine code before it runs.",
+      "An interpreter (classic Python, shell) reads and performs code as it goes.",
+      "Java does both: it compiles to bytecode, then the JVM interprets that and compiles hot parts to machine code at runtime (JIT).",
+    ],
     cost: "Compiled programs start fast and run fast but must be rebuilt for each platform. Interpreted programs are portable and quick to change but slower.",
-    buildsOn: "Main week 1: From source code to running program",
+    tryIt:
+      "Run a one-line program three ways: compile and run Hello.java with javac and java, run java Hello.java directly, and type the same line into jshell.",
+    buildsOn: "Main week 37: What a program is",
   },
   "J1:1": {
     why: "In the 1990s, companies had to rebuild and test their software separately for Windows, Mac, Solaris and others. Java's designers wanted one compiled program to run everywhere.",
-    problem: "Compiling straight to machine code ties a program to one CPU and OS. Shipping to five platforms meant five builds and five sets of bugs.",
+    problem:
+      "Compiling straight to machine code ties a program to one CPU and OS. Shipping to five platforms meant five builds and five sets of bugs.",
     how: "Compile Java to an intermediate format, bytecode, that no real CPU runs. Install a small virtual machine (the JVM) on each platform that knows how to run bytecode there.",
-    tech: "javac Hello.java produces Hello.class containing bytecode. java Hello starts the JVM, which loads the class, verifies it, interprets it and JIT-compiles frequently used methods to native code. The JDK (Java Development Kit) contains the compiler and tools plus a runtime. The JRE was the runtime alone (no longer shipped separately since Java 11). The JVM is the engine inside the runtime.",
+    tech: [
+      "javac Hello.java produces Hello.class containing bytecode. java Hello starts the JVM, which loads the class, verifies it, interprets it and JIT-compiles frequently used methods to native code.",
+      "The JDK (Java Development Kit) contains the compiler and tools plus a runtime.",
+      "The JRE was the runtime alone (no longer shipped separately since Java 11). The JVM is the engine inside the runtime.",
+    ],
     cost: "The JVM takes time and memory to start, which matters for short-lived programs and small containers. You still need the right JVM version installed wherever you run.",
+    tryIt:
+      "Run javac Hello.java, then javap -c Hello to read the bytecode the JVM will run.",
     buildsOn: "Java week 1: What a program is",
   },
   "J1:2": {
     why: "Every language needs fixed rules for where a program starts and how its pieces are grouped, so the compiler can read it unambiguously.",
-    problem: "Without strict structure, the compiler cannot tell where one instruction ends, which code belongs together, or which code runs first.",
     how: "Java puts all code inside classes, starts every program at a method called main, ends each statement with a semicolon, and groups statements in curly-brace blocks.",
-    tech: "public class Hello { public static void main(String[] args) { System.out.println(\"Hi\"); } }. The file name must match the public class (Hello.java). public means visible everywhere, static means it belongs to the class so it can run before any object exists, void means it returns nothing, and args holds command-line arguments. // starts a line comment, /* ... */ a block comment, /** ... */ a Javadoc comment.",
+    tech: [
+      'The smallest program: public class Hello { public static void main(String[] args) { System.out.println("Hi"); } }',
+      "The file name must match the public class: Hello.java.",
+      "public means visible everywhere; static means main belongs to the class, so it can run before any object exists; void means it returns nothing; args holds the words typed after the program name.",
+      "Each statement ends with a semicolon, and curly braces group statements into blocks.",
+      "// starts a one-line comment, /* ... */ a block comment, and /** ... */ a Javadoc comment that tools turn into documentation.",
+    ],
     cost: "This is more ceremony than languages such as Python. Newer Java versions allow simpler entry points for small programs, but you will read the classic form everywhere.",
+    tryIt:
+      "Delete one semicolon or one curly brace from Hello.java and read the compiler error, then fix it.",
     buildsOn: "Java week 1: The Java toolchain",
   },
   "J1:3": {
     why: "A program that cannot show results or accept input cannot do anything useful for a person.",
-    problem: "Programs need a standard way to talk to the terminal without dealing with the OS directly.",
     how: "Use the standard output stream to print and a Scanner to read typed input.",
-    tech: "System.out.println(x) prints x followed by a newline; System.out.print does not add the newline; System.out.printf formats (%d integers, %s strings, %.2f decimals). Scanner sc = new Scanner(System.in); then sc.nextInt(), sc.nextLine() and so on read input. Mixing nextInt() and nextLine() leaves a newline behind, which is a classic beginner bug.",
+    tech: [
+      "System.out.println(x) prints x followed by a newline; System.out.print does not add the newline; System.out.printf formats (%d integers, %s strings, %.2f decimals).",
+      "Scanner sc = new Scanner(System.in); then sc.nextInt(), sc.nextLine() and so on read input.",
+      "Mixing nextInt() and nextLine() leaves a newline behind, which is a classic beginner bug.",
+    ],
     cost: "Scanner is convenient but slow for large inputs; competitive programmers use BufferedReader instead.",
-    buildsOn: "Main week 3: Files and file systems (stdin and stdout)",
+    tryIt:
+      "Write a program that asks for your name and age with Scanner and prints a sentence with printf. Then type a word where it expects a number and read the error.",
+    buildsOn: "Main week 37: Your first compiled language, C",
   },
   "J1:4": {
     why: "Programs need to remember values while they run: a total, a name, a count.",
-    problem: "Without named storage you could not keep a result to use later, and code would be unreadable.",
+    problem:
+      "Without named storage you could not keep a result to use later, and code would be unreadable.",
     how: "Give a piece of memory a name and a type, put a value in it, and change it later if needed.",
-    tech: "Declaration creates the variable: int count;. Initialization gives it a first value: int count = 0;. Assignment changes it: count = 5;. Java requires local variables to be assigned before use. Conventions: camelCase for variables and methods, PascalCase for classes, UPPER_SNAKE_CASE for constants.",
+    tech: [
+      "Declaration creates the variable: int count;. Initialization gives it a first value: int count = 0;. Assignment changes it: count = 5;.",
+      "Java requires local variables to be assigned before use. Conventions: camelCase for variables and methods, PascalCase for classes, UPPER_SNAKE_CASE for constants.",
+    ],
     cost: "Bad names are one of the biggest costs in software. A name such as d or temp forces every reader to work out what it means.",
-    buildsOn: "Main week 1: Memory",
+    tryIt:
+      "In jshell, declare int count = 3, reassign it, then try to use a variable you never declared and read the error.",
+    buildsOn: "Main week 37: The building blocks every language shares",
   },
   "J1:5": {
     why: "The computer stores everything as bits, so the language needs to know how many bits a value uses and how to read them.",
-    problem: "Using one huge type for everything wastes memory, and the CPU handles integers, decimals and characters in different ways.",
+    problem:
+      "Using one huge type for everything wastes memory, and the CPU handles integers, decimals and characters in different ways.",
     how: "Offer a small set of built-in types, each with a fixed size and meaning.",
-    tech: "byte (8 bits, -128 to 127), short (16), int (32, about ±2.1 billion), long (64), float (32-bit decimal, about 7 digits), double (64-bit decimal, about 15 digits), char (16-bit UTF-16 code unit), boolean (true or false). Primitives hold the value directly, not a reference to an object.",
+    tech: [
+      "byte (8 bits, -128 to 127), short (16), int (32, about ±2.1 billion), long (64), float (32-bit decimal, about 7 digits), double (64-bit decimal, about 15 digits), char (16-bit UTF-16 code unit), boolean (true or false).",
+      "Primitives hold the value directly, not a reference to an object.",
+    ],
     cost: "Fixed sizes overflow silently (int max + 1 becomes a negative number), and float and double cannot represent most decimals exactly, so never use them for money.",
-    buildsOn: "Main week 1: Information as bits",
+    tryIt:
+      "In jshell, print Integer.MAX_VALUE + 1, then Long.MAX_VALUE, then 0.1 + 0.2.",
+    buildsOn: "Main week 37: Types in C",
   },
   "J1:6": {
     why: "Text is everywhere in programs, but it is not a fixed-size value like a number.",
-    problem: "Text needs variable-length storage and many operations (search, split, compare), which a primitive cannot provide.",
+    problem:
+      "Text needs variable-length storage and many operations (search, split, compare), which a primitive cannot provide.",
     how: "Make String a class with built-in methods, while giving it special language support so it feels almost like a primitive.",
-    tech: "String is an object on the heap, written with literals such as \"hello\". The + operator concatenates. Literals are pooled, so identical literals may share one object. Strings are immutable: every change creates a new String. Compare contents with equals(), never with ==, which only checks whether two references point to the same object.",
+    tech: [
+      'String is an object on the heap, written with literals such as "hello". The + operator concatenates.',
+      "Literals are pooled, so identical literals may share one object. Strings are immutable: every change creates a new String.",
+      "Compare contents with equals(), never with ==, which only checks whether two references point to the same object.",
+    ],
     cost: "Immutability makes strings safe to share but makes repeated modification slow; use StringBuilder for that (week 3).",
+    tryIt:
+      'In jshell, compare new String("hi") == "hi" with new String("hi").equals("hi").',
     buildsOn: "Java week 1: Primitive types",
   },
   "J1:7": {
     why: "Programs must calculate: totals, averages, remainders, counters.",
-    problem: "Without clear rules, 2 + 3 * 4 could mean 20 or 14, and dividing integers would behave unpredictably.",
+    problem:
+      "Without clear rules, 2 + 3 * 4 could mean 20 or 14, and dividing integers would behave unpredictably.",
     how: "Provide operators with fixed precedence rules, as in maths, plus shortcuts for common updates.",
-    tech: "+ - * / %. Integer division drops the fraction: 7 / 2 is 3, and 7 % 2 is 1, the remainder. Compound assignment: x += 5. Increment: x++ (use the value, then add 1) versus ++x (add 1, then use the value). Precedence: * / % before + -, and parentheses override everything.",
+    tech: [
+      "+ - * / %. Integer division drops the fraction: 7 / 2 is 3, and 7 % 2 is 1, the remainder. Compound assignment: x += 5.",
+      "Increment: x++ (use the value, then add 1) versus ++x (add 1, then use the value).",
+      "Precedence: * / % before + -, and parentheses override everything.",
+    ],
     cost: "Integer division and post-increment cause many beginner bugs. When precedence is not obvious, add parentheses for the reader.",
+    tryIt:
+      "In jshell, evaluate 7 / 2, 7 % 2, 7.0 / 2 and 2 + 3 * 4, and predict each before pressing Enter.",
     buildsOn: "Java week 1: Primitive types",
   },
   "J1:8": {
     why: "Programs mix types all the time, for example an int count used in a double average.",
-    problem: "Automatically converting a large value into a smaller type can silently lose data, so the language must decide when conversion is safe.",
+    problem:
+      "Automatically converting a large value into a smaller type can silently lose data, so the language must decide when conversion is safe.",
     how: "Convert automatically when nothing can be lost (widening), and make the programmer write an explicit cast when data might be lost (narrowing).",
-    tech: "Widening: int to long to float to double happens automatically. Narrowing needs a cast: int x = (int) 3.9; gives 3, truncated rather than rounded. Casting a too-large long to int keeps only the low 32 bits, giving a garbage value. In int arithmetic, overflow wraps around silently; Math.addExact throws an exception instead.",
+    tech: [
+      "Widening: int to long to float to double happens automatically. Narrowing needs a cast: int x = (int) 3.9; gives 3, truncated rather than rounded.",
+      "Casting a too-large long to int keeps only the low 32 bits, giving a garbage value.",
+      "In int arithmetic, overflow wraps around silently; Math.addExact throws an exception instead.",
+    ],
     cost: "A cast tells the compiler you accept the risk, so it will not warn you. Mixed-type expressions such as 5 / 2 * 1.0 still do integer division first.",
-    buildsOn: "Main week 1: Information as bits (two's complement and overflow)",
+    tryIt:
+      "In jshell, run (int) 3.99, (byte) 200 and int x = 'A'; and explain each result.",
+    buildsOn:
+      "Main week 1: Information as bits (two's complement and overflow)",
   },
   "J1:9": {
     why: "Writing the type twice, as in ArrayList<String> names = new ArrayList<String>();, is noisy when it is obvious from the right-hand side.",
-    problem: "Long generic type names make code hard to read without adding information.",
+    problem:
+      "Long generic type names make code hard to read without adding information.",
     how: "Let the compiler work out the type of a local variable from the value it is initialized with.",
-    tech: "var names = new ArrayList<String>(); The type is still fixed at compile time; this is not dynamic typing. var only works for local variables that are initialized on the same line.",
+    tech: [
+      "var names = new ArrayList<String>(); The type is still fixed at compile time; this is not dynamic typing. var only works for local variables that are initialized on the same line.",
+    ],
     cost: "When the type is not obvious from the right side (var x = getThing();), var hides information the reader needs. Use it only when the type is clear.",
-    buildsOn: "Java week 1: Variables",
+    tryIt:
+      "In jshell, write var list = new ArrayList<String>(); then type list. and press Tab to see that the type is known.",
+    buildsOn: "Java week 1: Primitive types",
   },
 
   // ---- Week 2: Control flow and methods ----
   "J2:0": {
     why: "Programs make decisions, and every decision is a yes-or-no question.",
-    problem: "We need a precise way to combine conditions such as \"age at least 18 and has a ticket\".",
+    problem:
+      'We need a precise way to combine conditions such as "age at least 18 and has a ticket".',
     how: "Compare values to get true or false, combine results with and, or and not, and skip evaluating parts whose answer is already decided.",
-    tech: "Comparison: == != < > <= >=. Logical: && (and), || (or), ! (not). Short-circuiting: in a && b, b is not evaluated if a is false; in a || b, b is skipped if a is true. That makes guards such as obj != null && obj.isReady() safe.",
+    tech: [
+      "Comparison: == != < > <= >=. Logical: && (and), || (or), ! (not). Short-circuiting: in a && b, b is not evaluated if a is false; in a || b, b is skipped if a is true.",
+      "That makes guards such as obj != null && obj.isReady() safe.",
+    ],
     cost: "Relying on side effects inside conditions makes code hard to follow. Comparing doubles with == is unreliable because of rounding.",
+    tryIt:
+      "In jshell, run String s = null; then s != null && s.length() > 0, and then s.length() > 0 on its own.",
     buildsOn: "Main week 1: Logic and hardware (logic gates)",
   },
   "J2:1": {
     why: "Programs must behave differently depending on the situation.",
-    problem: "Code that always runs the same steps cannot react to input or errors.",
+    problem:
+      "Code that always runs the same steps cannot react to input or errors.",
     how: "Run a block only if a condition is true, otherwise check the next condition or run a fallback.",
-    tech: "if (cond) { ... } else if (other) { ... } else { ... }. The conditions are checked top to bottom and only the first match runs. The ternary operator cond ? a : b is an expression that chooses one of two values.",
+    tech: [
+      "if (cond) { ... } else if (other) { ... } else { ... }. The conditions are checked top to bottom and only the first match runs.",
+      "The ternary operator cond ? a : b is an expression that chooses one of two values.",
+    ],
     cost: "Deeply nested ifs are hard to read. Prefer early returns (guard clauses) and keep each branch short.",
+    tryIt:
+      "Write a grade calculator with if / else if, then rewrite one condition with the ternary operator.",
     buildsOn: "Java week 2: Boolean logic",
   },
   "J2:2": {
     why: "Choosing among many fixed options with long if-else chains is repetitive and easy to get wrong.",
-    problem: "A ten-branch if-else chain on the same variable is noisy, and the classic switch statement made it easy to forget break and fall through into the next case.",
+    problem:
+      "A ten-branch if-else chain on the same variable is noisy, and the classic switch statement made it easy to forget break and fall through into the next case.",
     how: "Match one value against a list of cases. Modern switch expressions return a value and never fall through.",
-    tech: "Classic: switch (day) { case MONDAY: ...; break; default: ... }. Modern: String type = switch (day) { case SATURDAY, SUNDAY -> \"weekend\"; default -> \"weekday\"; };. With enums and sealed types, the compiler can check that every case is covered. Pattern matching in switch (Java 21) can match on types too.",
+    tech: [
+      'Classic: switch (day) { case MONDAY: ...; break; default: ... }. Modern: String type = switch (day) { case SATURDAY, SUNDAY -> "weekend"; default -> "weekday"; };.',
+      "With enums and sealed types, the compiler can check that every case is covered.",
+      "Pattern matching in switch (Java 21) can match on types too.",
+    ],
     cost: "A switch spread through the code on the same type often signals that polymorphism (week 5) would be cleaner.",
+    tryIt:
+      "Write a switch expression that turns a day number into its name, then remove one case and see the compiler complain.",
     buildsOn: "Java week 2: if / else",
   },
   "J2:3": {
     why: "Most useful work repeats: process every item, retry until success, read until the end of input.",
-    problem: "Writing the same line 1,000 times is impossible, and you often do not know in advance how many times to repeat.",
+    problem:
+      "Writing the same line 1,000 times is impossible, and you often do not know in advance how many times to repeat.",
     how: "Repeat a block while a condition holds, or once for each item in a collection.",
-    tech: "while (cond) { } checks first; do { } while (cond); runs at least once; for (int i = 0; i < n; i++) { } bundles start, condition and step; for (String s : list) { } visits each element. break exits the loop, continue jumps to the next iteration. A loop inside a loop runs the inner body (outer count × inner count) times.",
+    tech: [
+      "while (cond) { } checks the condition before each run; do { } while (cond); always runs at least once.",
+      "for (int i = 0; i < n; i++) { } bundles start, condition and step in one line.",
+      "for (String s : list) { } (the enhanced for) visits each element without an index.",
+      "break leaves the loop; continue skips to the next round.",
+      "A loop inside a loop runs its inner body (outer count × inner count) times, which is where O(n²) code comes from (week 10).",
+    ],
     cost: "Off-by-one errors (< versus <=) and infinite loops are the classic bugs. Nested loops are where O(n²) costs come from (week 10).",
+    tryIt:
+      "Print a multiplication table with nested for loops, then use break to stop at the first product over 50.",
     buildsOn: "Java week 2: Boolean logic",
   },
   "J2:4": {
     why: "As programs grow, the same steps are needed in many places, and one long list of instructions becomes impossible to understand.",
-    problem: "Copy-pasted code means every bug must be fixed in many places, and a 500-line main cannot be understood or tested.",
+    problem:
+      "Copy-pasted code means every bug must be fixed in many places, and a 500-line main cannot be understood or tested.",
     how: "Give a named, reusable block of code inputs and an output. Callers only need to know what it does, not how.",
-    tech: "static int add(int a, int b) { return a + b; }. Parameters are the names in the definition; arguments are the values passed in a call. The return type says what comes back, or void for nothing. Overloading means several methods share a name but take different parameter lists, and the compiler picks one by the argument types.",
+    tech: [
+      "static int add(int a, int b) { return a + b; }. Parameters are the names in the definition; arguments are the values passed in a call.",
+      "The return type says what comes back, or void for nothing. Overloading means several methods share a name but take different parameter lists, and the compiler picks one by the argument types.",
+    ],
     cost: "Too many tiny methods can scatter logic; too few large ones hide it. A good method does one thing that its name describes.",
+    tryIt:
+      "Take a program you wrote this week and move a repeated block into a method with parameters and a return value.",
     buildsOn: "Java week 2: Loops",
   },
   "J2:5": {
     why: "Large programs use thousands of names, and the same short name (i, count) appears in many places.",
-    problem: "If every variable were visible everywhere, any code could accidentally change any other code's variables.",
+    problem:
+      "If every variable were visible everywhere, any code could accidentally change any other code's variables.",
     how: "Make a variable exist only inside the block where it is declared.",
-    tech: "A local variable lives from its declaration to the closing brace of its block. A variable declared in a for header exists only inside the loop. Method parameters are local to the method. Inner blocks can see outer variables, but Java does not allow redeclaring the same local name in an inner block.",
+    tech: [
+      "A local variable lives from its declaration to the closing brace of its block.",
+      "A variable declared in a for header exists only inside the loop. Method parameters are local to the method.",
+      "Inner blocks can see outer variables, but Java does not allow redeclaring the same local name in an inner block.",
+    ],
     cost: "Variables with a wider scope than needed invite bugs. Declare each variable as close as possible to where it is used.",
+    tryIt:
+      "Declare a variable inside an if block and try to use it after the block, and read the compiler error.",
     buildsOn: "Java week 2: Methods",
   },
   "J2:6": {
     why: "When you call a method with a variable, you need to know whether the method can change your variable.",
-    problem: "Many beginners believe Java passes objects \"by reference\", then get confused when reassigning a parameter has no effect outside the method.",
+    problem:
+      'Many beginners believe Java passes objects "by reference", then get confused when reassigning a parameter has no effect outside the method.',
     how: "Java always copies the value of the argument into the parameter. For objects, that value is a reference, so the method gets a copy of the reference that points at the same object.",
-    tech: "void f(int x) { x = 5; } does not change the caller's int. void g(List<Integer> l) { l.add(1); } does change the caller's list, because both references point at one object. void h(List<Integer> l) { l = new ArrayList<>(); } does not affect the caller, because only the local copy of the reference changed.",
+    tech: [
+      "Java always passes a copy of the value. For a primitive, that's a copy of the number; for an object, it's a copy of the reference (the arrow pointing at the object).",
+      "void f(int x) { x = 5; } does not change the caller's int.",
+      "void g(List<Integer> l) { l.add(1); } does change the caller's list, because both references point at the same object.",
+      "void h(List<Integer> l) { l = new ArrayList<>(); } does not affect the caller: only the method's own copy of the reference was pointed somewhere else.",
+    ],
     cost: "Methods that mutate objects passed in can surprise callers. Prefer returning new values, or document the mutation clearly.",
+    tryIt:
+      "Write a method that sets its int parameter to 0 and another that clears a list passed in, then print both after calling them.",
     buildsOn: "Java week 2: Methods",
   },
   "J2:7": {
     why: "Methods call methods that call other methods. Each needs its own local variables, and each must know where to return.",
-    problem: "If all calls shared one area of memory, a method calling another would overwrite its own variables, and recursion would be impossible.",
+    problem:
+      "If all calls shared one area of memory, a method calling another would overwrite its own variables, and recursion would be impossible.",
     how: "Push a new frame onto a stack for every call, holding that call's variables and return address, and pop it when the call returns.",
-    tech: "Each frame holds parameters, local variables and the place to resume in the caller. main's frame is at the bottom. The most recent call is on top, and only the top frame runs. A stack trace is a printout of this stack at the moment of an exception, which tells you exactly how the program got there.",
+    tech: [
+      "Each frame holds parameters, local variables and the place to resume in the caller. main's frame is at the bottom.",
+      "The most recent call is on top, and only the top frame runs. A stack trace is a printout of this stack at the moment of an exception, which tells you exactly how the program got there.",
+    ],
     cost: "Each thread's stack is limited (often around 512 KB to 1 MB), so very deep call chains throw StackOverflowError.",
-    buildsOn: "Main week 2: Memory (the stack)",
+    tryIt:
+      "Set a breakpoint inside a recursive method in IntelliJ, debug it, and watch the Frames panel grow with each call.",
+    buildsOn: "Java week 2: Methods",
   },
   "J2:8": {
     why: "Some problems are naturally defined in terms of smaller versions of themselves: a folder contains folders, and a factorial is n times a smaller factorial.",
-    problem: "Writing such problems with plain loops can be awkward and needs your own bookkeeping.",
+    problem:
+      "Writing such problems with plain loops can be awkward and needs your own bookkeeping.",
     how: "Let a method call itself on a smaller input, and stop at a simplest case that is answered directly.",
-    tech: "int fact(int n) { if (n <= 1) return 1; return n * fact(n - 1); }. The base case stops the recursion; the recursive case makes progress toward it. Each call gets its own stack frame (the previous topic). Naive recursive Fibonacci recomputes the same values exponentially many times, which dynamic programming (week 29) fixes.",
+    tech: [
+      "int fact(int n) { if (n <= 1) return 1; return n * fact(n - 1); }. The base case stops the recursion; the recursive case makes progress toward it.",
+      "Each call gets its own stack frame (the previous topic). Naive recursive Fibonacci recomputes the same values exponentially many times, which dynamic programming (week 29) fixes.",
+    ],
     cost: "Missing or unreachable base cases cause StackOverflowError. Deep recursion uses stack memory where a loop would not.",
+    tryIt:
+      "Write factorial recursively, then call it with no base case and read the StackOverflowError.",
     buildsOn: "Java week 2: The call stack",
   },
 
   // ---- Week 3: Arrays, strings and memory ----
   "J3:0": {
     why: "Programs handle many values of the same kind: scores, temperatures, pixels.",
-    problem: "A separate variable for each of 1,000 values is impossible to write or loop over.",
+    problem:
+      "A separate variable for each of 1,000 values is impossible to write or loop over.",
     how: "Store a fixed number of same-typed values under one name and access each by its position, starting at 0.",
-    tech: "int[] a = new int[5]; or int[] a = {3, 1, 4};. a[0] is the first element and a.length the size. New arrays are filled with default values: 0, false or null. Accessing a[5] on a 5-element array throws ArrayIndexOutOfBoundsException, because Java checks every index.",
+    tech: [
+      "int[] a = new int[5]; or int[] a = {3, 1, 4};. a[0] is the first element and a.length the size.",
+      "New arrays are filled with default values: 0, false or null. Accessing a[5] on a 5-element array throws ArrayIndexOutOfBoundsException, because Java checks every index.",
+    ],
     cost: "The size is fixed at creation. Index mistakes are the most common array bug.",
+    tryIt:
+      "Create an int[5], print it with Arrays.toString to see the default zeros, then access index 5 and read the exception.",
     buildsOn: "Java week 2: Loops",
   },
   "J3:1": {
     why: "We want to reach any element instantly, not by walking through the earlier ones.",
-    problem: "If elements were scattered in memory, finding the 1,000th one would mean following 999 links.",
+    problem:
+      "If elements were scattered in memory, finding the 1,000th one would mean following 999 links.",
     how: "Store elements one after another in a single block of memory, so any element's address can be computed directly from its index.",
-    tech: "address of a[i] = start address + i × element size. One multiplication and one addition make access O(1) whatever the index. Contiguous memory also uses the CPU cache well: loading a[0] brings neighbours along in the same 64-byte cache line.",
+    tech: [
+      "address of a[i] = start address + i × element size. One multiplication and one addition make access O(1) whatever the index.",
+      "Contiguous memory also uses the CPU cache well: loading a[0] brings neighbours along in the same 64-byte cache line.",
+    ],
     cost: "Growing needs a new, bigger block and a copy of everything. Inserting or deleting in the middle means shifting every later element, which is O(n).",
+    tryIt:
+      "Time reading element 0 and element 9,999,999 of a 10-million-element array. Both take the same time.",
     buildsOn: "Main week 1: Memory (caches and addresses)",
   },
   "J3:2": {
     why: "Much data is a grid: a chessboard, a spreadsheet, an image.",
-    problem: "A one-dimensional array makes you compute row × width + column by hand every time.",
+    problem:
+      "A one-dimensional array makes you compute row × width + column by hand every time.",
     how: "Make an array whose elements are themselves arrays: one per row.",
-    tech: "int[][] grid = new int[3][4]; grid[r][c]. In Java this really is an array of references to separate row arrays, so rows can have different lengths (jagged arrays): new int[3][] and then each row created separately. Loop over rows in the outer loop and columns in the inner loop.",
+    tech: [
+      "int[][] grid = new int[3][4]; grid[r][c]. In Java this really is an array of references to separate row arrays, so rows can have different lengths (jagged arrays): new int[3][] and then each row created separately.",
+      "Loop over rows in the outer loop and columns in the inner loop.",
+    ],
     cost: "Each row is a separate object, so a 2D array is not one contiguous block in Java. Traversing column by column is slower than row by row because of cache misses.",
+    tryIt:
+      "Build a jagged array where row i has i + 1 elements and print it as a triangle.",
     buildsOn: "Java week 3: Arrays",
   },
   "J3:3": {
     why: "Printing, sorting, filling and copying arrays are needed constantly.",
-    problem: "Rewriting these routines yourself is slow and buggy, and printing an array directly gives [I@1b6d3586, not its contents.",
     how: "Use the ready-made, well-tested static methods in java.util.Arrays.",
-    tech: "Arrays.toString(a) gives a readable string; Arrays.sort(a) sorts in place (dual-pivot quicksort for primitives, TimSort for objects, covered in week 19); Arrays.fill(a, 0); Arrays.copyOf(a, newLength) makes a resized copy; Arrays.equals(a, b) compares contents, unlike a.equals(b), which compares references.",
+    tech: [
+      "Arrays.toString(a) gives a readable string, and Arrays.fill(a, 0) sets every element.",
+      "Arrays.sort(a) sorts in place (you'll learn the algorithms it uses in week 19).",
+      "Arrays.copyOf(a, newLength) makes a resized copy.",
+      "Arrays.equals(a, b) compares contents; a.equals(b) only checks whether they are the same array.",
+    ],
     cost: "These hide costs: sort is O(n log n) and copyOf is O(n). Know the cost of every library call you use in a loop.",
+    tryIt:
+      "Sort an array with Arrays.sort, copy it with Arrays.copyOf, and compare two arrays with == and with Arrays.equals.",
     buildsOn: "Java week 3: Arrays",
   },
   "J3:4": {
     why: "You often do not know in advance how many items you will have.",
-    problem: "Fixed-size arrays force you to guess a size, then copy everything yourself when it runs out.",
+    problem:
+      "Fixed-size arrays force you to guess a size, then copy everything yourself when it runs out.",
     how: "Use a list object that hides an array inside and grows automatically.",
-    tech: "ArrayList<String> list = new ArrayList<>(); list.add(\"a\"); list.get(0); list.size(); list.remove(0). Internally it keeps an array with spare capacity; when that fills, it allocates a larger array (about 1.5 times) and copies the elements over. It stores objects only, so ints are boxed as Integer.",
+    tech: [
+      'ArrayList<String> list = new ArrayList<>(); list.add("a"); list.get(0); list.size(); list.remove(0).',
+      "Internally it keeps an array with spare capacity; when that fills, it allocates a larger array (about 1.5 times) and copies the elements over.",
+      "It stores objects only, so ints are boxed as Integer.",
+    ],
     cost: "Boxing costs memory and time compared with int[]. Removing from the front is O(n) because everything shifts. You will build your own in week 11.",
+    tryIt:
+      "Add 20 items to an ArrayList, remove one in the middle, and print the size and contents after each step.",
     buildsOn: "Java week 3: Arrays are fixed-size and contiguous",
   },
   "J3:5": {
     why: "Text processing (parsing input, searching, comparing) is a large part of real programs.",
-    problem: "Treating text as raw characters by hand is tedious, and changing a string shared by many parts of a program could break all of them.",
+    problem:
+      "Treating text as raw characters by hand is tedious, and changing a string shared by many parts of a program could break all of them.",
     how: "Make strings immutable and give them a rich set of methods that return new strings or answers.",
-    tech: "length(), charAt(i), substring(begin, end) (end is exclusive), indexOf(\"x\") (-1 if absent), split(\",\") (takes a regular expression), equals for contents, compareTo for alphabetical order (negative, 0 or positive). == compares references, so it may be true for pooled literals and false for equal strings built at runtime, a classic bug. Immutability makes strings safe as HashMap keys and safe to share between threads.",
-    cost: "Every \"modification\" creates a new object. split with special regex characters (. or |) needs escaping.",
+    tech: [
+      'length(), charAt(i), substring(begin, end) (end is not included), indexOf("x") (-1 if absent) and split(",") (which takes a regular expression, a text pattern) cover most daily work.',
+      "equals compares contents; compareTo gives alphabetical order (negative, 0 or positive).",
+      "== compares references, so it may be true for identical literals (which Java shares) and false for equal strings built at runtime. A classic bug.",
+      "Immutability makes strings safe to use as HashMap keys and safe to share between threads.",
+    ],
+    cost: 'Every "modification" creates a new object. split with special regex characters (. or |) needs escaping.',
+    tryIt:
+      'In jshell, call "hello".toUpperCase() and then print the original string to see it didn\'t change.',
     buildsOn: "Java week 1: String as a (special) object type",
   },
   "J3:6": {
     why: "Building text piece by piece, such as a report line by line, is very common.",
-    problem: "Because strings are immutable, s += x in a loop copies the whole string every time, so building a long string costs O(n²).",
+    problem:
+      "Because strings are immutable, s += x in a loop copies the whole string every time, so building a long string costs O(n²).",
     how: "Use a mutable buffer that appends in place and only creates the final String once.",
-    tech: "StringBuilder sb = new StringBuilder(); sb.append(x); then sb.toString(). Internally it keeps a char array with spare capacity and grows it like ArrayList, so appends are amortized O(1). It also offers insert, reverse, setCharAt and deleteCharAt.",
+    tech: [
+      "StringBuilder sb = new StringBuilder(); sb.append(x); then sb.toString().",
+      "Internally it keeps a char array with spare capacity and grows it like ArrayList, so appends are amortized O(1).",
+      "It also offers insert, reverse, setCharAt and deleteCharAt.",
+    ],
     cost: "StringBuilder is not thread-safe (StringBuffer is, but slower). For a handful of concatenations outside loops, + is fine and more readable.",
+    tryIt:
+      "Time building a 100,000-character string with += in a loop, then with StringBuilder.append.",
     buildsOn: "Java week 3: Strings",
   },
   "J3:7": {
     why: "Java manages memory for you, but you still need to know where values live to understand bugs and performance.",
-    problem: "Without a memory model, behaviour such as two variables changing together, or NullPointerException, seems random.",
+    problem:
+      "Without a memory model, behaviour such as two variables changing together, or NullPointerException, seems random.",
     how: "Local primitives and references live in method frames on the stack. Objects live on the heap, and variables hold references to them.",
-    tech: "int x = 5; stores 5 in the frame. Point p = new Point(); stores a reference in the frame and the Point object on the heap. Assigning q = p copies the reference, so both point at the same object. null is a reference to nothing; calling a method on it throws NullPointerException. Frames disappear when methods return; heap objects live until the garbage collector removes them.",
+    tech: [
+      "int x = 5; stores 5 in the frame. Point p = new Point(); stores a reference in the frame and the Point object on the heap.",
+      "Assigning q = p copies the reference, so both point at the same object. null is a reference to nothing; calling a method on it throws NullPointerException.",
+      "Frames disappear when methods return; heap objects live until the garbage collector removes them.",
+    ],
     cost: "Every object costs header overhead plus pointer chasing. NullPointerException is the most common Java runtime error; Optional and null checks help.",
+    tryIt:
+      "In IntelliJ's debugger, pause in a method that creates an object and look at the Variables panel: primitives show values, objects show a reference.",
     buildsOn: "Main week 2: Memory (stack and heap)",
   },
   "J3:8": {
     why: "In C, programmers free memory by hand, and forgetting or freeing twice causes leaks, crashes and security holes.",
-    problem: "Manual memory management is one of the largest sources of bugs in software.",
+    problem:
+      "Manual memory management is one of the largest sources of bugs in software.",
     how: "Let the runtime find objects that nothing can reach any more and reclaim their memory automatically.",
-    tech: "The GC starts from roots (local variables on stacks, static fields) and marks every object it can reach; everything else is garbage and its memory is reused. You never call free; you simply stop referring to objects. Week 9 covers how the JVM's collectors do this efficiently.",
+    tech: [
+      "The GC starts from roots (local variables on stacks, static fields) and marks every object it can reach; everything else is garbage and its memory is reused.",
+      "You never call free; you simply stop referring to objects. Week 9 covers how the JVM's collectors do this efficiently.",
+    ],
     cost: "GC costs CPU and can pause the program. Memory leaks are still possible: objects that stay reachable by mistake, such as entries in a static map that is never cleared.",
+    tryIt:
+      "Run a program that creates millions of short-lived objects with java -Xlog:gc and watch the collections in the output.",
     buildsOn: "Java week 3: Memory: stack vs heap",
   },
 
   // ---- Week 4: Classes and objects ----
   "J4:0": {
     why: "As programs grow to thousands of lines, loose variables and functions become impossible to keep track of.",
-    problem: "When any function can change any data, one change breaks code far away, and nobody can hold the whole program in their head.",
+    problem:
+      "When any function can change any data, one change breaks code far away, and nobody can hold the whole program in their head.",
     how: "Group data with the operations allowed on it into objects that model things in the problem (an Account, an Order), and let each object protect its own data.",
-    tech: "An object bundles state (fields) and behaviour (methods). A class is the blueprint. Objects interact by calling each other's methods rather than reaching into each other's data. This maps code to the problem domain and limits how far a change can spread.",
+    tech: [
+      "An object bundles state (fields) and behaviour (methods). A class is the blueprint.",
+      "Objects interact by calling each other's methods rather than reaching into each other's data.",
+      "This maps code to the problem domain and limits how far a change can spread.",
+    ],
     cost: "OOP can be overused: deep class hierarchies and needless abstractions add complexity. Simple data transformations are often clearer as functions (week 8).",
+    tryIt:
+      "Pick an everyday thing (a bank account or a playlist) and list its state and behaviour before writing any code.",
     buildsOn: "Java week 2: Methods",
   },
   "J4:1": {
     why: "A program usually needs many things of the same kind: many accounts, many users.",
     problem: "Writing separate variables and code for each one does not scale.",
     how: "Write one class describing what every such thing has and does, then create as many objects from it as needed.",
-    tech: "A class is a type, such as class Dog { String name; }. An object (instance) is one concrete Dog. new Dog() allocates memory on the heap for the fields, sets them to defaults, runs the constructor and returns a reference. Each object has its own copy of the instance fields.",
+    tech: [
+      "A class is a type, such as class Dog { String name; }. An object (instance) is one concrete Dog. new Dog() allocates memory on the heap for the fields, sets them to defaults, runs the constructor and returns a reference.",
+      "Each object has its own copy of the instance fields.",
+    ],
     cost: "Every object has memory overhead (a header of about 12-16 bytes), which matters for millions of tiny objects.",
+    tryIt:
+      "Create two objects from the same class, change a field on one, and print both.",
     buildsOn: "Java week 3: Memory: stack vs heap",
   },
   "J4:2": {
     why: "An object needs data, behaviour, and a guaranteed valid starting state.",
-    problem: "If objects could be created half-initialized, every method would have to check for missing values.",
+    problem:
+      "If objects could be created half-initialized, every method would have to check for missing values.",
     how: "Declare fields for state, methods for behaviour, and constructors that set up a valid object at creation time.",
-    tech: "A constructor has the class's name and no return type. With no constructor written, Java provides a no-argument default one. Overloaded constructors offer several ways to build an object, and this(...) lets one call another. this refers to the current object, used to tell a field from a parameter with the same name (this.name = name).",
+    tech: [
+      "A constructor has the class's name and no return type. With no constructor written, Java provides a no-argument default one.",
+      "Overloaded constructors offer several ways to build an object, and this(...) lets one call another. this refers to the current object, used to tell a field from a parameter with the same name (this.name = name).",
+    ],
     cost: "Constructors with many parameters are hard to call correctly; the Builder pattern (week 6) solves that.",
+    tryIt:
+      "Give a class two constructors and use this(...) so one calls the other.",
     buildsOn: "Java week 4: Class vs object",
   },
   "J4:3": {
     why: "Objects often have rules: a balance should never go negative, and an email must contain @.",
-    problem: "If any code can set fields directly, those rules are broken somewhere, and the bug shows up far from its cause.",
+    problem:
+      "If any code can set fields directly, those rules are broken somewhere, and the bug shows up far from its cause.",
     how: "Hide fields behind methods, and let those methods enforce the rules (invariants) on every change.",
-    tech: "Make fields private; expose behaviour (deposit, withdraw) or controlled getters and setters that validate input and throw on invalid values. An invariant is a condition that is always true for a valid object. Encapsulation lets you change the internal representation later without breaking callers.",
+    tech: [
+      "Make fields private; expose behaviour (deposit, withdraw) or controlled getters and setters that validate input and throw on invalid values.",
+      "An invariant is a condition that is always true for a valid object. Encapsulation lets you change the internal representation later without breaking callers.",
+    ],
     cost: "A getter and setter for every field gives the ceremony without the protection. Expose meaningful operations, not raw fields.",
+    tryIt:
+      "Make a BankAccount whose withdraw refuses to go below zero, and try to break it from outside the class.",
     buildsOn: "Java week 4: Fields, methods, constructors",
   },
   "J4:4": {
     why: "Large codebases need boundaries saying which parts other code may depend on.",
-    problem: "If everything is public, every internal detail becomes something others rely on, and you can never change it.",
+    problem:
+      "If everything is public, every internal detail becomes something others rely on, and you can never change it.",
     how: "Mark every class, field and method with how widely it may be used.",
-    tech: "private: only inside this class. No modifier (package-private): only inside the same package. protected: the package plus subclasses. public: everywhere. Start with the most restrictive level and open up only when needed.",
+    tech: [
+      "private: only inside this class. No modifier (package-private): only inside the same package. protected: the package plus subclasses. public: everywhere.",
+      "Start with the most restrictive level and open up only when needed.",
+    ],
     cost: "Too restrictive is a minor inconvenience; too open is a long-term maintenance cost. protected fields in particular leak implementation details to subclasses.",
+    tryIt:
+      "Put two classes in different packages and try to read a private, a package-private and a public field across them.",
     buildsOn: "Java week 4: Encapsulation",
   },
   "J4:5": {
     why: "Some data and behaviour belong to the concept, not to any one object: a counter of all accounts, or Math.max.",
-    problem: "Creating an object just to call a utility method is wasteful, and per-object copies of shared data get out of sync.",
+    problem:
+      "Creating an object just to call a utility method is wasteful, and per-object copies of shared data get out of sync.",
     how: "Mark such members static so they belong to the class itself. Mark values that must not change as final.",
-    tech: "static fields exist once per class; static methods are called as ClassName.method() and cannot use this. final on a variable means it can be assigned only once; on a field it must be set by the end of the constructor. static final is a constant. A final reference cannot be repointed, but the object it points to can still change.",
+    tech: [
+      "static fields exist once per class; static methods are called as ClassName.method() and cannot use this. final on a variable means it can be assigned only once; on a field it must be set by the end of the constructor. static final is a constant.",
+      "A final reference cannot be repointed, but the object it points to can still change.",
+    ],
     cost: "Mutable static state is global state: hard to test and unsafe across threads. Keep static for constants and pure utilities.",
+    tryIt:
+      "Add a static counter that counts how many objects were created, and print it after creating three.",
     buildsOn: "Java week 4: Fields, methods, constructors",
   },
   "J4:6": {
     why: "When you print or log an object, you want to see what it contains.",
-    problem: "By default, printing an object gives something like Dog@1b6d3586, which is useless for debugging.",
     how: "Override toString() to return a readable description, which Java calls automatically when the object is printed or concatenated.",
-    tech: "@Override public String toString() { return \"Dog{name=\" + name + \"}\"; }. The default comes from Object and prints the class name plus a hash. Records (record Dog(String name) {}) generate toString, equals and hashCode automatically.",
+    tech: [
+      '@Override public String toString() { return "Dog{name=" + name + "}"; }.',
+      "The default comes from Object and prints the class name plus a hash. Records (record Dog(String name) {}) generate toString, equals and hashCode automatically.",
+    ],
     cost: "Never include secrets such as passwords or tokens in toString; it ends up in logs.",
+    tryIt: "Print an object before and after overriding toString().",
     buildsOn: "Java week 4: Fields, methods, constructors",
   },
   "J4:7": {
     why: "Real programs manage collections of domain objects: a list of students, a cart of items.",
-    problem: "Parallel arrays (names[], ages[]) for each field fall out of sync and are painful to sort or filter.",
+    problem:
+      "Parallel arrays (names[], ages[]) for each field fall out of sync and are painful to sort or filter.",
     how: "Keep one list of objects, each holding all of its own data.",
-    tech: "List<Student> students = new ArrayList<>(); students.add(new Student(\"A\", 20));. The list holds references, not copies, so changing an object through one reference is visible through the list. Iterate with for (Student s : students).",
+    tech: [
+      'List<Student> students = new ArrayList<>(); students.add(new Student("A", 20));.',
+      "The list holds references, not copies, so changing an object through one reference is visible through the list. Iterate with for (Student s : students).",
+    ],
     cost: "Searching a list is O(n). For lookups by key, use a Map (week 7).",
+    tryIt:
+      "Store five objects of your own class in an ArrayList and print the one with the largest field value.",
     buildsOn: "Java week 3: ArrayList introduction",
   },
   "J4:8": {
     why: "Objects are reached through references, so several variables can lead to the same object.",
-    problem: "Without understanding this, changing one variable unexpectedly changes another, and accidental sharing causes hard-to-find bugs.",
+    problem:
+      "Without understanding this, changing one variable unexpectedly changes another, and accidental sharing causes hard-to-find bugs.",
     how: "Remember that assigning an object variable copies the arrow, not the object.",
-    tech: "Dog a = new Dog(); Dog b = a; b.name = \"Rex\"; now a.name is also \"Rex\", because there is one object and two references. a == b checks whether they are the same object. Passing an object to a method shares it (Java week 2: Pass-by-value). To get an independent copy, write a copy constructor or copy method.",
+    tech: [
+      'Dog a = new Dog(); Dog b = a; b.name = "Rex"; now a.name is also "Rex", because there is one object and two references. a == b checks whether they are the same object.',
+      "Passing an object to a method shares it (Java week 2: Pass-by-value). To get an independent copy, write a copy constructor or copy method.",
+    ],
     cost: "Shared mutable objects are a major source of bugs, especially with threads. Immutable objects avoid the problem entirely.",
+    tryIt:
+      "Assign one object to two variables, change it through one, and print it through the other.",
     buildsOn: "Java week 2: Pass-by-value",
   },
   "J4:9": {
     why: "Large programs and libraries contain thousands of classes, and different authors pick the same names.",
-    problem: "Two classes called List or Date would clash, and one flat folder of thousands of files is unmanageable.",
+    problem:
+      "Two classes called List or Date would clash, and one flat folder of thousands of files is unmanageable.",
     how: "Organise classes into named, hierarchical packages and refer to classes from other packages by importing them.",
-    tech: "package com.example.bank; at the top of a file, matching the folder path com/example/bank/. import java.util.List; brings one class in by its short name; java.lang (String, Math) is imported automatically. Packages also form the boundary for package-private access.",
+    tech: [
+      "package com.example.bank; at the top of a file, matching the folder path com/example/bank/. import java.util.List; brings one class in by its short name; java.lang (String, Math) is imported automatically.",
+      "Packages also form the boundary for package-private access.",
+    ],
     cost: "Very deep or poorly named package trees are hard to navigate. Group by feature rather than by technical layer as projects grow.",
+    tryIt:
+      "Move a class into a package, add the package line, and fix the import in the class that uses it.",
     buildsOn: "Java week 4: Access modifiers",
   },
 
   // ---- Week 5: Inheritance, polymorphism, abstraction, interfaces ----
   "J5:0": {
     why: "Object-oriented design rests on four ideas that together manage complexity in large programs.",
-    problem: "Without these ideas, OOP is just functions inside classes, with all the same tangles.",
+    problem:
+      "Without these ideas, OOP is just functions inside classes, with all the same tangles.",
     how: "Hide internals (encapsulation), share common behaviour (inheritance), treat different types through one interface (polymorphism), and expose only what matters (abstraction).",
-    tech: "Encapsulation protects invariants (week 4). Inheritance lets a class extend another and reuse its code. Polymorphism lets one piece of code work with many types through a shared supertype. Abstraction defines what something does without saying how, through abstract classes and interfaces.",
+    tech: [
+      "Encapsulation protects invariants (week 4). Inheritance lets a class extend another and reuse its code.",
+      "Polymorphism lets one piece of code work with many types through a shared supertype.",
+      "Abstraction defines what something does without saying how, through abstract classes and interfaces.",
+    ],
     cost: "Each pillar can be misused. Inheritance in particular is often overused, which is why week 6 teaches composition.",
+    tryIt:
+      "In a class you wrote, mark which lines show encapsulation, inheritance, polymorphism and abstraction.",
     buildsOn: "Java week 4: Encapsulation",
   },
   "J5:1": {
     why: "Many types share most of their behaviour: every Shape has a name and a colour.",
-    problem: "Copying shared fields and methods into every class duplicates code and bugs.",
+    problem:
+      "Copying shared fields and methods into every class duplicates code and bugs.",
     how: "Let a subclass extend a parent class, inheriting its fields and methods and adding or changing what differs.",
-    tech: "class Dog extends Animal { }. super(...) calls the parent constructor and must be the first line of a constructor; if you leave it out, Java inserts super() automatically. super.method() calls the parent's version of a method. A class can extend only one class in Java, which avoids ambiguity about which parent's method to use. Use inheritance only for true \"is-a\" relationships.",
+    tech: [
+      "class Dog extends Animal { }. super(...) calls the parent constructor and must be the first line of a constructor; if you leave it out, Java inserts super() automatically. super.method() calls the parent's version of a method.",
+      "A class can extend only one class in Java, which avoids ambiguity about which parent's method to use.",
+      'Use inheritance only for true "is-a" relationships.',
+    ],
     cost: "Subclasses are tightly coupled to their parent's internals, so changes to the parent can break them (the fragile base class problem). Deep hierarchies are hard to follow.",
+    tryIt:
+      "Write Animal and Dog extends Animal with constructors that print a line, and see which runs first.",
     buildsOn: "Java week 4: Class vs object",
   },
   "J5:2": {
     why: "A subclass often needs to do the same operation differently: every Animal speaks, but differently.",
-    problem: "Without overriding, the caller would need if-else chains checking types to pick the right behaviour.",
+    problem:
+      "Without overriding, the caller would need if-else chains checking types to pick the right behaviour.",
     how: "Let a subclass replace an inherited method, and let the runtime pick the version matching the object's real type.",
-    tech: "Overriding: the same signature in a subclass replaces the parent's method; @Override makes the compiler check that you really are overriding. Overloading: the same name with different parameters, chosen at compile time. Dynamic dispatch: for animal.speak(), the JVM looks at the actual object's class at runtime, even if the variable's type is Animal, using a per-class method table (vtable).",
+    tech: [
+      "Overriding: the same signature in a subclass replaces the parent's method; @Override makes the compiler check that you really are overriding.",
+      "Overloading: the same name with different parameters, chosen at compile time.",
+      "Dynamic dispatch: for animal.speak(), the JVM looks at the actual object's class at runtime, even if the variable's type is Animal, using a per-class method table (vtable).",
+    ],
     cost: "Overloading combined with inheritance can surprise you, because overloads are chosen by the declared type, not the runtime type.",
+    tryIt:
+      "Override a method, then misspell its name with @Override on it and read the compiler error.",
     buildsOn: "Java week 5: Inheritance",
   },
   "J5:3": {
     why: "We want to write code once that works for every kind of thing that shares a behaviour.",
-    problem: "Code that checks each concrete type has to be edited every time a new type is added.",
+    problem:
+      "Code that checks each concrete type has to be edited every time a new type is added.",
     how: "Refer to objects through a general type. Each actual object responds in its own way.",
-    tech: "Animal a = new Dog(); is upcasting and always safe. List<Animal> can hold Dogs and Cats, and calling speak() on each runs the right version. Downcasting ((Dog) a) is needed to use Dog-only methods and throws ClassCastException if wrong; check with instanceof first, or use pattern matching: if (a instanceof Dog d) { d.fetch(); }.",
+    tech: [
+      "Animal a = new Dog(); is upcasting and always safe. List<Animal> can hold Dogs and Cats, and calling speak() on each runs the right version.",
+      "Downcasting ((Dog) a) is needed to use Dog-only methods and throws ClassCastException if wrong; check with instanceof first, or use pattern matching: if (a instanceof Dog d) { d.fetch(); }.",
+    ],
     cost: "Frequent downcasting is a design smell; it usually means the behaviour belongs in the shared type.",
+    tryIt:
+      "Put a Dog and a Cat in a List<Animal> and call speak() on each in a loop.",
     buildsOn: "Java week 5: Method overriding and dynamic dispatch",
   },
   "J5:4": {
     why: "Some parent classes describe a general idea that should never exist on its own, such as Shape.",
-    problem: "If Shape could be instantiated, callers could create meaningless objects, and subclasses might forget to implement area().",
+    problem:
+      "If Shape could be instantiated, callers could create meaningless objects, and subclasses might forget to implement area().",
     how: "Mark the class abstract so it cannot be instantiated, and mark the methods that every subclass must implement as abstract.",
-    tech: "abstract class Shape { abstract double area(); String describe() { return \"Area: \" + area(); } }. An abstract class can have fields, constructors and concrete methods. A concrete subclass must implement every abstract method or be abstract itself. This enables the Template Method pattern: the parent defines the steps and subclasses fill them in.",
+    tech: [
+      'abstract class Shape { abstract double area(); String describe() { return "Area: " + area(); } }.',
+      "An abstract class can have fields, constructors and concrete methods. A concrete subclass must implement every abstract method or be abstract itself.",
+      "This enables the Template Method pattern: the parent defines the steps and subclasses fill them in.",
+    ],
     cost: "Abstract classes still use your one allowed parent class, and they couple subclasses to shared state.",
+    tryIt:
+      "Try new Shape() on an abstract class and read the error, then create a concrete subclass instead.",
     buildsOn: "Java week 5: Inheritance",
   },
   "J5:5": {
     why: "Unrelated classes often share a capability: a File, a Socket and a Database can all be closed.",
-    problem: "Single inheritance means a class cannot inherit from several parents, but it may need to play several roles.",
+    problem:
+      "Single inheritance means a class cannot inherit from several parents, but it may need to play several roles.",
     how: "Define an interface, a named list of methods with no state, and let any class implement as many interfaces as it needs.",
-    tech: "interface Drawable { void draw(); } and class Circle implements Drawable, Comparable<Circle>. Code can depend on Drawable without knowing the concrete class. Default methods (default void reset() { ... }) let interfaces add behaviour without breaking existing implementations. Functional interfaces (one abstract method) can be implemented with lambdas (week 8).",
+    tech: [
+      "interface Drawable { void draw(); } and class Circle implements Drawable, Comparable<Circle>.",
+      "Code can depend on Drawable without knowing the concrete class. Default methods (default void reset() { ... }) let interfaces add behaviour without breaking existing implementations.",
+      "Functional interfaces (one abstract method) can be implemented with lambdas (week 8).",
+    ],
     cost: "Interfaces with dozens of methods are hard to implement; keep them small (Interface Segregation, week 6).",
+    tryIt:
+      "Make a class implement two interfaces, and call it through a variable of each interface type.",
     buildsOn: "Java week 5: Abstract classes",
   },
   "J5:6": {
     why: "Java offers two ways to abstract, and choosing wrongly makes designs rigid.",
-    problem: "Using an abstract class where an interface fits locks implementers out of extending anything else.",
+    problem:
+      "Using an abstract class where an interface fits locks implementers out of extending anything else.",
     how: "Use an interface for a capability many unrelated classes may have, and an abstract class for a family of closely related classes that share state and code.",
-    tech: "Interfaces have no instance state, a class can implement many, and they define contracts (Comparable, Runnable). Abstract classes can have fields and constructors, a class can extend only one, and they suit shared implementation. Common pattern: an interface for the contract plus an optional abstract base class for convenience (List plus AbstractList).",
+    tech: [
+      "Interfaces have no instance state, a class can implement many, and they define contracts (Comparable, Runnable).",
+      "Abstract classes can have fields and constructors, a class can extend only one, and they suit shared implementation.",
+      "Common pattern: an interface for the contract plus an optional abstract base class for convenience (List plus AbstractList).",
+    ],
     cost: "Default to interfaces; they keep coupling lower and are easier to substitute in tests.",
+    tryIt:
+      "Write the same Shape design once as an abstract class and once as an interface, and list what each version allowed.",
     buildsOn: "Java week 5: Interfaces",
   },
   "J5:7": {
     why: "Every class needs basic operations: compare for equality, produce a hash, describe itself. Java gives them all a common root.",
-    problem: "By default, two objects with identical contents are not equal, because Object.equals compares references. Hash-based collections then cannot find your keys.",
+    problem:
+      "By default, two objects with identical contents are not equal, because Object.equals compares references. Hash-based collections then cannot find your keys.",
     how: "Override equals to compare meaningful fields, and override hashCode so that equal objects always produce the same hash.",
-    tech: "The contract: if a.equals(b), then a.hashCode() == b.hashCode(). Unequal objects may share a hash, but fewer collisions is better. Override both together, using the same fields (Objects.equals and Objects.hash help). If you override equals but not hashCode, a HashMap will store \"equal\" keys in different buckets and fail to find them (week 13). equals must be reflexive, symmetric and transitive.",
+    tech: [
+      "The contract: if a.equals(b), then a.hashCode() == b.hashCode(). Unequal objects may share a hash, but fewer collisions is better.",
+      "Override both together, using the same fields (Objects.equals and Objects.hash help).",
+      'If you override equals but not hashCode, a HashMap will store "equal" keys in different buckets and fail to find them (week 13). equals must be reflexive, symmetric and transitive.',
+    ],
     cost: "Using mutable fields in hashCode breaks a HashMap if the object changes while it is a key. Records generate correct versions for you.",
+    tryIt:
+      "Put two equal Point objects in a HashSet without overriding equals and hashCode, print its size, then override both and run it again.",
     buildsOn: "Java week 4: toString()",
   },
   "J5:8": {
     why: "Sometimes a class's design depends on nobody changing its behaviour, or on a fixed set of subtypes.",
-    problem: "Uncontrolled subclassing can break invariants (a subclass of String could pretend to be immutable but not be), and open hierarchies stop the compiler from checking that every case is handled.",
+    problem:
+      "Uncontrolled subclassing can break invariants (a subclass of String could pretend to be immutable but not be), and open hierarchies stop the compiler from checking that every case is handled.",
     how: "Mark classes or methods final to forbid extension or overriding, and use sealed classes to list exactly which subclasses may exist.",
-    tech: "final class Money {} cannot be extended; a final method cannot be overridden. sealed interface Shape permits Circle, Square {} allows only those two, and each must be final, sealed or non-sealed. With sealed types and records, a switch over Shape can be checked for completeness by the compiler.",
+    tech: [
+      "final class Money {} cannot be extended; a final method cannot be overridden. sealed interface Shape permits Circle, Square {} allows only those two, and each must be final, sealed or non-sealed.",
+      "With sealed types and records, a switch over Shape can be checked for completeness by the compiler.",
+    ],
     cost: "final limits reuse, and some frameworks that generate subclasses (proxies for mocking or ORMs) need non-final classes.",
+    tryIt:
+      "Mark a class final and try to extend it, then declare a sealed interface with two permitted classes.",
     buildsOn: "Java week 5: Inheritance",
   },
 
   // ---- Week 6: OOP design, SOLID and exceptions ----
   "J6:0": {
     why: "Inheritance is the obvious way to reuse code, but it ties classes together tightly.",
-    problem: "Deep inheritance trees break when requirements change: a Bird superclass with fly() is wrong for penguins, and a class cannot inherit from two parents.",
+    problem:
+      "Deep inheritance trees break when requirements change: a Bird superclass with fly() is wrong for penguins, and a class cannot inherit from two parents.",
     how: "Build objects out of other objects (has-a) and delegate work to them, instead of inheriting (is-a).",
-    tech: "Instead of class Car extends Engine, write class Car { private final Engine engine; }. Behaviour can then be swapped by passing a different Engine, even at runtime. Use inheritance only when the subclass truly is a kind of the parent and can stand in anywhere the parent is used (Liskov).",
+    tech: [
+      "Instead of class Car extends Engine, write class Car { private final Engine engine; }.",
+      "Behaviour can then be swapped by passing a different Engine, even at runtime.",
+      "Use inheritance only when the subclass truly is a kind of the parent and can stand in anywhere the parent is used (Liskov).",
+    ],
     cost: "Composition needs a little more code (delegating methods), but it keeps classes independent and testable.",
+    tryIt:
+      "Rewrite one inheritance relationship from your week 5 code as composition and compare how easy each is to change.",
     buildsOn: "Java week 5: Inheritance",
   },
   "J6:1": {
     why: "Engineers need a way to say whether a design is good before it causes pain.",
-    problem: "Code where everything depends on everything breaks in many places with each change, and classes doing unrelated jobs are hard to understand.",
+    problem:
+      "Code where everything depends on everything breaks in many places with each change, and classes doing unrelated jobs are hard to understand.",
     how: "Aim for low coupling (modules depend on each other as little as possible) and high cohesion (everything in a module serves one purpose).",
-    tech: "Coupling is how much one module knows about another's internals; signs of high coupling are long import lists, reaching through chains (a.getB().getC().doX()) and shared mutable state. Cohesion is how related a module's responsibilities are; a UserService that also formats invoices has low cohesion. Interfaces, encapsulation and small focused classes reduce coupling and raise cohesion.",
+    tech: [
+      "Coupling is how much one module knows about another's internals; signs of high coupling are long import lists, reaching through chains (a.getB().getC().doX()) and shared mutable state.",
+      "Cohesion is how related a module's responsibilities are; a UserService that also formats invoices has low cohesion.",
+      "Interfaces, encapsulation and small focused classes reduce coupling and raise cohesion.",
+    ],
     cost: "Chasing zero coupling leads to over-abstraction. Some coupling is necessary; aim for it to be explicit and narrow.",
+    tryIt:
+      "Pick one class in your code and list every other class it depends on. Fewer is looser coupling.",
     buildsOn: "Java week 6: Composition vs inheritance",
   },
   "J6:2": {
     why: "Teams kept running into the same design problems in object-oriented code, and these five principles summarise the lessons.",
-    problem: "Without guiding principles, classes grow into god objects, every change ripples outward, and code cannot be tested in isolation.",
+    problem:
+      "Without guiding principles, classes grow into god objects, every change ripples outward, and code cannot be tested in isolation.",
     how: "Follow five rules of thumb that keep classes focused, extensible and loosely coupled.",
-    tech: "Single Responsibility: a class should have one reason to change. Open/Closed: add behaviour by adding new code (for example a new class implementing an interface), not by editing tested code. Liskov Substitution: a subclass must work anywhere its parent is expected, without surprises. Interface Segregation: many small interfaces beat one big one, so clients depend only on what they use. Dependency Inversion: high-level code depends on abstractions, and concrete dependencies are passed in through constructors (dependency injection).",
+    tech: [
+      "Single Responsibility: a class should have one reason to change. Open/Closed: add behaviour by adding new code (for example a new class implementing an interface), not by editing tested code.",
+      "Liskov Substitution: a subclass must work anywhere its parent is expected, without surprises.",
+      "Interface Segregation: many small interfaces beat one big one, so clients depend only on what they use.",
+      "Dependency Inversion: high-level code depends on abstractions, and concrete dependencies are passed in through constructors (dependency injection).",
+    ],
     cost: "Applied dogmatically, SOLID produces many tiny classes and interfaces with one implementation. Apply it where change is likely.",
+    tryIt:
+      "Find a class in your earlier code that does two unrelated jobs and split it in two.",
     buildsOn: "Java week 6: Coupling and cohesion",
   },
   "J6:3": {
     why: "Designs need to be discussed before and alongside code, and code alone is too detailed to see the shape.",
-    problem: "Explaining how ten classes relate in words is slow and ambiguous.",
+    problem:
+      "Explaining how ten classes relate in words is slow and ambiguous.",
     how: "Draw boxes for classes and standard arrows for their relationships.",
-    tech: "A class box has three parts: name, fields and methods (+ public, - private). A solid line is an association; a hollow-triangle arrow is inheritance; a dashed hollow-triangle arrow is implementing an interface; a filled diamond is composition (the part dies with the whole); a hollow diamond is aggregation. Multiplicities such as 1 and 0..* say how many.",
+    tech: [
+      "A class box has three parts: name, fields and methods (+ public, - private).",
+      "A solid line is an association; a hollow-triangle arrow is inheritance; a dashed hollow-triangle arrow is implementing an interface; a filled diamond is composition (the part dies with the whole); a hollow diamond is aggregation.",
+      "Multiplicities such as 1 and 0..* say how many.",
+    ],
     cost: "Full UML is heavy and goes out of date quickly. Sketch only what helps the conversation.",
+    tryIt:
+      "Draw your week 5 shapes or payroll classes as a UML class diagram, then check it against the code.",
     buildsOn: "Java week 6: Composition vs inheritance",
   },
   "J6:4": {
     why: "The same design problems come up again and again, and experienced engineers found reliable solutions to them.",
-    problem: "Without shared solutions, each developer reinvents designs, often badly, and teams lack a vocabulary to discuss them.",
+    problem:
+      "Without shared solutions, each developer reinvents designs, often badly, and teams lack a vocabulary to discuss them.",
     how: "Learn named, proven solutions to common problems, so you can recognise and apply them and talk about them in one word.",
-    tech: "Strategy: swap algorithms behind an interface (different payment methods). Factory: hide which concrete class gets created. Builder: construct complex objects step by step with readable code. Singleton: exactly one instance, which is often an anti-pattern because it is global state that is hard to test (prefer injecting one instance). Observer: notify subscribers when something changes (event listeners). Adapter: wrap an incompatible interface so it fits the one you need. Decorator: wrap an object to add behaviour while keeping its interface (Java's BufferedReader around a Reader).",
+    tech: [
+      "Strategy: swap algorithms behind an interface (different payment methods).",
+      "Factory: hide which concrete class gets created. Builder: construct complex objects step by step with readable code.",
+      "Singleton: exactly one instance, which is often an anti-pattern because it is global state that is hard to test (prefer injecting one instance).",
+      "Observer: notify subscribers when something changes (event listeners).",
+      "Adapter: wrap an incompatible interface so it fits the one you need. Decorator: wrap an object to add behaviour while keeping its interface (Java's BufferedReader around a Reader).",
+    ],
     cost: "Patterns are tools, not goals. Forcing patterns into simple code makes it harder to read.",
+    tryIt:
+      "Replace an if/else chain that picks a calculation with Strategy objects chosen from a Map.",
     buildsOn: "Java week 6: SOLID",
   },
   "J6:5": {
     why: "Things go wrong at runtime: missing files, network failures, invalid input. Programs need a structured way to report and handle failures.",
-    problem: "Returning error codes is easy to ignore and clutters every call with checks, so errors get lost and programs continue in a broken state.",
+    problem:
+      "Returning error codes is easy to ignore and clutters every call with checks, so errors get lost and programs continue in a broken state.",
     how: "Throw an exception object that unwinds the call stack until some code that knows how to handle it catches it.",
-    tech: "Throwable has two branches: Error (serious JVM problems such as OutOfMemoryError; do not catch) and Exception. Checked exceptions (IOException) must be caught or declared with throws, so the compiler forces callers to think about them. Unchecked exceptions (RuntimeException and subclasses such as IllegalArgumentException) signal programming bugs. try { } catch (X e) { } finally { } runs finally whatever happens. try-with-resources (try (var in = new FileInputStream(f)) { }) closes resources automatically. throw raises an exception; throws declares that a method may raise one. Custom exceptions extend Exception or RuntimeException.",
+    tech: [
+      "Throwable has two branches: Error (serious JVM problems such as OutOfMemoryError; don't catch these) and Exception.",
+      "Checked exceptions (such as IOException) must be caught or declared with throws, so the compiler forces callers to think about them.",
+      "Unchecked exceptions (RuntimeException and its subclasses, such as IllegalArgumentException) usually signal programming bugs and need no declaration.",
+      "try { } catch (X e) { } finally { } runs the finally block whatever happens. try-with-resources (try (var in = new FileInputStream(f)) { }) closes files and connections automatically.",
+      "throw raises an exception; throws in a method signature declares that it may raise one. Custom exceptions extend Exception or RuntimeException.",
+    ],
     cost: "Exceptions are relatively expensive to create and should not be used for normal control flow. Catching and silently ignoring them hides real failures.",
+    tryIt:
+      "Read a file with try-with-resources, delete the file, run it again, and read the exception and its stack trace.",
     buildsOn: "Java week 2: The call stack",
   },
   "J6:6": {
-    why: "Not every \"no result\" is an error. Looking up a user who does not exist is normal.",
-    problem: "Throwing exceptions for expected cases is slow and noisy, while returning null leads to NullPointerExceptions far from the cause.",
+    why: 'Not every "no result" is an error. Looking up a user who does not exist is normal.',
+    problem:
+      "Throwing exceptions for expected cases is slow and noisy, while returning null leads to NullPointerExceptions far from the cause.",
     how: "Throw for exceptional situations the caller cannot reasonably expect. Return Optional when absence is a normal outcome, so the type itself tells the caller to handle it.",
-    tech: "Optional<User> findUser(id). Callers use isPresent, orElse(default), orElseThrow(), map and ifPresent. Use Optional for return types, not for fields or parameters. Throw for violated preconditions (invalid arguments) and failures such as I/O errors.",
-    cost: "Optional adds a small allocation, and overusing it (Optional<List<...>>) adds noise. An empty list is the better way to say \"no items\".",
+    tech: [
+      "Optional<User> findUser(id). Callers use isPresent, orElse(default), orElseThrow(), map and ifPresent.",
+      "Use Optional for return types, not for fields or parameters. Throw for violated preconditions (invalid arguments) and failures such as I/O errors.",
+    ],
+    cost: 'Optional adds a small allocation, and overusing it (Optional<List<...>>) adds noise. An empty list is the better way to say "no items".',
+    tryIt:
+      "Write a findUser method twice, once throwing when not found and once returning Optional, and compare the calling code.",
     buildsOn: "Java week 6: Exceptions",
   },
 
   // ---- Week 7: Generics and the Collections Framework ----
   "J7:0": {
     why: "Data structures such as lists work the same way for any element type, so we want to write them once.",
-    problem: "Before generics (Java 5), lists held plain Object: you had to cast every element you read, and a wrong type was only discovered at runtime with ClassCastException.",
+    problem:
+      "Before generics (Java 5), lists held plain Object: you had to cast every element you read, and a wrong type was only discovered at runtime with ClassCastException.",
     how: "Let classes and methods take type parameters, so the compiler knows what a container holds and checks every use.",
-    tech: "class Box<T> { T value; }. Generic method: static <T> T first(List<T> list). Bounded type: <T extends Comparable<T>> allows calling compareTo. Wildcards: List<? extends Number> lets you read Numbers (a producer); List<? super Integer> lets you add Integers (a consumer). PECS: Producer Extends, Consumer Super.",
+    tech: [
+      "class Box<T> { T value; }. Generic method: static <T> T first(List<T> list).",
+      "Bounded type: <T extends Comparable<T>> allows calling compareTo. Wildcards: List<? extends Number> lets you read Numbers (a producer); List<? super Integer> lets you add Integers (a consumer).",
+      "PECS: Producer Extends, Consumer Super.",
+    ],
     cost: "Generic signatures can become hard to read, and generics do not work with primitives (List<int> is illegal), which forces boxing.",
+    tryIt:
+      "Put a String into a raw List and read it back as Integer to see a runtime error, then use List<Integer> and see the compiler catch it.",
     buildsOn: "Java week 3: ArrayList introduction",
   },
   "J7:1": {
     why: "Generics were added years after Java shipped, and old compiled code had to keep working.",
-    problem: "Changing the JVM to understand generic types would have broken every existing library.",
+    problem:
+      "Changing the JVM to understand generic types would have broken every existing library.",
     how: "Check generic types at compile time, then erase them, so the bytecode looks like the old Object-based code.",
-    tech: "After compilation, List<String> and List<Integer> are both just List. The compiler inserts casts for you. As a result you cannot write new T(), you cannot check instanceof List<String>, and you cannot have overloads that differ only by type parameter. TypeScript also erases types, but entirely: no type information at all reaches the JavaScript output.",
+    tech: [
+      "After compilation, List<String> and List<Integer> are both just List. The compiler inserts casts for you.",
+      "As a result you cannot write new T(), you cannot check instanceof List<String>, and you cannot have overloads that differ only by type parameter.",
+      "TypeScript also erases types, but entirely: no type information at all reaches the JavaScript output.",
+    ],
     cost: "Type information is not available at runtime, so frameworks sometimes need workarounds such as passing Class<T> objects around.",
+    tryIt:
+      "Run javap -c on a class using List<String> and see that the bytecode only mentions List and Object.",
     buildsOn: "Java week 7: Generics",
   },
   "J7:2": {
     why: "Collections and generics only work with objects, but numbers in Java are primitives.",
     problem: "You cannot put an int directly into a List or a Map.",
     how: "Wrap each primitive in a matching class, and let the compiler convert back and forth automatically.",
-    tech: "Integer, Long, Double, Character, Boolean and others wrap the primitives. Autoboxing converts int to Integer automatically (list.add(5)); unboxing converts back. Integer caches the values -128 to 127, so == may be true for small numbers and false for large ones; always compare wrappers with equals. Unboxing a null Integer throws NullPointerException.",
+    tech: [
+      "Integer, Long, Double, Character, Boolean and others wrap the primitives.",
+      "Autoboxing converts int to Integer automatically (list.add(5)); unboxing converts back.",
+      "Integer caches the values -128 to 127, so == may be true for small numbers and false for large ones; always compare wrappers with equals.",
+      "Unboxing a null Integer throws NullPointerException.",
+    ],
     cost: "Boxing allocates objects, costing memory and time. In performance-critical loops, prefer primitive arrays.",
+    tryIt:
+      "In jshell, compare Integer a = 127, b = 127; a == b with the same thing using 128.",
     buildsOn: "Java week 7: Generics",
   },
   "J7:3": {
     why: "Programs need many kinds of collections (ordered lists, unique sets, key-value lookups, queues), and every library inventing its own would be chaos.",
-    problem: "Code written for one container type would not work with another, even when it only needs to loop over the elements.",
+    problem:
+      "Code written for one container type would not work with another, even when it only needs to loop over the elements.",
     how: "Define a family of interfaces describing what each kind of collection can do, with several implementations of each.",
-    tech: "Collection is the root for groups of elements. List: ordered, allows duplicates, index access. Set: no duplicates. Queue: elements processed in order (usually FIFO). Deque: add and remove at both ends. Map is separate: key-to-value pairs with unique keys. Declare variables by interface (List<String> names = new ArrayList<>()) so you can change the implementation later.",
+    tech: [
+      "Collection is the root for groups of elements. List: ordered, allows duplicates, index access. Set: no duplicates.",
+      "Queue: elements processed in order (usually FIFO). Deque: add and remove at both ends.",
+      "Map is separate: key-to-value pairs with unique keys. Declare variables by interface (List<String> names = new ArrayList<>()) so you can change the implementation later.",
+    ],
     cost: "Picking the right interface is part of design: it tells readers what you intend (a Set means duplicates are impossible).",
+    tryIt:
+      "Write the same few values into a List, a Set and a Map, and print each to see order and duplicates.",
     buildsOn: "Java week 5: Interfaces",
   },
   "J7:4": {
     why: "Each collection interface has several implementations with very different performance.",
-    problem: "Choosing the wrong one, for example LinkedList for random access, can make a program hundreds of times slower.",
+    problem:
+      "Choosing the wrong one, for example LinkedList for random access, can make a program hundreds of times slower.",
     how: "Know the data structure behind each implementation and what each operation costs.",
-    tech: "ArrayList: dynamic array; get O(1), add at end amortized O(1), insert or remove in the middle O(n). LinkedList: doubly linked list; add and remove at the ends O(1) but get(i) O(n), and poor cache behaviour. HashSet and HashMap: hash table; average O(1), no order. LinkedHashSet and LinkedHashMap: hash table plus a linked list, so iteration follows insertion order. TreeSet and TreeMap: red-black tree; O(log n), keeps keys sorted, supports floor and ceiling. ArrayDeque: circular array; the best stack and queue. PriorityQueue: binary heap; peek O(1), add and poll O(log n).",
+    tech: [
+      "ArrayList: a dynamic array; get O(1), add at the end amortized O(1), insert or remove in the middle O(n).",
+      "LinkedList: a chain of nodes linked both ways; add and remove at the ends O(1), but get(i) is O(n) and it uses the CPU cache poorly.",
+      "HashSet and HashMap: a hash table; O(1) on average, no order. LinkedHashSet and LinkedHashMap add a linked list so iteration follows insertion order.",
+      "TreeSet and TreeMap: a balanced search tree (red-black); O(log n), keys kept sorted, with floor and ceiling lookups.",
+      "ArrayDeque: a circular array, the best choice for a stack or a queue. PriorityQueue: a binary heap; peek O(1), add and poll O(log n).",
+      "You'll build each of these yourself in Part C, so for now learn which to pick and what each operation costs.",
+    ],
     cost: "In practice ArrayList beats LinkedList almost always because of cache locality. You will build each of these in Part C to see why.",
+    tryIt: "Time 100,000 get(i) calls on an ArrayList and on a LinkedList.",
     buildsOn: "Java week 7: The Collections hierarchy",
   },
   "J7:5": {
     why: "Every collection must support visiting each element, whatever its internal structure.",
-    problem: "Looping by index only works for lists, and changing a collection while looping over it can skip or repeat elements.",
+    problem:
+      "Looping by index only works for lists, and changing a collection while looping over it can skip or repeat elements.",
     how: "Give every collection an Iterator that walks its elements in a standard way, and detect modifications during iteration.",
-    tech: "Iterator has hasNext(), next() and remove(). The enhanced for loop uses an iterator behind the scenes. If the collection is modified during iteration other than through iterator.remove(), the next call to next() throws ConcurrentModificationException (fail-fast, detected with an internal modification counter). Safe removal: it.remove(), or list.removeIf(predicate).",
+    tech: [
+      "Iterator has hasNext(), next() and remove(). The enhanced for loop uses an iterator behind the scenes.",
+      "If the collection is modified during iteration other than through iterator.remove(), the next call to next() throws ConcurrentModificationException (fail-fast, detected with an internal modification counter).",
+      "Safe removal: it.remove(), or list.removeIf(predicate).",
+    ],
     cost: "Fail-fast detection is best-effort and is not a thread-safety mechanism. Use concurrent collections for multi-threaded access.",
+    tryIt:
+      "Remove items from a list inside an enhanced for loop and read the ConcurrentModificationException, then fix it with removeIf.",
     buildsOn: "Java week 7: The Collections hierarchy",
   },
   "J7:6": {
     why: "Sorting and ordered collections need a way to compare any two elements.",
-    problem: "There is no universal order: people can be sorted by name, by age or by salary, and a library cannot guess which.",
+    problem:
+      "There is no universal order: people can be sorted by name, by age or by salary, and a library cannot guess which.",
     how: "Let a class define its natural order once, and let callers pass a separate comparator for any other order.",
-    tech: "Comparable<T> is implemented by the class itself: compareTo returns negative, zero or positive (String and Integer have natural orders). Comparator<T> is a separate object: Comparator.comparing(Person::age).thenComparing(Person::name).reversed(). Collections.sort(list) uses the natural order; list.sort(comparator) uses a custom one. TreeMap and PriorityQueue also accept comparators.",
+    tech: [
+      "Comparable<T> is implemented by the class itself: compareTo returns negative, zero or positive (String and Integer have natural orders).",
+      "Comparator<T> is a separate object: Comparator.comparing(Person::age).thenComparing(Person::name).reversed().",
+      "Collections.sort(list) uses the natural order; list.sort(comparator) uses a custom one.",
+      "TreeMap and PriorityQueue also accept comparators.",
+    ],
     cost: "compareTo should agree with equals, or sorted sets behave strangely. Never compare by subtracting ints (a - b), which can overflow; use Integer.compare.",
+    tryIt:
+      "Sort a list of people by name with Comparable, then by age and then name with Comparator.comparing(...).thenComparing(...).",
     buildsOn: "Java week 5: Interfaces",
   },
   "J7:7": {
     why: "Common collection tasks (reverse, shuffle, find the maximum, make read-only) come up constantly.",
-    problem: "Rewriting them is wasteful, and handing out a mutable list lets other code change your internal data.",
     how: "Use the static helpers in Collections and Arrays, and create immutable collections when data should not change.",
-    tech: "Collections.reverse, shuffle, max, min, frequency, unmodifiableList. Arrays.asList(a) gives a fixed-size list backed by the array. List.of, Set.of and Map.of (Java 9+) create truly immutable collections: any modification throws UnsupportedOperationException, and they do not allow nulls. List.copyOf makes an immutable copy.",
+    tech: [
+      "Collections.reverse, shuffle, max, min, frequency, unmodifiableList. Arrays.asList(a) gives a fixed-size list backed by the array.",
+      "List.of, Set.of and Map.of (Java 9+) create truly immutable collections: any modification throws UnsupportedOperationException, and they do not allow nulls. List.copyOf makes an immutable copy.",
+    ],
     cost: "Arrays.asList is fixed-size but still writes through to the array, which surprises people. Know which collections are views and which are copies.",
+    tryIt:
+      "Call add on a List.of(...) list and read the UnsupportedOperationException.",
     buildsOn: "Java week 7: Implementations and their costs",
   },
 
   // ---- Week 8: Programming paradigms ----
   "J8:0": {
     why: "There is more than one way to structure a program, and each language and framework leans toward some of them.",
-    problem: "Engineers who know only one style force it onto every problem and struggle to read code written in other styles.",
+    problem:
+      "Engineers who know only one style force it onto every problem and struggle to read code written in other styles.",
     how: "Learn the main paradigms, what each optimizes for, and where you meet each one in practice.",
-    tech: "Imperative code says how, step by step, changing state; declarative code says what result you want (SQL, HTML). Procedural code organizes functions over data (C). Object-oriented code bundles state with behaviour (Java). Functional code uses pure functions, immutability and composition (Haskell, and parts of JavaScript and Java). Event-driven code reacts to events through callbacks (Node.js, browsers). Others to recognize: logic programming (Prolog), reactive streams (RxJS), and the actor model (Erlang, Akka), where isolated actors exchange messages.",
+    tech: [
+      "Imperative code says how, step by step, changing state; declarative code says what result you want (SQL, HTML).",
+      "Procedural code organizes functions over data (C). Object-oriented code bundles state with behaviour (Java).",
+      "Functional code uses pure functions, immutability and composition (Haskell, and parts of JavaScript and Java).",
+      "Event-driven code reacts to events through callbacks (Node.js, browsers).",
+      "Others to recognize: logic programming (Prolog), reactive streams (RxJS), and the actor model (Erlang, Akka), where isolated actors exchange messages.",
+    ],
     cost: "Most real code mixes paradigms. The skill is choosing the right one for each part, not following one dogmatically.",
+    tryIt:
+      "Solve one small problem (sum of squares of the even numbers) imperatively with a loop and then functionally with a stream.",
     buildsOn: "Java week 4: Why OOP",
   },
   "J8:1": {
     why: "Much code transforms collections: filter these, map those, sum the rest. Writing loops for each is verbose and hides the intent.",
-    problem: "Imperative loops mix the \"what\" with bookkeeping (indices, temporary lists), which makes them longer, harder to read and easier to get wrong.",
+    problem:
+      'Imperative loops mix the "what" with bookkeeping (indices, temporary lists), which makes them longer, harder to read and easier to get wrong.',
     how: "Pass small functions as values and chain declarative operations over a stream of elements.",
-    tech: "A lambda (x -> x * 2) implements a functional interface: Function<T,R>, Predicate<T>, Consumer<T>, Supplier<T>, BiFunction. Method references (String::length) are shorthand for lambdas. Streams: list.stream().filter(...).map(...).collect(Collectors.toList()). Intermediate operations (filter, map, sorted, distinct, flatMap) are lazy and do nothing until a terminal operation (collect, reduce, count, forEach) runs. Collectors.groupingBy and partitioningBy build maps. Pure, side-effect-free lambdas make streams predictable and safe to parallelize.",
+    tech: [
+      "A lambda (x -> x * 2) implements a functional interface: Function<T,R>, Predicate<T>, Consumer<T>, Supplier<T>, BiFunction.",
+      "Method references (String::length) are shorthand for lambdas. Streams: list.stream().filter(...).map(...).collect(Collectors.toList()).",
+      "Intermediate operations (filter, map, sorted, distinct, flatMap) are lazy and do nothing until a terminal operation (collect, reduce, count, forEach) runs.",
+      "Collectors.groupingBy and partitioningBy build maps. Pure, side-effect-free lambdas make streams predictable and safe to parallelize.",
+    ],
     cost: "Long stream chains can be harder to debug than loops, and streams have overhead for tiny collections. Lambdas that mutate outside state defeat the purpose.",
+    tryIt:
+      "Rewrite a for loop that filters and maps a list as a stream with filter, map and collect.",
     buildsOn: "Java week 8: Paradigms",
   },
   "J8:2": {
     why: "Functions that take or return other functions let you build reusable behaviour, such as retrying, timing or memoizing anything.",
-    problem: "Without capturing variables, a function passed elsewhere could not use the context it was created in.",
+    problem:
+      "Without capturing variables, a function passed elsewhere could not use the context it was created in.",
     how: "Let a lambda capture variables from the surrounding scope. Java requires those variables not to change after capture.",
-    tech: "A higher-order function takes or returns a function: Function<Integer,Integer> adder(int n) { return x -> x + n; }. Java lambdas can capture local variables only if they are effectively final (never reassigned), so the captured value is a stable copy. JavaScript closures capture the variable itself, live, so later changes are visible, which causes the classic loop-and-setTimeout bug (Main week 12).",
+    tech: [
+      "A higher-order function takes or returns a function: Function<Integer,Integer> adder(int n) { return x -> x + n; }.",
+      "Java lambdas can capture local variables only if they are effectively final (never reassigned), so the captured value is a stable copy.",
+      "JavaScript closures capture the variable itself, live, so later changes are visible, which causes the classic loop-and-setTimeout bug (Main week 12).",
+    ],
     cost: "Captured objects stay alive as long as the lambda does, which can cause memory leaks when lambdas are stored long-term.",
+    tryIt:
+      "Capture a local variable in a lambda, then try to change the variable afterwards, and read the compiler error.",
     buildsOn: "Java week 8: Functional programming in Java",
   },
 
   // ---- Week 9: The JVM, build tools and testing ----
   "J9:0": {
-    why: "\"The JVM runs your bytecode\" hides a lot of machinery that explains start-up time, memory errors and performance.",
-    problem: "Without a model of the JVM, errors such as ClassNotFoundException or OutOfMemoryError: Metaspace are a mystery.",
+    why: '"The JVM runs your bytecode" hides a lot of machinery that explains start-up time, memory errors and performance.',
+    problem:
+      "Without a model of the JVM, errors such as ClassNotFoundException or OutOfMemoryError: Metaspace are a mystery.",
     how: "Split the JVM into a part that loads classes, memory areas that hold data, and an engine that executes code.",
-    tech: "The class loader subsystem loads .class files on first use (bootstrap, platform and application loaders), links them (verifies bytecode, prepares static fields, resolves references) and initializes them (runs static initializers). Runtime data areas: the heap (all objects, shared by threads), the method area or metaspace (class metadata, shared), and per-thread JVM stacks (frames), PC registers and native method stacks. The execution engine interprets bytecode, JIT-compiles hot code and runs the garbage collector.",
+    tech: [
+      "The class loader finds .class files the first time they're needed, checks the bytecode is safe (verification), sets up static fields, and runs static initializers.",
+      "The heap holds every object and is shared by all threads; the metaspace holds class information.",
+      "Each thread has its own JVM stack of frames (week 2) and its own program counter.",
+      "The execution engine interprets bytecode, JIT-compiles hot code, and runs the garbage collector.",
+    ],
     cost: "Lazy class loading adds start-up time, which is why frameworks such as Spring can take seconds to boot. Technologies such as CDS and GraalVM native image exist to reduce it.",
+    tryIt:
+      "Run java -verbose:class Hello | head to watch the class loader load classes as the program starts.",
     buildsOn: "Java week 1: The Java toolchain",
   },
   "J9:1": {
     why: "Interpreting bytecode is portable but much slower than native machine code.",
-    problem: "A purely interpreted JVM would be too slow for servers, but compiling everything ahead of time would lose portability and slow start-up.",
+    problem:
+      "A purely interpreted JVM would be too slow for servers, but compiling everything ahead of time would lose portability and slow start-up.",
     how: "Interpret first, watch which methods run often, and compile only those hot methods to optimized machine code while the program runs.",
-    tech: "HotSpot interprets at first, then the C1 compiler quickly produces lightly optimized code, and the C2 compiler produces heavily optimized code for the hottest methods (tiered compilation). Optimizations use runtime profiling: inlining, removing unused branches, escape analysis. If an assumption breaks, the JVM deoptimizes back to the interpreter. V8 works the same way for JavaScript (Ignition, then TurboFan).",
+    tech: [
+      "HotSpot interprets at first, then the C1 compiler quickly produces lightly optimized code, and the C2 compiler produces heavily optimized code for the hottest methods (tiered compilation).",
+      "Optimizations use runtime profiling: inlining, removing unused branches, escape analysis.",
+      "If an assumption breaks, the JVM deoptimizes back to the interpreter. V8 works the same way for JavaScript (Ignition, then TurboFan).",
+    ],
     cost: "Programs need warm-up time to reach full speed, so micro-benchmarks without warm-up give wrong results. Use JMH for real benchmarks.",
+    tryIt:
+      "Run a hot loop with java -XX:+PrintCompilation and watch methods get compiled by the JIT.",
     buildsOn: "Java week 9: JVM architecture",
   },
   "J9:2": {
     why: "Java creates huge numbers of short-lived objects, and collecting them must be fast and must not freeze the application for long.",
-    problem: "Scanning the whole heap on every collection would cause long pauses as heaps grow to gigabytes.",
+    problem:
+      "Scanning the whole heap on every collection would cause long pauses as heaps grow to gigabytes.",
     how: "Use the observation that most objects die young: collect the area holding new objects often and cheaply, and the area holding long-lived objects rarely.",
-    tech: "The generational hypothesis: most objects become garbage soon after creation. New objects go to the young generation (Eden plus survivor spaces); a minor GC copies the few survivors and discards the rest, which is cheap. Objects surviving several minor GCs are promoted to the old generation, which a major GC collects. Stop-the-world pauses halt application threads. G1 (the default) splits the heap into regions and targets a pause goal; ZGC does most work concurrently for sub-millisecond pauses on huge heaps.",
+    tech: [
+      "The generational hypothesis: most objects become garbage soon after creation.",
+      "New objects go to the young generation (Eden plus survivor spaces); a minor GC copies the few survivors and discards the rest, which is cheap.",
+      "Objects surviving several minor GCs are promoted to the old generation, which a major GC collects.",
+      "Stop-the-world pauses halt application threads. G1 (the default) splits the heap into regions and targets a pause goal; ZGC does most work concurrently for sub-millisecond pauses on huge heaps.",
+    ],
     cost: "GC uses CPU and memory headroom. Allocating heavily in hot paths causes frequent collections; tuning matters for latency-sensitive services.",
+    tryIt:
+      "Run a program with java -Xlog:gc and a small -Xmx, and read young and old generation collections in the log.",
     buildsOn: "Java week 3: Garbage collection",
   },
   "J9:3": {
     why: "Memory errors are among the most common production failures for Java services.",
-    problem: "Both errors stop the program, but they mean different things and have different fixes.",
+    problem:
+      "Both errors stop the program, but they mean different things and have different fixes.",
     how: "Know which memory area each error comes from and which flag controls that area's size.",
-    tech: "StackOverflowError: one thread's stack is full, almost always from runaway recursion; -Xss sets the per-thread stack size. OutOfMemoryError: Java heap space means the heap is full even after GC (a leak, or too small a heap for the workload); -Xmx sets the maximum heap and -Xms the initial heap. Other kinds include Metaspace (too many classes) and \"unable to create native thread\". In containers, the JVM sizes its heap from the container limit, controlled with -XX:MaxRAMPercentage.",
+    tech: [
+      "StackOverflowError: one thread's stack is full, almost always from runaway recursion; -Xss sets the per-thread stack size.",
+      "OutOfMemoryError: Java heap space means the heap is full even after GC (a leak, or too small a heap for the workload); -Xmx sets the maximum heap and -Xms the initial heap.",
+      'Other kinds include Metaspace (too many classes) and "unable to create native thread".',
+      "In containers, the JVM sizes its heap from the container limit, controlled with -XX:MaxRAMPercentage.",
+    ],
     cost: "Raising -Xmx hides leaks rather than fixing them. Take a heap dump (-XX:+HeapDumpOnOutOfMemoryError) and find what is holding memory.",
+    tryIt:
+      "Fill a list until it fails with -Xmx32m to get OutOfMemoryError, then recurse forever to get StackOverflowError.",
     buildsOn: "Java week 9: Garbage collection",
   },
   "J9:4": {
     why: "Real projects have dozens of dependencies, tests, and steps to compile, test and package.",
-    problem: "Downloading JARs by hand and typing long javac commands does not scale, and every developer's setup ends up different.",
+    problem:
+      "Downloading JARs by hand and typing long javac commands does not scale, and every developer's setup ends up different.",
     how: "Describe the project (its dependencies and build steps) in one file, and let a build tool download dependencies and run the steps the same way everywhere.",
-    tech: "Maven: pom.xml lists groupId, artifactId, version and dependencies (downloaded from Maven Central into ~/.m2). Its lifecycle runs phases in order: validate, compile, test, package, verify, install, deploy (mvn package runs all phases up to package). Standard layout: src/main/java, src/test/java, src/main/resources. Gradle does the same with a build.gradle script and is faster for big builds through incremental builds and caching.",
+    tech: [
+      "Maven: pom.xml lists groupId, artifactId, version and dependencies (downloaded from Maven Central into ~/.m2).",
+      "Its lifecycle runs phases in order: validate, compile, test, package, verify, install, deploy (mvn package runs all phases up to package).",
+      "Standard layout: src/main/java, src/test/java, src/main/resources. Gradle does the same with a build.gradle script and is faster for big builds through incremental builds and caching.",
+    ],
     cost: "Dependency trees bring transitive dependencies you did not choose, including version conflicts and vulnerabilities. mvn dependency:tree shows what you actually pull in.",
+    tryIt:
+      "Create a project with mvn archetype:generate (or gradle init), add a dependency, and run mvn test.",
     buildsOn: "Java week 4: Packages and imports",
   },
   "J9:5": {
     why: "Code changes constantly, and every change risks breaking something that used to work.",
-    problem: "Checking by hand that everything still works is slow, inconsistent and soon skipped. Bugs in data structures hide in edge cases you forget to try.",
+    problem:
+      "Checking by hand that everything still works is slow, inconsistent and soon skipped. Bugs in data structures hide in edge cases you forget to try.",
     how: "Write small programs that call your code with known inputs and check the outputs automatically, so the whole suite runs in seconds after every change.",
-    tech: "JUnit 5: @Test marks a test; assertEquals(expected, actual), assertTrue, assertThrows(IllegalArgumentException.class, () -> ...). Lifecycle: @BeforeEach and @AfterEach run around every test, @BeforeAll and @AfterAll once per class. @ParameterizedTest with @ValueSource or @CsvSource runs one test with many inputs. For data structures, test empty, single-element, full and boundary cases, and compare against the JDK version as a reference.",
+    tech: [
+      "JUnit 6 (or JUnit 5 in older projects; the API is nearly the same): @Test marks a test method.",
+      "assertEquals(expected, actual), assertTrue(cond) and assertThrows(IllegalArgumentException.class, () -> ...) check results.",
+      "@BeforeEach and @AfterEach run around every test; @BeforeAll and @AfterAll run once per class.",
+      "@ParameterizedTest with @ValueSource or @CsvSource runs one test with many inputs.",
+      "For data structures, test empty, single-element, full and boundary cases, and compare against the JDK's own version.",
+    ],
     cost: "Tests are code that must be maintained. Tests coupled to implementation details break on every refactor; test behaviour instead.",
+    tryIt:
+      "Write a failing JUnit test first, watch it go red in IntelliJ, then make it pass.",
     buildsOn: "Java week 9: Build tools",
   },
 
   // ---- Week 10: Complexity analysis ----
   "J10:0": {
     why: "We need to compare algorithms and predict how a program will behave on much larger inputs.",
-    problem: "Timing code depends on the machine, the language, the load and the input, so \"it took 2 ms\" says little about what happens with 1,000 times more data.",
+    problem:
+      'Timing code depends on the machine, the language, the load and the input, so "it took 2 ms" says little about what happens with 1,000 times more data.',
     how: "Count how the number of basic steps grows as the input grows, ignoring machine-specific details.",
-    tech: "Express the work as a function of input size n: for example, a loop over n items does about n steps, and a loop inside a loop does about n² steps. Growth rate dominates: for large n, a 100n algorithm beats a 2n² one regardless of hardware. This lets you reason about an algorithm before writing it.",
+    tech: [
+      "Express the work as a function of input size n: for example, a loop over n items does about n steps, and a loop inside a loop does about n² steps.",
+      "Growth rate dominates: for large n, a 100n algorithm beats a 2n² one regardless of hardware.",
+      "This lets you reason about an algorithm before writing it.",
+    ],
     cost: "Counting ignores constants and memory effects that matter for small inputs and real hardware. Measure as well, but analyze first.",
+    tryIt:
+      "Time the same loop at n = 1,000 and n = 1,000,000 on your machine, and again on a friend's, and compare.",
     buildsOn: "Java week 2: Loops",
   },
   "J10:1": {
     why: "Algorithms behave differently on different inputs, and we need precise words for the bounds of their cost.",
-    problem: "Saying \"quicksort is n log n\" is incomplete: on some inputs it is n². Vague claims lead to wrong decisions.",
+    problem:
+      'Saying "quicksort is n log n" is incomplete: on some inputs it is n². Vague claims lead to wrong decisions.',
     how: "Use separate notations for an upper bound, a lower bound and an exact growth rate, and state which case (best, average or worst) you mean.",
-    tech: "O(f(n)): grows at most as fast as f, an upper bound. Ω(f(n)): grows at least as fast, a lower bound. Θ(f(n)): both, a tight bound. Best case is the friendliest input, worst case the nastiest, and average case is the expectation over inputs. In practice, people usually say O meaning a tight worst-case bound. Example: insertion sort is Θ(n) in the best case (already sorted) and Θ(n²) in the worst.",
+    tech: [
+      "O(f(n)): grows at most as fast as f, an upper bound. Ω(f(n)): grows at least as fast, a lower bound. Θ(f(n)): both, a tight bound.",
+      "Best case is the friendliest input, worst case the nastiest, and average case is the expectation over inputs.",
+      "In practice, people usually say O meaning a tight worst-case bound. Example: insertion sort is Θ(n) in the best case (already sorted) and Θ(n²) in the worst.",
+    ],
     cost: "Worst-case guarantees matter for systems facing adversarial input (hash flooding attacks); averages can mislead.",
+    tryIt:
+      "For linear search, write down the best case and worst case inputs and count the comparisons for each.",
     buildsOn: "Java week 10: Why count operations",
   },
   "J10:2": {
     why: "A handful of growth rates cover almost every algorithm you will meet, and each has a recognizable code shape.",
-    problem: "Without recognizing them on sight, you cannot quickly judge whether a solution will be fast enough.",
+    problem:
+      "Without recognizing them on sight, you cannot quickly judge whether a solution will be fast enough.",
     how: "Learn the common classes in order of growth and the code pattern that produces each.",
-    tech: "O(1): no loop over input (array index, hash lookup). O(log n): halve the problem each step (binary search, balanced tree). O(n): one pass. O(n log n): divide and conquer with linear work per level (merge sort), or sorting followed by a pass. O(n²): nested loops over the same input. O(2ⁿ): try every subset; naive recursion branching twice. O(n!): try every ordering (permutations).",
+    tech: [
+      "O(1): no loop over input (array index, hash lookup). O(log n): halve the problem each step (binary search, balanced tree). O(n): one pass.",
+      "O(n log n): divide and conquer with linear work per level (merge sort), or sorting followed by a pass. O(n²): nested loops over the same input.",
+      "O(2ⁿ): try every subset; naive recursion branching twice. O(n!): try every ordering (permutations).",
+    ],
     cost: "The jump between classes is enormous: for n = 1,000,000, n log n is about 20 million steps while n² is a trillion.",
+    tryIt:
+      "Time five programs (constant, linear, n log n, quadratic, exponential) as n doubles, and plot the times.",
     buildsOn: "Java week 10: Big-O, Big-Omega, Big-Theta",
   },
   "J10:3": {
     why: "Real code is a mix of loops, calls and inputs. You need simple rules to combine costs.",
     problem: "Without rules, analyzing a 30-line method becomes guesswork.",
     how: "Keep only the term that grows fastest, add the costs of things done one after another, and multiply the costs of things nested inside each other.",
-    tech: "Drop constants and lower-order terms: 3n² + 5n + 2 is O(n²). Sequential blocks add: O(n) + O(n²) = O(n²). Nested loops multiply: a loop over n containing a loop over m is O(n·m). With two inputs, keep both variables: merging lists of sizes n and m is O(n + m), not O(n). Calling a library method inside a loop multiplies its cost (list.contains inside a loop is O(n²)).",
+    tech: [
+      "Drop constants and lower-order terms: 3n² + 5n + 2 is O(n²). Sequential blocks add: O(n) + O(n²) = O(n²).",
+      "Nested loops multiply: a loop over n containing a loop over m is O(n·m).",
+      "With two inputs, keep both variables: merging lists of sizes n and m is O(n + m), not O(n).",
+      "Calling a library method inside a loop multiplies its cost (list.contains inside a loop is O(n²)).",
+    ],
     cost: "Hidden costs hide inside method calls, so always ask what each call inside a loop costs.",
+    tryIt:
+      "Write a nested loop over two different arrays, then state its complexity as O(n·m), not O(n²).",
     buildsOn: "Java week 10: Common classes",
   },
   "J10:4": {
     why: "Memory is limited too, and some solutions trade memory for speed.",
-    problem: "An algorithm can be fast but need so much memory that it crashes on large inputs, and recursion uses memory that is easy to overlook.",
+    problem:
+      "An algorithm can be fast but need so much memory that it crashes on large inputs, and recursion uses memory that is easy to overlook.",
     how: "Count the extra memory an algorithm allocates as the input grows, including the call stack.",
-    tech: "Auxiliary space is the extra memory beyond the input. Copying an array is O(n) space; a few variables is O(1). Recursion uses one stack frame per active call, so recursion of depth n is O(n) space even with no other allocations; balanced divide and conquer is O(log n) deep. Merge sort needs O(n) extra space; in-place quicksort needs O(log n) on average for its stack.",
+    tech: [
+      "Auxiliary space is the extra memory beyond the input. Copying an array is O(n) space; a few variables is O(1).",
+      "Recursion uses one stack frame per active call, so recursion of depth n is O(n) space even with no other allocations; balanced divide and conquer is O(log n) deep.",
+      "Merge sort needs O(n) extra space; in-place quicksort needs O(log n) on average for its stack.",
+    ],
     cost: "Many classic speed-ups (memoization, hash maps) buy time with space. Interviewers often ask whether you can reduce space after a first solution.",
+    tryIt:
+      "Run a recursive sum on a big n until StackOverflowError appears, then rewrite it as a loop.",
     buildsOn: "Java week 2: The call stack",
   },
   "J10:5": {
     why: "Recursive algorithms do not have simple loops to count, so we need a way to analyze them.",
-    problem: "For something like merge sort, it is not obvious how the work of all the recursive calls adds up.",
+    problem:
+      "For something like merge sort, it is not obvious how the work of all the recursive calls adds up.",
     how: "Draw the tree of recursive calls, add up the work at each level, then multiply by the number of levels. For common patterns, use a formula.",
-    tech: "Write a recurrence: merge sort is T(n) = 2T(n/2) + O(n). The recursion tree has log n levels and O(n) work per level, so O(n log n) total. The Master Theorem solves T(n) = aT(n/b) + f(n) by comparing f(n) with n^(log_b a): if f is smaller, the leaves dominate; if equal, multiply by log n; if larger, the top level dominates. Binary search, T(n) = T(n/2) + O(1), is O(log n).",
+    tech: [
+      "Write a recurrence: merge sort is T(n) = 2T(n/2) + O(n). The recursion tree has log n levels and O(n) work per level, so O(n log n) total.",
+      "The Master Theorem solves T(n) = aT(n/b) + f(n) by comparing f(n) with n^(log_b a): if f is smaller, the leaves dominate; if equal, multiply by log n; if larger, the top level dominates.",
+      "Binary search, T(n) = T(n/2) + O(1), is O(log n).",
+    ],
     cost: "The Master Theorem does not cover every recurrence (unequal splits, subtracting instead of dividing). The recursion tree method always works.",
+    tryIt:
+      "Draw the recursion tree for merge sort on 8 elements and count the work at each level.",
     buildsOn: "Java week 2: Recursion, first look",
   },
   "J10:6": {
     why: "Some operations are usually cheap but occasionally expensive, such as appending to an ArrayList that needs to resize.",
-    problem: "Worst-case analysis would call every append O(n), which badly overstates the real cost of a sequence of appends.",
+    problem:
+      "Worst-case analysis would call every append O(n), which badly overstates the real cost of a sequence of appends.",
     how: "Spread the cost of the rare expensive operations over all the cheap ones and look at the average cost per operation over the whole sequence.",
-    tech: "When capacity doubles on resize, the copies for n appends total about 1 + 2 + 4 + ... + n < 2n, so n appends cost O(n) total and O(1) amortized each. This requires geometric growth (multiplying the capacity); growing by a fixed amount would make it O(n²) total. The same reasoning applies to a queue built from two stacks and to hash table rehashing.",
+    tech: [
+      "When capacity doubles on resize, the copies for n appends total about 1 + 2 + 4 + ... + n < 2n, so n appends cost O(n) total and O(1) amortized each.",
+      "This requires geometric growth (multiplying the capacity); growing by a fixed amount would make it O(n²) total.",
+      "The same reasoning applies to a queue built from two stacks and to hash table rehashing.",
+    ],
     cost: "Amortized O(1) still allows a single slow operation, which matters for latency-critical systems.",
+    tryIt:
+      "Print an ArrayList's internal capacity growth (or simulate doubling) for 1 to 100 adds and count the total copies.",
     buildsOn: "Java week 3: ArrayList introduction",
   },
   "J10:7": {
     why: "Before coding, you want to know which complexity can possibly meet the time limit for a given input size.",
-    problem: "Without this sense, you either write a brute force that times out or over-engineer when a simple solution would do.",
+    problem:
+      "Without this sense, you either write a brute force that times out or over-engineer when a simple solution would do.",
     how: "Use the rule of thumb that a computer does roughly 10⁸ simple steps per second, and work back from the input size to the complexity you can afford.",
-    tech: "n ≤ 10: O(n!) is fine (all permutations). n ≤ 20: O(2ⁿ) (all subsets, bitmask DP). n ≤ 500: O(n³). n ≤ 10³ to 10⁴: O(n²). n ≤ 10⁵ to 10⁶: O(n log n) (sort, heap, binary search). n ≥ 10⁸: O(n) or O(log n) only. The constraints in a problem statement often reveal the intended approach.",
+    tech: [
+      "Roughly 10⁸ simple operations fit in a second, so the input size tells you which complexities fit.",
+      "n ≤ 10: O(n!) is fine (try every ordering). n ≤ 20: O(2ⁿ) (try every subset).",
+      "n ≤ 500: O(n³). n up to 10⁴: O(n²).",
+      "n up to 10⁶: O(n log n) (sort, heap, binary search). n ≥ 10⁸: O(n) or O(log n) only.",
+      "So the constraints in a problem statement often reveal the intended approach.",
+    ],
     cost: "These are rough guides: constant factors, language speed and memory access patterns can shift them by an order of magnitude.",
+    tryIt:
+      "Read a LeetCode problem's constraints and, before solving it, write the largest complexity that fits in time.",
     buildsOn: "Java week 10: Common classes",
   },
 };
