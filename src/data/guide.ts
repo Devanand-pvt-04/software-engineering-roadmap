@@ -1,10 +1,11 @@
 import "server-only";
+import { APP_NAME } from "@/lib/brand";
 import type { Day } from "@/lib/constants";
 export { DEFAULT_START, DAYS, type Day } from "@/lib/constants";
 
-// Hand-transcribed intro content from "Zero to Deep: 36-Week Software Engineering Plan".
+// Hand-transcribed intro content from the original "Zero to Deep" plan PDF.
 
-export const PLAN_TITLE = "Zero to Deep";
+export const PLAN_TITLE = APP_NAME;
 export const PLAN_SUBTITLE = "Software Engineering Plan, from Zero";
 
 export const WHY_PAST_FAILED = [

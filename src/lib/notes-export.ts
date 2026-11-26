@@ -1,5 +1,6 @@
 // Everything the person has written, as one Markdown document.
 import type { ClientContent } from "./content";
+import { APP_NAME } from "./brand";
 import type { State } from "./merge";
 import { TRACK_LABEL, keys } from "./roadmap";
 
@@ -15,7 +16,7 @@ export function notesMarkdown(s: State, c: ClientContent, today: string): string
     const v = s.entries[k]?.v;
     return typeof v === "string" ? v.trim() : "";
   };
-  const out: string[] = [`# Zero to Deep notes`, ``, `Exported ${today}.`, ``];
+  const out: string[] = [`# ${APP_NAME} notes`, ``, `Exported ${today}.`, ``];
   for (const t of c.tracks) {
     const weeks = (c.weeks[t] ?? []).filter((w) => text(keys.note(w.id)));
     if (!weeks.length) continue;

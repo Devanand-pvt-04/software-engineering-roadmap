@@ -1,6 +1,7 @@
 "use client";
 
 import { useRef, useState, useSyncExternalStore } from "react";
+import { APP_SLUG } from "@/lib/brand";
 import { clearAll, getState, replaceState, useHydrated, useSettings, useSync } from "@/lib/store";
 import { mergeState, type State } from "@/lib/merge";
 import { fmt, parseDate } from "@/lib/schedule";
@@ -51,7 +52,7 @@ export function SettingsView() {
     const blob = new Blob([JSON.stringify(getState(), null, 1)], { type: "application/json" });
     const a = document.createElement("a");
     a.href = URL.createObjectURL(blob);
-    a.download = `zero-to-deep-progress-${new Date().toISOString().slice(0, 10)}.json`;
+    a.download = `${APP_SLUG}-progress-${new Date().toISOString().slice(0, 10)}.json`;
     a.click();
     URL.revokeObjectURL(a.href);
   };
@@ -137,7 +138,7 @@ export function SettingsView() {
           <button className="btn" onClick={() => file.current?.click()}>
             Import…
           </button>
-          <button className="btn" onClick={() => download(`zero-to-deep-notes-${dayKey()}.md`, notesMarkdown(getState(), content, dayKey()), "text/markdown")}>
+          <button className="btn" onClick={() => download(`${APP_SLUG}-notes-${dayKey()}.md`, notesMarkdown(getState(), content, dayKey()), "text/markdown")}>
             Export notes (Markdown)
           </button>
           <input ref={file} type="file" accept="application/json,.json" className="hidden" onChange={(e) => e.target.files?.[0] && importJson(e.target.files[0])} />

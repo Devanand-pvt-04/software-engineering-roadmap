@@ -1,6 +1,8 @@
-# Zero to Deep
+# Ground Up
 
-A web app for the **Zero to Deep: 36-Week Software Engineering Plan**: a Main track (CPU → OS → networks → browser → JS → backend → React/Next.js → infra → system design) running in parallel with a Java + DSA track.
+*Zero to engineer, one layer at a time.*
+
+A web app for a software engineering plan from absolute zero, built from the original **Zero to Deep** roadmap: a Main track (CPU → OS → networks → browser → JS → backend → React/Next.js → infra → system design) running in parallel with a Java + DSA track.
 
 ## What's in it
 

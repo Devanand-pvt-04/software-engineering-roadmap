@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { APP_NAME, APP_TAGLINE } from "@/lib/brand";
 import { usePathname, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { useSync } from "@/lib/store";
@@ -143,8 +144,8 @@ export function Shell({ children }: { children: React.ReactNode }) {
     <div className="min-h-screen lg:flex">
       <aside className="sticky top-0 hidden h-screen w-56 shrink-0 flex-col overflow-y-auto border-r border-line bg-panel px-3 py-5 lg:flex">
         <Link href="/" className="mb-4 px-3">
-          <div className="text-[15px] font-bold tracking-tight">Zero to Deep</div>
-          <div className="text-xs text-muted">Stick to the plan</div>
+          <div className="text-[15px] font-bold tracking-tight">{APP_NAME}</div>
+          <div className="text-xs text-muted">{APP_TAGLINE}</div>
         </Link>
         {searchBtn}
         <nav className="mt-4 flex flex-col gap-0.5">{primary.map((n) => link(n))}</nav>
@@ -156,7 +157,7 @@ export function Shell({ children }: { children: React.ReactNode }) {
       </aside>
       <header className="sticky top-0 z-20 flex items-center justify-between border-b border-line bg-panel/90 px-4 py-2.5 backdrop-blur lg:hidden">
         <Link href="/" className="font-bold tracking-tight">
-          Zero to Deep
+          {APP_NAME}
         </Link>
         <Link href="/search" aria-label="Search" className="grid size-9 place-items-center rounded-lg text-muted hover:bg-panel-2 hover:text-fg">
           <Icon d={I.search} />

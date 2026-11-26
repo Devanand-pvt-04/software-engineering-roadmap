@@ -1,4 +1,5 @@
 import type { Metadata, Viewport } from "next";
+import { APP_NAME } from "@/lib/brand";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { Suspense } from "react";
@@ -12,7 +13,7 @@ const geistSans = Geist({ variable: "--font-geist-sans", subsets: ["latin"] });
 const geistMono = Geist_Mono({ variable: "--font-geist-mono", subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: { default: "Zero to Deep", template: "%s · Zero to Deep" },
+  title: { default: APP_NAME, template: `%s · ${APP_NAME}` },
   description: "A software engineering plan from absolute zero with daily checklists, trackers and links.",
 };
 export const viewport: Viewport = {
