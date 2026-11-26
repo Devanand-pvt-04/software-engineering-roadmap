@@ -240,7 +240,7 @@
     },
     {
      "day": "Sat",
-     "text": "In C or Python: two threads incrementing a shared counter 1M times without a lock (see the wrong result), then with a lock. Then strace a Node.js script that reads a file."
+     "text": "In Java, C or Python: two threads incrementing a shared counter 1M times without a lock (see the wrong result), then with a lock. Then strace a Node.js script that reads a file."
     }
    ],
    "doneWhen": "you can explain what a file descriptor is, why a race condition happens, and how one thread can handle thousands of connections with epoll.",
@@ -516,7 +516,7 @@
     },
     {
      "day": "Sat",
-     "text": "Build a TCP echo server and client with Node's net module. Capture the traffic in Wireshark; find SYN, SYN-ACK, ACK and FIN."
+     "text": "Build a TCP echo server and client in Java (ServerSocket and Socket, from your Java track), or with Node's net module if you already know JavaScript. Capture the traffic in Wireshark; find SYN, SYN-ACK, ACK and FIN."
     }
    ],
    "doneWhen": "you can explain everything that happens between pressing Enter and the first byte of a TCP connection being sent, including DNS.",
@@ -618,7 +618,7 @@
     },
     {
      "day": "Sat",
-     "text": "Build an HTTP/1.1 server on raw TCP (Node net, no http module): parse requests, serve static files with correct Content-Type, 404s, keep-alive, and an ETag - based 304. Test with curl -v and a browser."
+     "text": "Build an HTTP/1.1 server on raw TCP (Java ServerSocket or Node net; no HTTP library): parse requests, serve static files with correct Content-Type, 404s, keep-alive, and an ETag - based 304. Test with curl -v and a browser."
     }
    ],
    "doneWhen": "your server serves a real HTML page to a browser, and you can explain the full journey: DNS → TCP → TLS → HTTP request → response.",
@@ -1977,7 +1977,7 @@
   {
    "n": 23,
    "title": "React internals I — elements, reconciliation, Fiber",
-   "why": "you used React for 1.5 years. This week you'll see what it actually does when you call setState.",
+   "why": "most developers use React every day without knowing what it does. This week you'll see what actually happens when you call setState.",
    "mustKnow": [
     {
      "t": "The problem React solves: keeping UI in sync with state without manual DOM updates (your Week 14 todo app pain)",
@@ -2245,7 +2245,7 @@
   {
    "n": 26,
    "title": "Next.js II — RSC, caching, chunks and performance",
-   "why": "this is the depth you asked for: what Next actually sends over the wire and why.",
+   "why": "this is where Next.js stops being magic: what it actually sends over the wire, and why.",
    "mustKnow": [
     {
      "t": "React Server Components",
@@ -2422,7 +2422,7 @@
   {
    "n": 28,
    "title": "CDN, API gateway, APIM and WAF",
-   "why": "these are the remaining terms from your first message. Each is a specialized reverse proxy.",
+   "why": "CDNs, API gateways, API management and WAFs appear in almost every production architecture diagram. Each is a specialized reverse proxy.",
    "mustKnow": [
     {
      "t": "CDN",
@@ -3161,7 +3161,7 @@
    "checklist": [
     {
      "day": "Mon",
-     "text": "Pick the capstone: one real system end to end. A strong choice is a feature from your own work that you never understood, rebuilt from scratch. Write the requirements doc."
+     "text": "Pick the capstone: one real system end to end. A strong choice is a real product you use every day (or a feature from a job or internship), rebuilt from scratch. Write the requirements doc."
     },
     {
      "day": "Wed",

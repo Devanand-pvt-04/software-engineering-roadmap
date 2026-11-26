@@ -11,6 +11,7 @@ import { HINTS } from "@/data/hints";
 import { BRIEFS } from "@/data/briefs";
 import { CORE_TIME, FREE_ALTERNATIVES } from "@/data/estimates";
 import { CONTEST_INFO, PHASE2 } from "@/data/phase2";
+import { EXPLAIN } from "@/data/explain";
 import type { Day } from "@/lib/constants";
 import type { ClientContent, Role, ScheduleRow } from "@/lib/content";
 import type { FeatureId } from "@/lib/features";
@@ -39,6 +40,7 @@ function enrich(track: Track, w: RawWeek): Week {
   const id = `${track === "main" ? "M" : "J"}${w.n}`;
   return {
     ...w,
+    mustKnow: w.mustKnow.map((m, i) => (EXPLAIN[`${id}:${i}`] ? { ...m, x: EXPLAIN[`${id}:${i}`] } : m)),
     quiz: (QUIZ[track][w.n] ?? []).map(([q, a]) => ({ q, a })),
     brief: BRIEFS[id],
     problems: w.problems.map((p) => ({ ...p, hint: HINTS[p.slug] })),

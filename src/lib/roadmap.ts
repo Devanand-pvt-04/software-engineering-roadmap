@@ -5,9 +5,20 @@ import type { Day } from "./constants";
 export type Track = "main" | "java";
 export const TRACKS: Track[] = ["main", "java"];
 
+/** Ground-up explainer: why it exists, the problem, how, the mechanism, and the cost. */
+export interface ExplainView {
+  why: string;
+  problem: string;
+  how: string;
+  tech: string;
+  cost: string;
+  buildsOn?: string;
+}
 export interface TopicNode {
   t: string;
   c: string[];
+  /** Optional explainer card for this topic. */
+  x?: ExplainView;
 }
 export interface LinkRef {
   label: string;
