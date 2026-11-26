@@ -4,26 +4,55 @@ import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { useSync } from "@/lib/store";
+import { usePlan } from "@/lib/use-plan";
+import { currentWeek } from "@/lib/sessions";
 import { AliasMigrate } from "./alias-migrate";
 import { signInGitHub, signOutAction } from "@/app/actions";
 
-const NAV: { href: string; label: string; icon: string; match?: string }[] = [
-  { href: "/", label: "Today", icon: "M3 10l7-6 7 6v7a1 1 0 01-1 1h-4v-5H8v5H4a1 1 0 01-1-1z" },
-  { href: "/search", label: "Search", icon: "M9 15a6 6 0 100-12 6 6 0 000 12zM13.5 13.5L18 18" },
-  { href: "/plan", label: "Big picture", icon: "M2 4l5-2 6 2 5-2v14l-5 2-6-2-5 2zM7 2v14M13 4v14" },
-  { href: "/main/1", label: "Main track", match: "/main", icon: "M3 3h14v4H3zM3 9h14v4H3zM3 15h9v2H3z" },
-  { href: "/java/1", label: "Java + DSA", match: "/java", icon: "M6 4L2 10l4 6M14 4l4 6-4 6M11 3L9 17" },
-  { href: "/review", label: "Review", icon: "M4 4h12v9H4zM7 16h6M10 13v3M7 8l2 2 4-4" },
-  { href: "/problems", label: "Problem tracker", icon: "M4 10l4 4 8-9" },
-  { href: "/journal", label: "Journal", icon: "M5 2h10v16H5zM8 6h4M8 9h4M8 12h2" },
-  { href: "/guide", label: "How it works", icon: "M10 18a8 8 0 100-16 8 8 0 000 16zM10 14v.01M10 11a2 2 0 10-2-2" },
-  { href: "/glossary", label: "Glossary", icon: "M4 3h9l3 3v11H4zM7 8h6M7 11h6M7 14h4" },
-  { href: "/settings", label: "Settings", icon: "M10 13a3 3 0 100-6 3 3 0 000 6zM10 1v3M10 16v3M1 10h3M16 10h3M3.6 3.6l2.1 2.1M14.3 14.3l2.1 2.1M3.6 16.4l2.1-2.1M14.3 5.7l2.1-2.1" },
-];
+type NavItem = { href: string; label: string; short?: string; icon: string; match?: string };
+
+const I = {
+  today: "M3 10l7-6 7 6v7a1 1 0 01-1 1h-4v-5H8v5H4a1 1 0 01-1-1z",
+  plan: "M2 4l5-2 6 2 5-2v14l-5 2-6-2-5 2zM7 2v14M13 4v14",
+  main: "M3 3h14v4H3zM3 9h14v4H3zM3 15h9v2H3z",
+  java: "M6 4L2 10l4 6M14 4l4 6-4 6M11 3L9 17",
+  review: "M4 4h12v9H4zM7 16h6M10 13v3M7 8l2 2 4-4",
+  problems: "M4 10l4 4 8-9",
+  journal: "M5 2h10v16H5zM8 6h4M8 9h4M8 12h2",
+  guide: "M10 18a8 8 0 100-16 8 8 0 000 16zM10 14v.01M10 11a2 2 0 10-2-2",
+  glossary: "M4 3h9l3 3v11H4zM7 8h6M7 11h6M7 14h4",
+  settings: "M10 13a3 3 0 100-6 3 3 0 000 6zM10 1v3M10 16v3M1 10h3M16 10h3M3.6 3.6l2.1 2.1M14.3 14.3l2.1 2.1M3.6 16.4l2.1-2.1M14.3 5.7l2.1-2.1",
+  search: "M9 15a6 6 0 100-12 6 6 0 000 12zM13.5 13.5L18 18",
+  more: "M4 10h.01M10 10h.01M16 10h.01",
+};
+
+/** Where you study: the plan, today, and the two tracks (each opens on your current week). */
+function useNav(): { primary: NavItem[]; practice: NavItem[]; more: NavItem[] } {
+  const live = usePlan();
+  const wk = (t: "main" | "java") => (live ? currentWeek(live.plan, t) : 1);
+  return {
+    primary: [
+      { href: "/", label: "Today", icon: I.today },
+      { href: "/plan", label: "Big picture", short: "Plan", icon: I.plan },
+      { href: `/main/${wk("main")}`, label: "Main track", short: "Main", match: "/main", icon: I.main },
+      { href: `/java/${wk("java")}`, label: "Java + DSA", short: "Java", match: "/java", icon: I.java },
+    ],
+    practice: [
+      { href: "/review", label: "Review", icon: I.review },
+      { href: "/problems", label: "Problems", icon: I.problems },
+      { href: "/journal", label: "Journal", icon: I.journal },
+    ],
+    more: [
+      { href: "/guide", label: "How it works", icon: I.guide },
+      { href: "/glossary", label: "Glossary", icon: I.glossary },
+      { href: "/settings", label: "Settings", icon: I.settings },
+    ],
+  };
+}
 
 function Icon({ d }: { d: string }) {
   return (
-    <svg viewBox="0 0 20 20" className="size-[18px] shrink-0" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+    <svg viewBox="0 0 20 20" className="size-[18px] shrink-0" fill="none" stroke="currentColor" strokeWidth={d === I.more ? 3 : 1.6} strokeLinecap="round" strokeLinejoin="round" aria-hidden>
       <path d={d} />
     </svg>
   );
@@ -70,6 +99,7 @@ export function Shell({ children }: { children: React.ReactNode }) {
   const path = usePathname();
   const [open, setOpen] = useState(false);
   const router = useRouter();
+  const { primary, practice, more } = useNav();
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
       const el = e.target as HTMLElement;
@@ -82,54 +112,86 @@ export function Shell({ children }: { children: React.ReactNode }) {
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
   }, [router]);
-  const items = NAV;
-  const active = (n: (typeof NAV)[number]) => (n.href === "/" ? path === "/" : path.startsWith(n.match ?? n.href));
-  const nav = (
-    <nav className="flex flex-col gap-0.5">
-      {items.map((n) => (
-        <Link
-          key={n.href}
-          href={n.href}
-          onClick={() => setOpen(false)}
-          className={`flex items-center gap-3 rounded-lg px-3 py-2 text-[14px] ${active(n) ? "bg-panel-2 font-medium text-fg" : "text-muted hover:bg-panel-2 hover:text-fg"}`}
-        >
-          <Icon d={n.icon} />
-          {n.label}
-        </Link>
-      ))}
-    </nav>
+  const active = (n: NavItem) => (n.href === "/" ? path === "/" : path.startsWith(n.match ?? n.href));
+  const link = (n: NavItem, small = false) => (
+    <Link
+      key={n.label}
+      href={n.href}
+      onClick={() => setOpen(false)}
+      aria-current={active(n) ? "page" : undefined}
+      className={`flex items-center gap-3 rounded-lg px-3 ${small ? "py-1.5 text-[13px]" : "py-2 text-[14px]"} ${active(n) ? "bg-panel-2 font-medium text-fg" : "text-muted hover:bg-panel-2 hover:text-fg"}`}
+    >
+      <Icon d={n.icon} />
+      {n.label}
+    </Link>
   );
+  const group = (label: string, items: NavItem[], small = false) => (
+    <div className="mt-5">
+      <div className="mb-1 px-3 text-[11px] font-semibold uppercase tracking-wider text-muted/80">{label}</div>
+      <nav className="flex flex-col gap-0.5">{items.map((n) => link(n, small))}</nav>
+    </div>
+  );
+  const searchBtn = (
+    <Link href="/search" className="flex items-center gap-2 rounded-lg border border-line bg-bg px-3 py-1.5 text-[13px] text-muted hover:border-muted hover:text-fg">
+      <Icon d={I.search} />
+      <span className="flex-1">Search</span>
+      <kbd className="rounded border border-line px-1.5 font-sans text-[11px]">/</kbd>
+    </Link>
+  );
+  const moreActive = [...practice, ...more].some(active) || path.startsWith("/search");
   return (
     <div className="min-h-screen lg:flex">
-      <aside className="sticky top-0 hidden h-screen w-60 shrink-0 flex-col border-r border-line bg-panel px-3 py-5 lg:flex">
-        <Link href="/" className="mb-6 px-3">
+      <aside className="sticky top-0 hidden h-screen w-56 shrink-0 flex-col overflow-y-auto border-r border-line bg-panel px-3 py-5 lg:flex">
+        <Link href="/" className="mb-4 px-3">
           <div className="text-[15px] font-bold tracking-tight">Zero to Deep</div>
           <div className="text-xs text-muted">Stick to the plan</div>
         </Link>
-        {nav}
-        <div className="mt-auto">
+        {searchBtn}
+        <nav className="mt-4 flex flex-col gap-0.5">{primary.map((n) => link(n))}</nav>
+        {group("Practice", practice, true)}
+        {group("More", more, true)}
+        <div className="mt-auto pt-5">
           <SyncBadge />
         </div>
       </aside>
-      <header className="sticky top-0 z-20 flex items-center justify-between border-b border-line bg-panel/90 px-4 py-3 backdrop-blur lg:hidden">
+      <header className="sticky top-0 z-20 flex items-center justify-between border-b border-line bg-panel/90 px-4 py-2.5 backdrop-blur lg:hidden">
         <Link href="/" className="font-bold tracking-tight">
           Zero to Deep
         </Link>
-        <button className="btn px-3 py-1.5" onClick={() => setOpen(!open)} aria-expanded={open} aria-label="Menu">
-          {open ? "Close" : "Menu"}
-        </button>
+        <Link href="/search" aria-label="Search" className="grid size-9 place-items-center rounded-lg text-muted hover:bg-panel-2 hover:text-fg">
+          <Icon d={I.search} />
+        </Link>
       </header>
       {open && (
-        <div className="fixed inset-x-0 top-[57px] z-10 border-b border-line bg-panel px-3 py-3 shadow-lg lg:hidden">
-          {nav}
-          <div className="mt-3 border-t border-line pt-3">
-            <SyncBadge />
+        <>
+          <button className="fixed inset-0 z-30 bg-black/30 lg:hidden" aria-label="Close menu" onClick={() => setOpen(false)} />
+          <div className="fixed inset-x-0 bottom-0 z-40 rounded-t-2xl border-t border-line bg-panel px-3 pb-[calc(env(safe-area-inset-bottom)+5rem)] pt-2 shadow-2xl lg:hidden">
+            <div className="mx-auto mb-1 h-1 w-10 rounded-full bg-line" aria-hidden />
+            <div className="grid grid-cols-2 gap-x-2">
+              <div>{group("Practice", practice)}</div>
+              <div>{group("More", more)}</div>
+            </div>
+            <div className="mt-4 border-t border-line pt-3">
+              <SyncBadge />
+            </div>
           </div>
-        </div>
+        </>
       )}
-      <main className="min-w-0 flex-1 px-4 py-6 sm:px-8 lg:py-10">
+      <nav className="fixed inset-x-0 bottom-0 z-50 grid grid-cols-5 border-t border-line bg-panel/95 pb-[env(safe-area-inset-bottom)] backdrop-blur lg:hidden" aria-label="Main">
+        {primary.map((n) => (
+          <Link key={n.label} href={n.href} onClick={() => setOpen(false)} aria-current={active(n) ? "page" : undefined} className={`flex flex-col items-center gap-0.5 py-2 text-[11px] ${active(n) && !open ? "font-semibold text-accent" : "text-muted"}`}>
+            <Icon d={n.icon} />
+            {n.short ?? n.label}
+          </Link>
+        ))}
+        <button onClick={() => setOpen(!open)} aria-expanded={open} className={`flex flex-col items-center gap-0.5 py-2 text-[11px] ${open || moreActive ? "font-semibold text-accent" : "text-muted"}`}>
+          <Icon d={I.more} />
+          More
+        </button>
+      </nav>
+      <main className="min-w-0 flex-1 px-4 pb-24 pt-6 sm:px-8 lg:py-10">
         <AliasMigrate />
-        <div className="mx-auto max-w-4xl">{children}</div>
+        <div className="mx-auto max-w-3xl">{children}</div>
       </main>
     </div>
   );

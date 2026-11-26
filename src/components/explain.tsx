@@ -14,8 +14,8 @@ const ORDER = ["why", "problem", "how", "tech", "cost", "tryIt"] as const;
 export function Explain({ x }: { x?: ExplainView }) {
   if (!x) return null;
   return (
-    <details className="group mb-2 ml-8 rounded-lg border border-line bg-panel-2 text-sm open:pb-3">
-      <summary className="cursor-pointer select-none px-3 py-1.5 text-xs font-semibold text-muted hover:text-fg">
+    <details className="group mb-1 ml-8 rounded-lg border border-transparent text-sm open:border-line open:bg-panel-2 open:pb-3">
+      <summary className="w-fit cursor-pointer select-none rounded-md px-2 py-1 text-xs font-medium text-accent hover:bg-accent-soft group-open:px-3 group-open:text-muted">
         From the ground up
         {x.buildsOn && (
           <span className="ml-2 font-normal">· builds on {x.buildsOn}</span>

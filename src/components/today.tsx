@@ -10,12 +10,11 @@ import { doToday, resetDay, skipDay, swapSessions } from "@/lib/plan-actions";
 import { addDays, dayKey, fmt, parseDate } from "@/lib/schedule";
 import { dueCards } from "@/lib/quiz";
 import { contestNudge, fmtContest } from "@/lib/contest";
-import { Ring, SectionTitle } from "./ui";
+import { Bar, SectionTitle } from "./ui";
 import { StartPicker } from "./start-picker";
 import { MissEditor, RhythmEditor } from "./rhythm-editor";
 import { setEntry } from "@/lib/store";
 import { ProblemRow } from "./problem-row";
-import { Heatmap } from "./heatmap";
 import { SessionItem, hoursLabel } from "./session-row";
 import { YouAreHere } from "./big-picture";
 
@@ -51,6 +50,7 @@ function Today({ live }: { live: LivePlan }) {
   const quizDue = dueCards(s, c, t);
   const contest = c.contest && currentWeek(plan, "java") > c.contest.startAfterWeek ? contestNudge(c.contest, s, now) : null;
   const next = upcoming[0];
+  const contestDue = !!contest && !contest.logged;
 
   const headline = before
     ? `Week 1 starts ${fmt(parseDate(live.start))}`
@@ -126,7 +126,7 @@ function Today({ live }: { live: LivePlan }) {
             </p>
           )}
           {todays.length === 0 && next && (
-            <div className="mt-2 rounded-xl bg-panel-2 p-4">
+            <div className={doneToday.length || todays.length ? "mt-3 border-t border-line pt-3" : "mt-1"}>
               <p className="text-[15px]">
                 {doneToday.length ? "Done for today. Nice work." : "Nothing planned today."} Next up {dayName(next.date, t).toLowerCase() === "tomorrow" ? "tomorrow" : `on ${dayName(next.date, t)}`}: <b>{next.label}</b> ({hoursLabel(next.hours)}).
               </p>
@@ -140,6 +140,40 @@ function Today({ live }: { live: LivePlan }) {
       )}
 
       {!finished && !!s.entries["cfg:setup"]?.v && <Momentum live={live} />}
+
+      {(contestDue || quizDue.length > 0 || ps.due.length > 0) && (
+        <section className="card p-5">
+          <SectionTitle>Also due</SectionTitle>
+          <div className="divide-y divide-line">
+            {quizDue.length > 0 && (
+              <DueRow
+                title={`${quizDue.length} self-check question${quizDue.length > 1 ? "s" : ""}`}
+                sub={`From earlier weeks. About ${Math.max(1, Math.round(quizDue.length * 1.5))} min.`}
+                href="/review"
+                cta="Review"
+              />
+            )}
+            {contestDue && contest && (
+              <DueRow
+                title="Weekly contest"
+                sub={contest.upcoming ? `Starts ${fmtContest(contest.at)}. 90 minutes, live and timed.` : contest.live ? "On now." : "Log how it went, then upsolve the first problem you missed."}
+                href="/problems#contests"
+                cta={contest.upcoming || contest.live ? "Details" : "Log result"}
+              />
+            )}
+            {ps.due.length > 0 && (
+              <div className="py-2.5">
+                <div className="text-[15px] font-medium">
+                  {ps.due.length} re-solve{ps.due.length > 1 ? "s" : ""} <span className="font-normal text-muted">· practice rule 6</span>
+                </div>
+                {ps.due.map((d) => (
+                  <ProblemRow key={d.slug} slug={d.slug} name={d.name} week={d.week} showWeek hint={c.problems.find((p) => p.slug === d.slug)?.hint} difficulty={c.problems.find((p) => p.slug === d.slug)?.difficulty} />
+                ))}
+              </div>
+            )}
+          </div>
+        </section>
+      )}
 
       {!finished && <YouAreHere plan={plan} />}
 
@@ -159,50 +193,21 @@ function Today({ live }: { live: LivePlan }) {
         </section>
       )}
 
-      {contest && !contest.logged && (
-        <section className="card flex flex-wrap items-center justify-between gap-3 p-5">
-          <div>
-            <SectionTitle>Weekly contest</SectionTitle>
-            <p className="text-[15px]">
-              {contest.upcoming
-                ? `The LeetCode weekly contest starts ${fmtContest(contest.at)}. 90 minutes, live and timed.`
-                : contest.live
-                  ? "The weekly contest is on now."
-                  : "How did the weekly contest go? Log it, then upsolve the first problem you missed."}
-            </p>
-          </div>
-          <Link href="/problems#contests" className="btn btn-primary">
-            {contest.upcoming || contest.live ? "Contest details" : "Log result"}
-          </Link>
-        </section>
-      )}
-
-      {quizDue.length > 0 && (
-        <section className="card flex flex-wrap items-center justify-between gap-3 p-5">
-          <div>
-            <SectionTitle>Self-check review</SectionTitle>
-            <p className="text-[15px]">
-              {quizDue.length} question{quizDue.length > 1 ? "s" : ""} from earlier weeks {quizDue.length > 1 ? "are" : "is"} due. About {Math.max(1, Math.round(quizDue.length * 1.5))} minutes.
-            </p>
-          </div>
-          <Link href="/review" className="btn btn-primary">
-            Review now
-          </Link>
-        </section>
-      )}
-
-      {ps.due.length > 0 && (
-        <section className="card p-5">
-          <SectionTitle hint="Practice rule 6">Re-solves due</SectionTitle>
-          {ps.due.map((d) => (
-            <ProblemRow key={d.slug} slug={d.slug} name={d.name} week={d.week} showWeek hint={c.problems.find((p) => p.slug === d.slug)?.hint} difficulty={c.problems.find((p) => p.slug === d.slug)?.difficulty} />
-          ))}
-        </section>
-      )}
-
-      <Heatmap now={now} />
-
       {pace.total > 0 && c.encouragement && <p className="text-sm italic leading-relaxed text-muted">{c.encouragement}</p>}
+    </div>
+  );
+}
+
+function DueRow({ title, sub, href, cta }: { title: string; sub: string; href: string; cta: string }) {
+  return (
+    <div className="flex items-center justify-between gap-3 py-2.5">
+      <div className="min-w-0">
+        <div className="text-[15px] font-medium">{title}</div>
+        <div className="text-sm text-muted">{sub}</div>
+      </div>
+      <Link href={href} className="btn shrink-0 !py-1.5 !text-[13px]">
+        {cta}
+      </Link>
     </div>
   );
 }
@@ -217,7 +222,7 @@ function UpcomingRow({ x, onToday }: { x: Planned; onToday?: () => void }) {
         {x.label} <span className="text-muted">· {hoursLabel(x.hours)}</span>
       </div>
       {onToday && (
-        <button className="btn shrink-0 !px-2.5 !py-1 !text-[12px]" onClick={onToday}>
+        <button className="shrink-0 rounded-md px-2 py-1 text-[12px] font-medium text-accent hover:bg-accent-soft" onClick={onToday}>
           Do today
         </button>
       )}
@@ -236,41 +241,34 @@ function Momentum({ live }: { live: LivePlan }) {
   const baseline = pace.baselineFinish;
   const slip = finish && baseline ? Math.round((parseDate(finish).getTime() - parseDate(baseline).getTime()) / (7 * 86_400_000)) : 0;
   const minHit = week.sessions >= MIN_WEEK_SESSIONS;
+  const started = live.start <= dayKey(live.today);
   return (
-    <section className="grid grid-cols-2 gap-3 sm:grid-cols-4">
-      <div className="card flex items-center gap-3 p-4">
-        <Ring value={ratio} size={56}>
-          <span className="text-xs">{Math.round(ratio * 100)}%</span>
-        </Ring>
-        <div className="min-w-0">
-          <div className="text-xs text-muted">This week</div>
-          <div className="text-lg font-semibold tabular-nums">
-            {week.hours} / {target} h
-          </div>
-          <div className="text-[11px] leading-snug text-muted">{minHit ? "Minimum week hit ✓" : `${MIN_WEEK_SESSIONS - week.sessions} more session${MIN_WEEK_SESSIONS - week.sessions > 1 ? "s" : ""} keeps the streak`}</div>
-        </div>
-      </div>
-      <Tile label="Streak" value={`${streak.current} week${streak.current === 1 ? "" : "s"}`} sub={streak.best > streak.current ? `Best: ${streak.best} weeks` : streak.current ? "Your best yet. Keep it alive." : "Two sessions this week starts one"} />
-      <Tile
+    <section className="card grid grid-cols-2 divide-line sm:grid-cols-4 sm:divide-x [&>*:nth-child(-n+2)]:border-b [&>*:nth-child(-n+2)]:border-line sm:[&>*:nth-child(-n+2)]:border-b-0">
+      <Stat label="This week" value={`${week.hours} / ${target} h`} sub={minHit ? "Minimum week hit ✓" : `${MIN_WEEK_SESSIONS - week.sessions} more session${MIN_WEEK_SESSIONS - week.sessions > 1 ? "s" : ""} keeps the streak`}>
+        <Bar value={ratio} track="ok" className="mt-1.5" />
+      </Stat>
+      <Stat label="Streak" value={`${streak.current} wk`} sub={streak.best > streak.current ? `Best: ${streak.best} weeks` : streak.current ? "Your best yet" : "2 sessions this week starts one"} />
+      <Stat
         label="Pace"
-        value={live.start > dayKey(live.today) ? "Not started" : pace.diff >= 0 ? (pace.diff === 0 ? "On track" : `${pace.diff} ahead`) : `${-pace.diff} behind`}
-        sub={`${pace.done} of ${pace.total} sessions done`}
+        value={!started ? "Not started" : pace.diff >= 0 ? (pace.diff === 0 ? "On track" : `${pace.diff} ahead`) : `${-pace.diff} behind`}
+        sub={`${pace.done} of ${pace.total} sessions`}
         tone={pace.diff >= 0 ? "ok" : "warn"}
       />
-      <Tile
+      <Stat
         label="Finish"
         value={finish ? fmt(parseDate(finish)) : "Done"}
-        sub={slip > 0 ? `${slip} week${slip > 1 ? "s" : ""} later than planned. That's fine: no cramming.` : slip < 0 ? `${-slip} week${slip < -1 ? "s" : ""} early` : "As planned"}
+        sub={slip > 0 ? `${slip} wk later than planned, no cramming` : slip < 0 ? `${-slip} wk early` : "As planned"}
       />
     </section>
   );
 }
 
-function Tile({ label, value, sub, tone }: { label: string; value: string; sub: string; tone?: "ok" | "warn" }) {
+function Stat({ label, value, sub, tone, children }: { label: string; value: string; sub: string; tone?: "ok" | "warn"; children?: React.ReactNode }) {
   return (
-    <div className="card p-4">
+    <div className="min-w-0 px-4 py-3">
       <div className="text-xs text-muted">{label}</div>
-      <div className={`mt-1 text-lg font-semibold tabular-nums ${tone === "ok" ? "text-ok" : tone === "warn" ? "text-warn" : ""}`}>{value}</div>
+      <div className={`mt-0.5 truncate text-base font-semibold tabular-nums ${tone === "ok" ? "text-ok" : tone === "warn" ? "text-warn" : ""}`}>{value}</div>
+      {children}
       <div className="mt-1 text-[11px] leading-snug text-muted">{sub}</div>
     </div>
   );
