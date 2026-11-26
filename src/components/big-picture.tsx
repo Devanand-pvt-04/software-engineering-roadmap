@@ -61,7 +61,7 @@ export function YouAreHere({ plan }: { plan: Plan }) {
   return (
     <section className="card p-5">
       <SectionTitle hint={<Link href="/plan" className="hover:text-fg">The big picture →</Link>}>You are here</SectionTitle>
-      <div className="grid gap-5 sm:grid-cols-2">
+      <div className="grid gap-5 sm:grid-cols-2 sm:gap-8">
         {c.tracks.map((t) => {
           const { phases, week, finished } = phasesOf(c, plan, t);
           const cur = phases.find((p) => p.status === "current");
@@ -75,22 +75,26 @@ export function YouAreHere({ plan }: { plan: Plan }) {
                 <p className="mt-2 text-[15px] font-medium">Track finished. Every phase done.</p>
               ) : (
                 <>
-                  <p className="mt-2 text-[15px] font-medium">
-                    {cur.g.id} of {phases.length}: {cur.g.title}
+                  <p className="mt-2 text-[15px] font-medium leading-snug">
+                    <Link href={`/${t}/${week}`} className="hover:underline">
+                      {w ? w.title : `Week ${week}`}
+                    </Link>
                   </p>
-                  <p className="text-sm text-muted">
-                    Week {week} of {c.weeks[t]?.length ?? planLength(c)}{w ? `, ${w.title}` : ""}. Week {cur.g.weeks.indexOf(week) + 1} of {cur.g.weeks.length} in this {unit(t).toLowerCase()}.
+                  <p className="mt-0.5 text-[13px] text-muted">
+                    Week {week} of {c.weeks[t]?.length ?? planLength(c)} · {cur.g.id} of {phases.length}: {cur.g.title}
                   </p>
-                  <p className="mt-2 text-sm leading-relaxed">
-                    <span className="font-semibold">Why this, now: </span>
-                    {cur.g.goal ? `by the end of it, ${cur.g.goal.replace(/\.$/, "")}.` : ""}
-                  </p>
-                  {next && (
-                    <p className="mt-1 text-sm leading-relaxed text-muted">
-                      <span className="font-semibold">Then {next.g.id}:</span> {next.g.title}
-                      {c.phaseSummary[next.g.id] ? `. Unlocks: ${c.phaseSummary[next.g.id].unlocks}.` : "."}
-                    </p>
-                  )}
+                  <details className="group mt-2 text-sm">
+                    <summary className="cursor-pointer list-none text-[13px] font-medium text-muted hover:text-fg [&::-webkit-details-marker]:hidden">
+                      <span className="inline-block transition-transform group-open:rotate-90">›</span> Why this, now
+                    </summary>
+                    {cur.g.goal && <p className="mt-1.5 leading-relaxed">By the end of this {unit(t).toLowerCase()}, {cur.g.goal.replace(/\.$/, "")}.</p>}
+                    {next && (
+                      <p className="mt-1 leading-relaxed text-muted">
+                        <span className="font-semibold">Then {next.g.id}:</span> {next.g.title}
+                        {c.phaseSummary[next.g.id] ? `. Unlocks: ${c.phaseSummary[next.g.id].unlocks}.` : "."}
+                      </p>
+                    )}
+                  </details>
                 </>
               )}
             </div>
@@ -108,14 +112,14 @@ export function TrackTimeline({ track, plan }: { track: Track; plan: Plan }) {
   return (
     <section className="card p-5">
       <div className={`mb-1 text-xs font-semibold uppercase tracking-wider ${text(track)}`}>{TRACK_LABEL[track]}</div>
-      <p className="mb-4 max-w-2xl text-[15px] leading-relaxed text-muted">{c.intros[track]}</p>
+      <p className="mb-4 text-sm leading-relaxed text-muted">{c.intros[track]}</p>
       <PhaseStrip track={track} phases={phases} week={week} />
       <ol className="mt-5 space-y-0">
         {phases.map((p, i) => {
           const sum = c.phaseSummary[p.g.id];
           const current = p.status === "current";
           return (
-            <li key={p.g.id} className="relative flex gap-4 pb-6 last:pb-0">
+            <li key={p.g.id} className="relative flex gap-4 pb-4 last:pb-0">
               {i < phases.length - 1 && <span className="absolute left-[11px] top-7 bottom-0 w-px bg-line" aria-hidden />}
               <span
                 className={`relative z-[1] mt-0.5 grid size-6 shrink-0 place-items-center rounded-full text-[11px] font-bold ${
@@ -124,18 +128,21 @@ export function TrackTimeline({ track, plan }: { track: Track; plan: Plan }) {
               >
                 {p.status === "done" ? "✓" : i + 1}
               </span>
-              <div className={`min-w-0 flex-1 ${current ? "rounded-xl border border-line bg-panel-2/50 p-4 -mt-2" : ""}`}>
-                <div className="flex flex-wrap items-baseline justify-between gap-x-3">
-                  <h3 className="font-semibold">
+              <details open={current} className={`group min-w-0 flex-1 ${current ? "-mt-2 rounded-xl border border-line bg-panel-2/50 p-4" : ""}`}>
+                <summary className="flex cursor-pointer list-none flex-wrap items-baseline justify-between gap-x-3 [&::-webkit-details-marker]:hidden">
+                  <h3 className={`font-semibold ${p.status === "done" ? "text-muted" : ""}`}>
                     {p.g.id}: {p.g.title}
                   </h3>
                   <span className="text-xs text-muted">
-                    Weeks {p.g.weeks[0]}–{p.g.weeks[p.g.weeks.length - 1]}
-                    {p.from && p.to && ` · ${fmtShort(parseDate(p.from))} – ${fmtShort(parseDate(p.to))}`}
-                    {p.total > 0 && ` · ${Math.round((p.done / p.total) * 100)}%`}
+                    {p.from && p.to ? `${fmtShort(parseDate(p.from))} – ${fmtShort(parseDate(p.to))}` : `Weeks ${p.g.weeks[0]}–${p.g.weeks[p.g.weeks.length - 1]}`}
+                    {p.total > 0 && p.done > 0 && ` · ${Math.round((p.done / p.total) * 100)}%`}
+                    <span className="ml-1.5 inline-block transition-transform group-open:rotate-90">›</span>
                   </span>
-                </div>
+                </summary>
                 {current && <div className={`mt-1 text-xs font-semibold ${text(track)}`}>You are here: week {week}</div>}
+                <p className="mt-1 text-xs text-muted">
+                  Weeks {p.g.weeks[0]}–{p.g.weeks[p.g.weeks.length - 1]}
+                </p>
                 {p.g.goal && (
                   <p className="mt-1.5 text-sm leading-relaxed">
                     <span className="font-semibold">By the end: </span>
@@ -172,7 +179,7 @@ export function TrackTimeline({ track, plan }: { track: Track; plan: Plan }) {
                     })}
                   </div>
                 )}
-              </div>
+              </details>
             </li>
           );
         })}

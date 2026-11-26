@@ -12,6 +12,7 @@ import { Bar, Ring, SectionTitle } from "./ui";
 import { TrackTimeline } from "./big-picture";
 import { planLength } from "@/lib/sessions";
 import { hoursLabel } from "./session-row";
+import { Heatmap } from "./heatmap";
 
 export function PlanView() {
   const c = useContent();
@@ -19,7 +20,7 @@ export function PlanView() {
   const s = useStore();
   const h = useHydrated();
   const live = usePlan();
-  const [days, setDays] = useState(14);
+  const [days, setDays] = useState(7);
 
   // First date of each plan week's sessions (done or planned), per track.
   const weekDate = new Map<string, string>();
@@ -59,13 +60,13 @@ export function PlanView() {
         <div>
           <h1 className="text-2xl font-bold tracking-tight sm:text-3xl">The big picture</h1>
           <p className="mt-2 max-w-2xl text-[15px] leading-relaxed text-muted">
-            Two tracks that build bottom-up. Main goes from the CPU to system design, each phase explaining the layer the next one sits on. Java + DSA runs alongside it, from your first line of Java to interview-level algorithms.
+            Two tracks that build bottom-up and run side by side. Tap a phase to see why it sits where it does.
           </p>
         </div>
         {live && (
-          <div className="flex items-center gap-3">
-            <Ring value={live.pace.total ? live.pace.done / live.pace.total : 0} size={72} />
-            <div className="text-xs text-muted">
+          <div className="flex shrink-0 items-center gap-3">
+            <Ring value={live.pace.total ? live.pace.done / live.pace.total : 0} size={64} />
+            <div className="whitespace-nowrap text-xs leading-relaxed text-muted">
               {live.pace.done} of {live.pace.total} sessions
               <br />
               {live.plan.finish ? `Finish ${fmt(parseDate(live.plan.finish))}` : "All done"}
@@ -81,7 +82,7 @@ export function PlanView() {
           <SectionTitle
             hint={
               <span className="flex gap-1">
-                {[14, 28, 56].map((d) => (
+                {[7, 14, 28].map((d) => (
                   <button key={d} className={`chip !py-0.5 ${days === d ? "!border-accent !text-accent" : ""}`} onClick={() => setDays(d)}>
                     {d / 7} wk
                   </button>
@@ -92,9 +93,9 @@ export function PlanView() {
             Your schedule
           </SectionTitle>
           <p className="mb-2 text-sm text-muted">
-            Worked out from your weekly rhythm and what you&apos;ve done. Miss a day and it moves back; do one early and it moves up.{" "}
+            Miss a day and it moves back; do one early and it moves up.{" "}
             <Link href="/settings#rhythm" className="underline hover:text-fg">
-              Change your rhythm
+              Change your days
             </Link>
           </p>
           <div className="divide-y divide-line">
@@ -117,9 +118,17 @@ export function PlanView() {
         </section>
       )}
 
-      <section>
-        <SectionTitle>All {planLength(c)} weeks</SectionTitle>
-        <div className="card overflow-hidden">
+      {live && <Heatmap now={live.today} />}
+
+      <details className="group card overflow-hidden">
+        <summary className="flex cursor-pointer list-none items-center justify-between px-5 py-4 [&::-webkit-details-marker]:hidden">
+          <span className="text-xs font-semibold uppercase tracking-wider text-muted">All {planLength(c)} weeks, week by week</span>
+          <span className="text-xs text-muted">
+            <span className="group-open:hidden">Show</span>
+            <span className="hidden group-open:inline">Hide</span>
+          </span>
+        </summary>
+        <div className="border-t border-line">
           <div className="hidden gap-3 border-b border-line bg-panel-2 px-4 py-2 text-xs font-semibold uppercase tracking-wider text-muted sm:grid sm:grid-cols-[60px_1fr_1fr]">
             <div>Week</div>
             {tracks.map((tr) => (
@@ -133,7 +142,7 @@ export function PlanView() {
             </div>
           ))}
         </div>
-      </section>
+      </details>
     </div>
   );
 }

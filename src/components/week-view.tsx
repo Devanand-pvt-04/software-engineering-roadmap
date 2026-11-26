@@ -8,7 +8,7 @@ import { useHydrated, useStore } from "@/lib/store";
 import { dayKey, fmtShort, parseDate } from "@/lib/schedule";
 import { usePlan } from "@/lib/use-plan";
 import { SessionItem } from "./session-row";
-import { CheckRow, Ring, SectionTitle } from "./ui";
+import { Bar, CheckRow, SectionTitle } from "./ui";
 import { ProblemRow } from "./problem-row";
 import { NoteBox } from "./notes";
 import { QuizCard } from "./quiz";
@@ -34,52 +34,46 @@ export function WeekView({ track, n }: { track: Track; n: number }) {
   return (
     <article className="space-y-6">
       {/* header */}
-      <header className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
-        <div className="min-w-0">
-          <div className="mb-2 flex flex-wrap items-center gap-2 text-xs text-muted">
-            <span className={`rounded-md px-2 py-0.5 font-semibold ${track === "main" ? "bg-main-soft text-main" : "bg-java-soft text-java"}`}>{TRACK_LABEL[track]}</span>
-            {group && (
-              <span>
-                {group.id}: {group.title.replace(/\s*\(Weeks.*\)$/, "")}
-              </span>
-            )}
-            {hydrated && dates.length > 0 && (
-              <span>
-                · {fmtShort(parseDate(dates[0]))} – {fmtShort(parseDate(dates[dates.length - 1]))}
-              </span>
-            )}
-            {inThisWeek && <span className="rounded-md bg-accent-soft px-2 py-0.5 font-semibold text-accent">You are here</span>}
-          </div>
-          <h1 className="text-2xl font-bold tracking-tight sm:text-3xl">
-            <span className="text-muted">Week {n}.</span> {w.title}
-          </h1>
-          {w.why && <p className="mt-3 max-w-2xl text-[15px] leading-relaxed text-muted">{w.why.charAt(0).toUpperCase() + w.why.slice(1)}</p>}
+      <header>
+        <div className="mb-2 flex flex-wrap items-center gap-x-2 gap-y-1 text-xs text-muted">
+          <span className={`rounded-md px-2 py-0.5 font-semibold ${track === "main" ? "bg-main-soft text-main" : "bg-java-soft text-java"}`}>{TRACK_LABEL[track]}</span>
+          {group && <span>{group.id}: {group.title.replace(/\s*\(Weeks.*\)$/, "")}</span>}
+          {hydrated && dates.length > 0 && (
+            <span>
+              · {fmtShort(parseDate(dates[0]))} – {fmtShort(parseDate(dates[dates.length - 1]))}
+            </span>
+          )}
+          {inThisWeek && <span className="rounded-md bg-accent-soft px-2 py-0.5 font-semibold text-accent">You are here</span>}
         </div>
-        <div className="flex items-center gap-3 sm:flex-col sm:items-end">
-          <Ring value={hydrated ? p.ratio : 0} track={track} size={72} />
-          <div className="text-xs text-muted">
-            {hydrated ? `${p.done}/${p.total} required` : " "}
+        <h1 className="text-2xl font-bold tracking-tight sm:text-3xl">
+          <span className="text-muted">Week {n}.</span> {w.title}
+        </h1>
+        {w.why && <p className="mt-2 text-[15px] leading-relaxed text-muted">{w.why.charAt(0).toUpperCase() + w.why.slice(1)}</p>}
+        <div className="mt-4 flex items-center gap-3">
+          <Bar value={hydrated ? p.ratio : 0} track={p.passed ? "ok" : track} className="max-w-xs" />
+          <span className="shrink-0 text-xs tabular-nums text-muted">
+            {hydrated ? `${p.done} of ${p.total} required` : " "}
             {hydrated && p.passed && <span className="ml-1 font-semibold text-ok">· passed</span>}
-          </div>
+          </span>
         </div>
       </header>
 
-      <nav className="flex flex-wrap items-center justify-between gap-2">
-        <div className="flex gap-2">
+      <nav className="flex flex-wrap items-center justify-between gap-2 text-sm">
+        <div className="flex gap-1">
           {n > 1 && (
-            <Link className="btn" href={`/${track}/${n - 1}`}>
+            <Link className="rounded-lg px-2.5 py-1.5 text-muted hover:bg-panel-2 hover:text-fg" href={`/${track}/${n - 1}`}>
               ← Week {n - 1}
             </Link>
           )}
           {n < (c.weeks[track]?.length ?? 0) && (
-            <Link className="btn" href={`/${track}/${n + 1}`}>
+            <Link className="rounded-lg px-2.5 py-1.5 text-muted hover:bg-panel-2 hover:text-fg" href={`/${track}/${n + 1}`}>
               Week {n + 1} →
             </Link>
           )}
         </div>
         {other && (
-          <Link className="text-sm text-muted hover:text-fg" href={`/${other}/${n}`}>
-            Same week on {TRACK_LABEL[other]} →
+          <Link className="rounded-lg px-2.5 py-1.5 text-muted hover:bg-panel-2 hover:text-fg" href={`/${other}/${n}`}>
+            {TRACK_LABEL[other]}, week {n} →
           </Link>
         )}
       </nav>
@@ -105,6 +99,37 @@ export function WeekView({ track, n }: { track: Track; n: number }) {
         </div>
         {w.problemNote && <p className="mt-3 text-sm text-muted">{w.problemNote}</p>}
       </section>
+
+      {/* must know */}
+      {w.mustKnow.length > 0 && (
+        <section className="card p-5">
+          <SectionTitle hint="Learn all of it">Must know</SectionTitle>
+          <div className="space-y-1">
+            {w.mustKnow.map((m, i) =>
+              m.c.length ? (
+                <div key={i} className="pt-2">
+                  <div className="text-[15px] font-semibold">{m.t}</div>
+                  <Explain x={m.x} />
+                  <div className="ml-1 border-l border-line pl-4">
+                    {m.c.map((c, j) => (
+                      <CheckRow key={j} k={keys.must(w.id, i, j)} color={color}>
+                        {c}
+                      </CheckRow>
+                    ))}
+                  </div>
+                </div>
+              ) : (
+                <div key={i}>
+                  <CheckRow k={keys.must(w.id, i)} color={color}>
+                    {m.t}
+                  </CheckRow>
+                  <Explain x={m.x} />
+                </div>
+              ),
+            )}
+          </div>
+        </section>
+      )}
 
       {/* build */}
       {w.build && (
@@ -145,53 +170,32 @@ export function WeekView({ track, n }: { track: Track; n: number }) {
         </section>
       )}
 
-      {/* must know */}
-      {w.mustKnow.length > 0 && (
-        <section className="card p-5">
-          <SectionTitle hint="Learn all of it">Must know</SectionTitle>
-          <div className="space-y-1">
-            {w.mustKnow.map((m, i) =>
-              m.c.length ? (
-                <div key={i} className="pt-2">
-                  <div className="text-[15px] font-semibold">{m.t}</div>
-                  <Explain x={m.x} />
-                  <div className="ml-1 border-l border-line pl-4">
-                    {m.c.map((c, j) => (
-                      <CheckRow key={j} k={keys.must(w.id, i, j)} color={color}>
-                        {c}
-                      </CheckRow>
-                    ))}
-                  </div>
-                </div>
-              ) : (
-                <div key={i}>
-                  <CheckRow k={keys.must(w.id, i)} color={color}>
-                    {m.t}
-                  </CheckRow>
-                  <Explain x={m.x} />
-                </div>
-              ),
-            )}
-          </div>
+      {/* done when */}
+      {w.doneWhen && (
+        <section className="card border-2 p-5" style={{ borderColor: p.passed ? "var(--ok)" : undefined }}>
+          <SectionTitle hint="Pass it and move on">Done when</SectionTitle>
+          <CheckRow k={keys.done(w.id)} color="ok">
+            {"You can " + w.doneWhen.replace(/^you can /i, "")}
+          </CheckRow>
         </section>
       )}
 
-      {/* niche */}
-      {w.niche.length > 0 && (
-        <section className="card p-5">
-          <SectionTitle hint="Read, note, come back later. Optional now.">Overlooked / niche</SectionTitle>
-          {w.niche.map((t, i) => (
-            <CheckRow key={i} k={keys.niche(w.id, i)} color="ok" muted>
-              {t}
-            </CheckRow>
+      {/* self-check */}
+      {w.quiz.length > 0 && (
+        <Fold title={`Self-check (${w.quiz.length} questions)`} hint="Test yourself">
+          <p className="text-xs text-muted">Answer from memory first, out loud or on paper. Then reveal and rate yourself; anything shaky comes back for review.</p>
+          {w.quiz.map((q, i) => (
+            <QuizCard key={i} k={keys.quiz(w.id, i)} q={q.q} a={q.a} />
           ))}
-        </section>
+          <Link href="/review" className="mt-2 inline-block text-sm text-muted hover:text-fg">
+            Review due questions →
+          </Link>
+        </Fold>
       )}
 
       {/* resources */}
       {w.resources.length > 0 && (
-        <section className="card p-5">
-          <SectionTitle hint="⭐ = do this one first">Resources</SectionTitle>
+        <Fold title={`All resources (${w.resources.length})`} hint="⭐ = do this one first">
           {w.resources.map((r, i) => (
             <div key={i}>
               <CheckRow k={keys.res(w.id, i)} color="ok" links={r.links}>
@@ -215,28 +219,19 @@ export function WeekView({ track, n }: { track: Track; n: number }) {
               )}
             </div>
           ))}
-        </section>
+        </Fold>
       )}
 
-      {/* done when */}
-      {w.doneWhen && (
-        <section className="card border-2 p-5" style={{ borderColor: p.passed ? "var(--ok)" : undefined }}>
-          <SectionTitle hint="Pass it and move on">Done when</SectionTitle>
-          <CheckRow k={keys.done(w.id)} color="ok">
-            {"You can " + w.doneWhen.replace(/^you can /i, "")}
-          </CheckRow>
-        </section>
-      )}
-
-      {/* self-check */}
-      {w.quiz.length > 0 && (
-        <section className="card px-5 pb-2 pt-5">
-          <SectionTitle hint={<Link href="/review" className="hover:text-fg">Review due questions →</Link>}>Self-check ({w.quiz.length})</SectionTitle>
-          <p className="text-xs text-muted">Answer from memory first, out loud or on paper. Then reveal and rate yourself; anything shaky comes back for review.</p>
-          {w.quiz.map((q, i) => (
-            <QuizCard key={i} k={keys.quiz(w.id, i)} q={q.q} a={q.a} />
+      {/* niche */}
+      {w.niche.length > 0 && (
+        <Fold title={`Overlooked / niche (${w.niche.length})`} hint="Optional now">
+          <p className="mb-1 text-xs text-muted">Read, note, come back later.</p>
+          {w.niche.map((t, i) => (
+            <CheckRow key={i} k={keys.niche(w.id, i)} color="ok" muted>
+              {t}
+            </CheckRow>
           ))}
-        </section>
+        </Fold>
       )}
 
       {/* milestone */}
@@ -280,6 +275,24 @@ export function WeekView({ track, n }: { track: Track; n: number }) {
       )}
 
     </article>
+  );
+}
+
+/** A card that stays folded until you want it: optional or reference material. */
+function Fold({ title, hint, children }: { title: string; hint?: string; children: React.ReactNode }) {
+  return (
+    <details className="group card">
+      <summary className="flex cursor-pointer list-none items-center justify-between gap-3 px-5 py-4 [&::-webkit-details-marker]:hidden">
+        <span className="text-xs font-semibold uppercase tracking-wider text-muted group-hover:text-fg">{title}</span>
+        <span className="flex items-center gap-2 text-xs text-muted">
+          {hint}
+          <span className="inline-block transition-transform group-open:rotate-90" aria-hidden>
+            ›
+          </span>
+        </span>
+      </summary>
+      <div className="px-5 pb-4">{children}</div>
+    </details>
   );
 }
 
