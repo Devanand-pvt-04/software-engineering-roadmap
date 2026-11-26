@@ -7,6 +7,8 @@ import { EXPLAIN_JAVA_PART_B } from "./java-part-b";
 import { EXPLAIN_JAVA_PART_C1 } from "./java-part-c1";
 import { EXPLAIN_JAVA_PART_C2 } from "./java-part-c2";
 import { EXPLAIN_JAVA_PART_D } from "./java-part-d";
+import { EXPLAIN_JAVA_PART_E1 } from "./java-part-e1";
+import { EXPLAIN_JAVA_PART_E2 } from "./java-part-e2";
 import { EXPLAIN_MAIN_BROWSER } from "./main-browser";
 import { EXPLAIN_MAIN_JS } from "./main-js";
 import { EXPLAIN_MAIN_BACKEND } from "./main-backend";
@@ -33,4 +35,6 @@ export const EXPLAIN: ExplainMap = {
   ...EXPLAIN_JAVA_PART_C1,
   ...EXPLAIN_JAVA_PART_C2,
   ...EXPLAIN_JAVA_PART_D,
+  ...EXPLAIN_JAVA_PART_E1,
+  ...EXPLAIN_JAVA_PART_E2,
 };
