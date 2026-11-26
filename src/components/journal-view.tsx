@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { APP_SLUG } from "@/lib/brand";
 import { useContent } from "@/lib/content";
 import { getState, setEntry, useHydrated, useStore } from "@/lib/store";
 import { download, notesMarkdown } from "@/lib/notes-export";
@@ -35,7 +36,7 @@ export function JournalView() {
         <div className="flex flex-wrap items-center justify-between gap-2">
           <h1 className="text-2xl font-bold tracking-tight sm:text-3xl">Journal</h1>
           {(
-            <button className="btn" onClick={() => download(`zero-to-deep-notes-${dayKey()}.md`, notesMarkdown(getState(), c, dayKey()), "text/markdown")}>
+            <button className="btn" onClick={() => download(`${APP_SLUG}-notes-${dayKey()}.md`, notesMarkdown(getState(), c, dayKey()), "text/markdown")}>
               Export all notes (Markdown)
             </button>
           )}

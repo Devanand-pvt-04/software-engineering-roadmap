@@ -1,10 +1,11 @@
 import "server-only";
+import { APP_NAME } from "@/lib/brand";
 import type { Day } from "@/lib/constants";
 export { DEFAULT_START, DAYS, type Day } from "@/lib/constants";
 
-// Hand-transcribed intro content from "Zero to Deep: 36-Week Software Engineering Plan".
+// Hand-transcribed intro content from the original "Zero to Deep" plan PDF.
 
-export const PLAN_TITLE = "Zero to Deep";
+export const PLAN_TITLE = APP_NAME;
 export const PLAN_SUBTITLE = "Software Engineering Plan, from Zero";
 
 export const WHY_PAST_FAILED = [
@@ -23,7 +24,7 @@ export const WHATS_DIFFERENT = [
 ];
 
 export const ENCOURAGEMENT =
-  "You are not a zero. You've been shipping code for 1.5 years without the foundations, which means once the foundations are in, everything you've seen at work will suddenly connect.";
+  "Every expert started at zero. Go one layer at a time and each new layer will make sense, because you built the one under it.";
 
 
 export const SCHEDULE: { day: Day; track: string; time: string; what: string }[] = [
@@ -42,7 +43,7 @@ export const SETUP_MAIN = [
   "Install VS Code (main track) and IntelliJ IDEA Community (Java track)",
   "Install Anki on your phone; add 5 cards per week from your notes",
   "Block the time slots in your calendar as recurring events",
-  "Tell one person (friend, colleague) you're doing this; send them your week's ticks every Sunday",
+  "Tell one person (a friend, family member or study buddy) you're doing this; send them your week's ticks every Sunday",
 ];
 
 export const SETUP_JAVA = [
@@ -74,7 +75,7 @@ export const STUCK_ORDER = [
   "The resource's own explanation, reread slowly",
   "A second resource",
   'An AI tutor ("explain X; I understand Y but not Z")',
-  "A person (colleague, or a community like r/learnprogramming or a Discord)",
+  "A person (a friend, mentor, or a community like r/learnprogramming or a Discord)",
 ];
 
 export const PRACTICE_RULES = [
