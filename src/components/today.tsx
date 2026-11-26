@@ -4,12 +4,11 @@ import Link from "next/link";
 import { TRACK_LABEL, keys, type Track } from "@/lib/roadmap";
 import { getWeek, useContent, weeksOf } from "@/lib/content";
 import { problemStats, streak, trackProgress, weekProgress } from "@/lib/progress";
-import { setEntry, useSettings, useStore, useToday } from "@/lib/store";
+import { useSettings, useStore, useToday } from "@/lib/store";
 import { addDays, dayKey, endDate, fmt, fmtShort, position, weekday } from "@/lib/schedule";
 import { dueCards } from "@/lib/quiz";
 import { contestNudge, fmtContest } from "@/lib/contest";
 import { Bar, CheckRow, Ring, SectionTitle, TrackTag } from "./ui";
-import { FocusTimer } from "./focus-timer";
 import { StartPicker } from "./start-picker";
 import { Specifics } from "./week-view";
 import { ProblemRow } from "./problem-row";
@@ -41,11 +40,8 @@ export function TodayView() {
   const hasProblems = c.problems.length > 0;
   const ps = problemStats(s, now, c.problems);
   const st = streak(s, now);
-  const quizDue = c.features.includes("quizzes") ? dueCards(s, c, dayKey(now)) : [];
+  const quizDue = dueCards(s, c, dayKey(now));
   const contest = c.contest && n > c.contest.startAfterWeek ? contestNudge(c.contest, s, now) : null;
-  const prevN = n - 1;
-  const prevUnpassed =
-    prevN >= 1 && !isBuffer && tracks.filter((t) => !weekProgress(s, t, getWeek(c, t, prevN)!).passed);
 
   return (
     <div className="space-y-6">
@@ -85,16 +81,12 @@ export function TodayView() {
         <section className="card p-5">
           <SectionTitle>Before week 1</SectionTitle>
           <p className="text-[15px]">
-            {c.features.includes("guide") ? (
-              <>
+            <>
                 Do the setup checklist first, then read how the plan works.{" "}
                 <Link href="/guide#setup" className="font-medium text-accent">
                   Open setup →
                 </Link>
               </>
-            ) : (
-              <>Look through week 1 so you know what&apos;s coming.</>
-            )}
           </p>
         </section>
       )}
@@ -168,27 +160,8 @@ export function TodayView() {
         </section>
       )}
 
-      {c.features.includes("catchup") && pos.status === "active" && !isBuffer && <CatchUp now={now} n={n} />}
+      {pos.status === "active" && !isBuffer && <CatchUp now={now} n={n} />}
 
-      {!c.features.includes("catchup") && prevUnpassed && prevUnpassed.length > 0 && pos.status === "active" && (
-        <section className="card border-warn bg-warn-soft p-5">
-          <SectionTitle>Slide, don&apos;t skip</SectionTitle>
-          <p className="text-[15px] leading-relaxed">
-            Week {prevN}&apos;s Done-when test isn&apos;t ticked on {prevUnpassed.map((t) => (t === "main" ? "Main" : "Java")).join(" and ")}. If you passed it, tick it. If not, finish it
-            first or slide the whole calendar by a week. Never cram.
-          </p>
-          <div className="mt-3 flex flex-wrap gap-2">
-            {prevUnpassed.map((t) => (
-              <Link key={t} className="btn" href={`/${t}/${prevN}`}>
-                Open {t === "main" ? "Main" : "Java"} week {prevN}
-              </Link>
-            ))}
-            <button className="btn" onClick={() => setEntry("cfg:slide", cfg.slide + 1)}>
-              Slide calendar 1 week
-            </button>
-          </div>
-        </section>
-      )}
 
       <section className="grid grid-cols-2 gap-3 sm:grid-cols-4">
         {prog.map(({ t, p }) => (
@@ -204,7 +177,7 @@ export function TodayView() {
         <Stat label="Streak" value={`${st} day${st === 1 ? "" : "s"}`} sub="Zero weeks are the only thing to avoid" />
       </section>
 
-      {c.features.includes("heatmap") && <Heatmap now={now} />}
+      <Heatmap now={now} />
 
       {pos.status === "active" && (
         <section className="card p-5">
@@ -279,12 +252,6 @@ export function TodayView() {
         </section>
       )}
 
-      {c.features.includes("timer") && (
-        <section className="card p-5">
-          <SectionTitle hint="The template for every session">Session timer</SectionTitle>
-          <FocusTimer />
-        </section>
-      )}
 
       {c.encouragement && <p className="text-sm italic leading-relaxed text-muted">{c.encouragement}</p>}
     </div>

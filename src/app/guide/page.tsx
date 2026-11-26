@@ -1,17 +1,14 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { AI_TUTOR, JAVA_CORE_RESOURCES, SESSION_TEMPLATE, SETUP_JAVA, STUCK_ORDER, WHY_PAST_FAILED, AFTER_JAVA_RHYTHM } from "@/data/guide";
+import { AI_TUTOR, JAVA_CORE_RESOURCES, SETUP_JAVA, STUCK_ORDER, WHY_PAST_FAILED, AFTER_JAVA_RHYTHM } from "@/data/guide";
 import { linksFor } from "@/data/links";
 import { CheckRow, LinkChips, SectionTitle } from "@/components/ui";
-import { allowed, titleFor } from "@/server/access";
-import { Missing } from "@/components/missing";
-import { clientContent, guideFor, tracksFor } from "@/server/content";
+import { TRACKS } from "@/lib/roadmap";
+import { clientContent, guideFor } from "@/server/content";
 
 const links = (t: string) => linksFor(t).map((l) => ({ label: l.label, url: l.url }));
 
-export async function generateMetadata(): Promise<Metadata> {
-  return titleFor("How it works", "guide");
-}
+export const metadata: Metadata = { title: "How it works" };
 
 function Card({ id, title, hint, children }: { id?: string; title: string; hint?: string; children: React.ReactNode }) {
   return (
@@ -22,15 +19,13 @@ function Card({ id, title, hint, children }: { id?: string; title: string; hint?
   );
 }
 
-export default async function Page() {
-  const a = await allowed("guide");
-  if (!a) return <Missing />;
-  const tracks = tracksFor(a.features);
+export default function Page() {
+  const tracks = TRACKS;
   const both = tracks.length > 1;
   const hasMain = tracks.includes("main");
   const hasJava = tracks.includes("java");
   const g = guideFor(tracks);
-  const schedule = clientContent({ role: "member", login: null, previewAs: null, features: a.features }).schedule;
+  const schedule = clientContent().schedule;
   return (
     <div className="space-y-6">
       <header>
@@ -83,18 +78,6 @@ export default async function Page() {
         <p className="mt-3 text-sm text-muted">A weekday checklist item is sized for one 1.5-hour session. If it takes two sessions, that&apos;s fine: see the falling-behind rules.</p>
       </Card>
 
-      <Card title="The template for every session" hint="Use the timer on the Today page">
-        <ol className="space-y-2">
-          {SESSION_TEMPLATE.map((s, i) => (
-            <li key={s.name} className="flex gap-3 text-[15px] leading-relaxed">
-              <span className="grid size-6 shrink-0 place-items-center rounded-full bg-accent-soft text-xs font-semibold text-accent">{i + 1}</span>
-              <span>
-                <b>{s.name}</b> <span className="text-muted">({s.minutes} min)</span>: {s.text}
-              </span>
-            </li>
-          ))}
-        </ol>
-      </Card>
 
       <Card id="setup" title="Setup: do this before week 1" hint="Ticks are saved">
         <div className={`grid gap-x-8 ${both ? "sm:grid-cols-2" : ""}`}>

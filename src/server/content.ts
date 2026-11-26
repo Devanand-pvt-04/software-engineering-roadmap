@@ -1,7 +1,7 @@
 import "server-only";
 import data from "@/data/roadmap.json";
 import {
-  ENCOURAGEMENT, FALLING_BEHIND, GLOSSARY, JAVA_INTRO, MAIN_INTRO, PHASE_SUMMARY, PRACTICE_RULES, SCHEDULE, SETUP_MAIN, URL_NOTE_SECTIONS, WHATS_DIFFERENT, WHY_JAVA,
+  ENCOURAGEMENT, FALLING_BEHIND, JAVA_INTRO, MAIN_INTRO, PHASE_SUMMARY, PRACTICE_RULES, SCHEDULE, SETUP_MAIN, URL_NOTE_SECTIONS, WHATS_DIFFERENT, WHY_JAVA,
 } from "@/data/guide";
 import { linksFor } from "@/data/links";
 import { specsFor } from "@/data/specifics";
@@ -12,9 +12,8 @@ import { BRIEFS } from "@/data/briefs";
 import { CORE_TIME, FREE_ALTERNATIVES } from "@/data/estimates";
 import { CONTEST_INFO, PHASE2 } from "@/data/phase2";
 import type { Day } from "@/lib/constants";
-import type { ClientContent, Role, ScheduleRow } from "@/lib/content";
-import type { FeatureId } from "@/lib/features";
-import type { Group, LinkRef, Phase2SetView, Problem, Track, Week, SpecView } from "@/lib/roadmap";
+import type { ClientContent, ScheduleRow } from "@/lib/content";
+import { TRACKS, type Group, type LinkRef, type Phase2SetView, type Problem, type Track, type Week, type SpecView } from "@/lib/roadmap";
 
 interface RawWeek extends Omit<Week, "resources" | "checklist" | "after" | "quiz" | "brief"> {
   resources: { text: string; core: boolean }[];
@@ -56,10 +55,6 @@ function enrich(track: Track, w: RawWeek): Week {
 
 const ENRICHED: Record<Track, Week[]> = { main: RAW.main.map((w) => enrich("main", w)), java: RAW.java.map((w) => enrich("java", w)) };
 
-export function tracksFor(features: FeatureId[]): Track[] {
-  return (["main", "java"] as Track[]).filter((t) => features.includes(`track:${t}`));
-}
-
 export function allWeeks(track: Track): Week[] {
   return ENRICHED[track];
 }
@@ -84,63 +79,31 @@ function scheduleFor(tracks: Track[]): ScheduleRow[] {
   return rows;
 }
 
-export function clientContent(opts: { role: Role; login: string | null; previewAs: string | null; features: FeatureId[] }): ClientContent {
-  const tracks = tracksFor(opts.features);
-  const weeks: ClientContent["weeks"] = {};
-  const groups: ClientContent["groups"] = {};
+export function clientContent(): ClientContent {
+  const tracks = TRACKS;
   const phaseSummary: ClientContent["phaseSummary"] = {};
-  const quizzes = opts.features.includes("quizzes");
-  const hints = opts.features.includes("hints");
-  const slice = (w: Week): Week => ({
-    ...w,
-    quiz: quizzes ? w.quiz : [],
-    problems: hints ? w.problems : w.problems.map((p) => ({ slug: p.slug, name: p.name, note: p.note })),
-  });
-  for (const t of tracks) {
-    weeks[t] = ENRICHED[t].map(slice);
-    groups[t] = GROUPS[t];
-    for (const g of GROUPS[t]) if (PHASE_SUMMARY[g.id]) phaseSummary[g.id] = PHASE_SUMMARY[g.id];
-  }
-  const java = tracks.includes("java");
-  const main = tracks.includes("main");
-  const problemsOn = java && opts.features.includes("problems");
-  const phase2: Phase2SetView[] =
-    problemsOn && opts.features.includes("phase2")
-      ? PHASE2.map((set) => ({
-          id: set.id,
-          title: set.title,
-          week: set.week,
-          why: set.why,
-          problems: set.problems.map((x): Problem => ({ slug: x.slug, name: x.name, note: "", difficulty: x.difficulty, phase2: true, ...(hints ? { hint: x.hint } : {}) })),
-        }))
-      : [];
-  const isOwner = opts.role === "owner" || opts.role === "open";
+  for (const t of tracks) for (const g of GROUPS[t]) if (PHASE_SUMMARY[g.id]) phaseSummary[g.id] = PHASE_SUMMARY[g.id];
+  const phase2: Phase2SetView[] = PHASE2.map((set) => ({
+    id: set.id,
+    title: set.title,
+    week: set.week,
+    why: set.why,
+    problems: set.problems.map((x): Problem => ({ slug: x.slug, name: x.name, note: "", difficulty: x.difficulty, phase2: true, hint: x.hint })),
+  }));
   return {
-    role: opts.role,
-    login: opts.login,
-    previewAs: opts.previewAs,
     tracks,
-    features: opts.features,
-    weeks,
-    groups,
+    weeks: { main: ENRICHED.main, java: ENRICHED.java },
+    groups: { main: GROUPS.main, java: GROUPS.java },
     phaseSummary,
     schedule: scheduleFor(tracks),
-    problems: problemsOn
-      ? [...(weeks.java ?? []).flatMap((w) => w.problems.map((p) => ({ ...p, week: w.n }))), ...phase2.flatMap((s) => s.problems.map((p) => ({ ...p, week: s.week })))]
-      : [],
+    problems: [...ENRICHED.java.flatMap((w) => w.problems.map((p) => ({ ...p, week: w.n }))), ...phase2.flatMap((s) => s.problems.map((p) => ({ ...p, week: s.week })))],
     phase2,
-    contest: problemsOn && opts.features.includes("contests") ? CONTEST_INFO : null,
-    practiceRules: java ? PRACTICE_RULES : [],
-    urlNoteSections: main && opts.features.includes("journal") ? URL_NOTE_SECTIONS : [],
-    urlNoteTitle: main ? "What happens when I type a URL" : "",
-    // Written for the plan's original reader, so only they see it.
-    encouragement: isOwner && !opts.previewAs ? ENCOURAGEMENT : null,
+    contest: CONTEST_INFO,
+    practiceRules: PRACTICE_RULES,
+    urlNoteSections: URL_NOTE_SECTIONS,
+    urlNoteTitle: "What happens when I type a URL",
+    encouragement: ENCOURAGEMENT,
   };
-}
-
-export function glossaryFor(tracks: Track[]) {
-  const ok = (w: string) => tracks.includes(w[0] === "M" ? "main" : "java");
-  return GLOSSARY.map((g) => ({ ...g, weeks: g.weeks.filter(ok) })).filter((g) => g.weeks.length);
 }
 
 /** "How it works" text, rewritten where it assumes both tracks. */

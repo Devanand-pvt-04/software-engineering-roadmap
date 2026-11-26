@@ -34,7 +34,7 @@ export function JournalView() {
       <header>
         <div className="flex flex-wrap items-center justify-between gap-2">
           <h1 className="text-2xl font-bold tracking-tight sm:text-3xl">Journal</h1>
-          {c.features.includes("backup") && (
+          {(
             <button className="btn" onClick={() => download(`zero-to-deep-notes-${dayKey()}.md`, notesMarkdown(getState(), c, dayKey()), "text/markdown")}>
               Export all notes (Markdown)
             </button>

@@ -1,17 +1,11 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { allowed, titleFor } from "@/server/access";
-import { Missing } from "@/components/missing";
-import { glossaryFor, tracksFor } from "@/server/content";
+import { GLOSSARY } from "@/data/guide";
 
-export async function generateMetadata(): Promise<Metadata> {
-  return titleFor("Glossary", "glossary");
-}
+export const metadata: Metadata = { title: "Glossary" };
 
-export default async function Page() {
-  const a = await allowed("glossary");
-  if (!a) return <Missing />;
-  const glossary = glossaryFor(tracksFor(a.features));
+export default function Page() {
+  const glossary = GLOSSARY;
   return (
     <div className="space-y-6">
       <header>

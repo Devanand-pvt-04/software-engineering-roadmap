@@ -4,7 +4,7 @@ A web app for the **Zero to Deep: 36-Week Software Engineering Plan**: a Main tr
 
 ## What's in it
 
-- **Today**: works out the current plan week from your start date, shows today's session (Mon/Wed/Fri/Sat Main, Tue/Thu/Sun Java), Sunday Done-when reviews, progress for both tracks, problems done, streak, re-solves due, and a guided session timer (Open → Recall → Focus → Explain → Close).
+- **Today**: works out the current plan week from your start date, shows today's session (Mon/Wed/Fri/Sat Main, Tue/Thu/Sun Java), Sunday Done-when reviews, progress for both tracks, problems done, streak and re-solves due.
 - **36-week map**: both tracks side by side with phases/parts, calendar dates, per-week progress and optional buffer weeks.
 - **72 week pages**: Why this week, daily checklist, Must know topic tree, Overlooked/niche, resources (⭐ core first), build, Sunday problems, Done-when test, phase milestone and your notes. Everything is tickable, and resource names become links.
 - **Problem tracker**: all 161 LeetCode problems from the Java track, linked, with status (Solved / Needed help / Stuck) and automatic re-solve reminders at 3 days and 2 weeks (practice rule 6). You can add your own problems.
@@ -26,18 +26,7 @@ A web app for the **Zero to Deep: 36-Week Software Engineering Plan**: a Main tr
 
 Progress is local-first (saved in the browser). When cloud sync is configured, signing in with GitHub merges local progress into your account and keeps devices in sync. Every tick is stored with a timestamp and merged last-writer-wins per item, so two devices don't overwrite each other.
 
-Sync needs four environment variables (see `.env.example`). Without them the app runs in browser-only mode.
-
-## Invites and access
-
-When sign-in is configured, the app is invite only. The owner (the GitHub account that owns the repo on Vercel, or the usernames in `ADMIN_GITHUB_LOGINS`, comma-separated) gets everything plus **Admin**:
-
-- **Invite** people by GitHub username. They open the app and sign in with GitHub; anyone not on the list sees a "not invited" page.
-- **Profiles** are named sets of features (each track, problem tracker, journal, timer, export, guide, glossary). Editing a profile changes it for everyone on it.
-- **Per-person overrides** switch single features on or off for one member, on top of their profile.
-- **Revoke** takes effect on their next request. **Preview** shows the app exactly as a member sees it.
-
-A feature someone doesn't have is absent, not hidden: plan content is only read on the server (`src/server/content.ts`) and each person's browser receives only their slice. Their pages for anything else render the same "Page not found" as a URL that doesn't exist.
+Anyone who signs in gets the full app; sign-in is only there to sync your own progress. Sync needs four environment variables (see `.env.example`). Without them the app runs in browser-only mode.
 
 ## Deploying on Vercel
 

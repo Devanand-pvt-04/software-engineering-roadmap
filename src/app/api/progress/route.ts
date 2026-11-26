@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { getAccess } from "@/server/access";
+import { currentUserId } from "@/auth";
 import { dbEnabled, readProgress, writeProgress } from "@/lib/db";
 import { emptyState, mergeState } from "@/lib/merge";
 
@@ -7,10 +7,10 @@ const MAX_BYTES = 2_000_000;
 
 async function guard() {
   if (!dbEnabled) return { error: NextResponse.json({ error: "sync not configured" }, { status: 503 }) };
-  const a = await getAccess();
-  // Only invited, active members (and the owner) can read or write progress.
-  if (a.status !== "ok" || !a.uid) return { error: NextResponse.json({ error: "unauthorized" }, { status: 401 }) };
-  return { uid: a.uid };
+  const uid = await currentUserId();
+  // Anyone signed in can sync their own progress, keyed by their GitHub id.
+  if (!uid) return { error: NextResponse.json({ error: "unauthorized" }, { status: 401 }) };
+  return { uid };
 }
 
 export async function GET() {

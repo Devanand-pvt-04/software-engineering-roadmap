@@ -1,13 +1,9 @@
 "use client";
-// The per-person slice of the plan, computed on the server (src/server/content.ts) and handed to client
-// components through context. Nothing outside this slice ever reaches the browser.
+// The plan content, assembled on the server (src/server/content.ts) and handed to client components through context.
 
 import { createContext, useContext } from "react";
 import type { Day } from "./constants";
-import type { FeatureId } from "./features";
 import type { ContestInfo, Group, Phase2SetView, Problem, Track, Week } from "./roadmap";
-
-export type Role = "open" | "owner" | "admin" | "member";
 
 export interface ScheduleRow {
   day: Day;
@@ -18,12 +14,7 @@ export interface ScheduleRow {
 }
 
 export interface ClientContent {
-  role: Role;
-  login: string | null;
-  /** Set when an admin is previewing the app as one of their members. */
-  previewAs: string | null;
   tracks: Track[];
-  features: FeatureId[];
   weeks: Partial<Record<Track, Week[]>>;
   groups: Partial<Record<Track, Group[]>>;
   phaseSummary: Record<string, { unlocks: string; milestone: string }>;
@@ -48,11 +39,6 @@ export function useContent(): ClientContent {
   const c = useContext(Ctx);
   if (!c) throw new Error("useContent outside ContentProvider");
   return c;
-}
-
-export function useCan() {
-  const c = useContent();
-  return (f: FeatureId) => c.features.includes(f);
 }
 
 export function weeksOf(c: ClientContent, t: Track): Week[] {

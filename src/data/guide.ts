@@ -1,6 +1,6 @@
 import "server-only";
 import type { Day } from "@/lib/constants";
-export { DEFAULT_START, BUFFER_AFTER, SESSION_TEMPLATE, DAYS, type Day } from "@/lib/constants";
+export { DEFAULT_START, BUFFER_AFTER, DAYS, type Day } from "@/lib/constants";
 
 // Hand-transcribed intro content from "Zero to Deep: 36-Week Software Engineering Plan".
 

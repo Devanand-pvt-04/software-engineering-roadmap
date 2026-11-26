@@ -12,7 +12,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
   callbacks: {
     jwt({ token, profile, account }) {
       if (account && profile) {
-        // Stable provider-scoped user id (GitHub numeric id) for progress, plus the username for invites.
+        // Stable provider-scoped user id (GitHub numeric id) for progress, plus the username.
         token.uid = `${account.provider}:${String(profile.id ?? token.sub)}`;
         token.githubId = String(profile.id ?? "");
         token.login = (profile as { login?: string }).login;

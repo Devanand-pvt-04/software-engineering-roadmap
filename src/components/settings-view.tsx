@@ -38,7 +38,7 @@ function useTheme(): [string, (t: string) => void] {
 export function SettingsView() {
   const cfg = useSettings();
   const content = useContent();
-  const backup = content.features.includes("backup");
+  const backup = true;
   const h = useHydrated();
   const sync = useSync();
   const [theme, setTheme] = useTheme();
