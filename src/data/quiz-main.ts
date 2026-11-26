@@ -181,7 +181,7 @@ export const QUIZ_MAIN: Record<number, [string, string][]> = {
   26: [
     ["What does the RSC payload contain?", "A serialised tree of the server components' output: elements, props, and references to client components (by chunk and export) for the browser to load and render."],
     ["Can a server component use useState? Why not?", "No. It runs once on the server and ships no JS, so there's nothing in the browser to hold state or re-render. Put the interactive part in a client component."],
-    ["Name Next.js's caching layers.", "Request memoisation (same fetch within a render), the data cache (fetch results across requests), the full route cache (rendered output) and the client router cache (payloads for visited routes)."],
+    ["How does caching work in Next.js 16?", "Caching is opt-in through Cache Components: you mark a function or component with \"use cache\", control lifetime with cacheLife and invalidate with cacheTag/revalidateTag. Everything not cached is rendered at request time and streamed; the static shell is prerendered."],
     ["What are LCP, INP and CLS?", "Largest Contentful Paint (load speed of the main content), Interaction to Next Paint (responsiveness), Cumulative Layout Shift (visual stability)."],
     ["What does next/image do for you?", "Serves resized, modern-format images per device, lazy-loads below the fold, and reserves space (width and height) to prevent layout shift."],
   ],
@@ -214,7 +214,7 @@ export const QUIZ_MAIN: Record<number, [string, string][]> = {
     ["What does a readiness probe failure do?", "Removes the pod from the Service's endpoints so it gets no traffic, without restarting it. A failing liveness probe restarts the container."],
   ],
   31: [
-    ["Trace a request from the browser to your container.", "DNS → cloud load balancer → Ingress controller pod (e.g. ingress-nginx) → Service → kube-proxy rules (iptables/IPVS) → pod IP on a node → container port."],
+    ["Trace a request from the browser to your container.", "DNS → cloud load balancer → Gateway API or Ingress controller pod (e.g. Envoy Gateway) → Service → kube-proxy rules (iptables/IPVS) → pod IP on a node → container port."],
     ["Ingress object vs Ingress controller?", "The Ingress object is configuration describing HTTP routing. The controller is the program that watches those objects and actually proxies traffic."],
     ["How does a Service route to pods?", "Its selector picks pods; their IPs become endpoints; kube-proxy on every node programs iptables/IPVS rules (or eBPF) so the Service IP load-balances to them."],
     ["What are PersistentVolume and PersistentVolumeClaim?", "A PV is a piece of storage in the cluster; a PVC is a pod's request for storage. A StorageClass lets the cluster create PVs on demand to satisfy claims."],

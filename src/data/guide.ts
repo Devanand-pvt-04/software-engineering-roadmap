@@ -101,12 +101,12 @@ export const WHY_JAVA = [
 ];
 
 export const JAVA_CORE_RESOURCES = [
-  "⭐ University of Helsinki MOOC: Java Programming I & II (free). Hundreds of small exercises with automatic checking. Your main guide for Part A.",
-  "Head First Java (3rd ed.): friendly explanations of OOP; read alongside the MOOC",
+  "⭐ dev.java Learn (Oracle, free): the official tutorials for current Java. Your main guide for Part A.",
+  "⭐ Exercism Java track (free): 159 exercises whose tests you run in IntelliJ, so you always know if you got it right",
+  "Head First Java (3rd ed.): friendly explanations of OOP; read alongside dev.java",
   "⭐ Algorithms (Sedgewick & Wayne, 4th ed.) + the free Princeton Algorithms I & II courses on Coursera: main resource for Parts B and C, all in Java",
-  "Kunal Kushwaha's DSA Bootcamp in Java (YouTube, free): starts from zero, very thorough",
-  "Striver's A2Z DSA sheet (takeuforward): a step-by-step problem list with video solutions",
-  "NeetCode roadmap: pattern-organized problems with clear explanations",
+  "NeetCode (free): a clear video explanation for almost every problem in this plan. The plan's own problem list is your only list; use NeetCode to understand each one",
+  "Striver's DP series (takeuforward, free): the core for the dynamic programming weeks; Kunal Kushwaha's recursion series for the recursion week",
   "Effective Java (Joshua Bloch, 3rd ed.): read after Part A, one item at a time",
   "VisuAlgo: animations of every structure and algorithm",
 ];

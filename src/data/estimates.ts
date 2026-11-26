@@ -93,7 +93,7 @@ export const FREE_ALTERNATIVES: Record<string, { label: string; url: string }[]>
   "k8s-uar": [{ label: "Kubernetes tutorials (free)", url: "https://kubernetes.io/docs/tutorials/" }],
   "alex-xu": [{ label: "System Design Primer (free)", url: "https://github.com/donnemartin/system-design-primer" }],
   "headfirst-java": [
-    { label: "Helsinki Java MOOC (free)", url: "https://java-programming.mooc.fi/" },
+    { label: "Exercism Java track (free)", url: "https://exercism.org/tracks/java" },
     { label: "dev.java Learn (free)", url: "https://dev.java/learn/" },
   ],
   "headfirst-dp": [{ label: "Refactoring.Guru design patterns (free)", url: "https://refactoring.guru/design-patterns" }],

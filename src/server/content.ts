@@ -51,7 +51,7 @@ function enrich(track: Track, w: RawWeek): Week {
       ...(r.core && CORE_TIME[id] ? { time: CORE_TIME[id] } : {}),
       ...(freeFor(r.text) ? { free: freeFor(r.text) } : {}),
     })),
-    checklist: w.checklist.map((c) => ({ ...c, links: links(c.text), specs: specs(track, w.n, "day", c.day, c.text) })),
+    checklist: w.checklist.map((c) => ({ ...c, links: links(c.text), specs: specs(track, w.n, "day", c.day) })),
     after: w.after.map((a) => ({ text: a, links: links(a) })),
   };
 }
