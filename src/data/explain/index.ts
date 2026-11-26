@@ -7,6 +7,7 @@ import { EXPLAIN_MAIN_JS } from "./main-js";
 import { EXPLAIN_MAIN_BACKEND } from "./main-backend";
 import { EXPLAIN_MAIN_CRAFT } from "./main-craft";
 import { EXPLAIN_MAIN_PYTHON_AI } from "./main-python-ai";
+import { EXPLAIN_MAIN_FRONTEND } from "./main-frontend";
 
 /** Every explainer card, keyed by `<M|J><week>:<Must know topic index>`. */
 export const EXPLAIN: ExplainMap = {
@@ -16,5 +17,6 @@ export const EXPLAIN: ExplainMap = {
   ...EXPLAIN_MAIN_BACKEND,
   ...EXPLAIN_MAIN_CRAFT,
   ...EXPLAIN_MAIN_PYTHON_AI,
+  ...EXPLAIN_MAIN_FRONTEND,
   ...EXPLAIN_JAVA_PART_A,
 };
