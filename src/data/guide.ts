@@ -5,7 +5,7 @@ export { DEFAULT_START, DAYS, type Day } from "@/lib/constants";
 // Hand-transcribed intro content from "Zero to Deep: 36-Week Software Engineering Plan".
 
 export const PLAN_TITLE = "Zero to Deep";
-export const PLAN_SUBTITLE = "36-Week Software Engineering Plan";
+export const PLAN_SUBTITLE = "Software Engineering Plan, from Zero";
 
 export const WHY_PAST_FAILED = [
   'They were lists of topics, not instructions. "Learn networking" is not something you can sit down and do on a Tuesday at 8 pm.',
@@ -18,7 +18,7 @@ export const WHATS_DIFFERENT = [
   "Every week is a short list of sessions, and the app puts them on your days. Open Today, do the session it shows, tick it. That's all you have to decide.",
   'Every week has a "Done when" test. If you pass it, move on, even if you didn\'t read every link.',
   "Every topic list has two levels. Must know is what you learn this week. Overlooked / niche is what most developers never learn; read it, note it, and come back later.",
-  "Nothing assumes knowledge you haven't built yet. Java week 1 assumes zero. Main track week 1 assumes zero.",
+  "Nothing assumes knowledge you haven't built yet. Java week 1 assumes zero, and so does the Main track's first week, Learn to program.",
   "There are rules for falling behind, so a bad week doesn't end the plan.",
 ];
 
@@ -61,7 +61,7 @@ export const AI_TUTOR = {
 
 export const FALLING_BEHIND: { title: string; text: string }[] = [
   { title: "The minimum week", text: "In a terrible week (illness, deadline at work), do only two things: one Main track session and one DSA session. A minimum week still counts. Zero weeks are the only thing to avoid." },
-  { title: "Never cram", text: "Missed a day? Don't double up. The app moves everything back to your next study day by itself and shows the new finish date. The plan has no deadline you have to hit; 40 weeks of real understanding beats 36 of skimming." },
+  { title: "Never cram", text: "Missed a day? Don't double up. The app moves everything back to your next study day by itself and shows the new finish date. The plan has no deadline you have to hit; A later finish with real understanding beats an early one spent skimming." },
   { title: "Reorder, don't skip", text: "Never skip a week to stay on schedule; each week is a foundation for later ones. If a session doesn't suit today, swap it with the next one or push it back. Do tomorrow's session today and everything just moves up." },
   { title: "The two-session rule for being stuck", text: "If a topic hasn't clicked after two sessions, write down the exact question, try one different resource (a video instead of a book, or vice versa), and if it still hasn't clicked, move on and mark it. Most confusion resolves itself two or three weeks later." },
   { title: "Done-when beats completeness", text: "You don't need to read every resource or tick every niche topic. If you pass the week's Done-when test, the week is done." },
@@ -88,10 +88,10 @@ export const PRACTICE_RULES = [
 ];
 
 export const MAIN_INTRO =
-  "The Main track goes bottom-up: each phase explains the layer the next one sits on. By week 36 you can trace a request from a keypress, through the network and every piece of infrastructure, into your code and database, and back to pixels on the screen.";
+  "The Main track goes bottom-up: each phase explains the layer the next one sits on. By the end you can trace a request from a keypress, through the network and every piece of infrastructure, into your code and database, and back to pixels on the screen.";
 
 export const JAVA_INTRO =
-  "This track is about 6 hours a week (learn, build, solve), in parallel with the Main track. It starts from absolute zero: no Java, no OOP, no programming assumptions. By week 36 you'll be comfortable with Java, OOP and functional programming, and able to solve medium-level algorithm problems and reason about their cost.";
+  "This track is about 6 hours a week (learn, build, solve), in parallel with the Main track. It starts from absolute zero: no Java, no OOP, no programming assumptions. By the end you'll be comfortable with Java, OOP, design patterns and Spring Boot, and able to solve medium-level algorithm problems and reason about their cost.";
 
 export const WHY_JAVA = [
   "It's statically typed and explicit: you see every type and every object, which makes OOP and data structures concrete.",
@@ -104,7 +104,7 @@ export const JAVA_CORE_RESOURCES = [
   "⭐ dev.java Learn (Oracle, free): the official tutorials for current Java. Your main guide for Part A.",
   "⭐ Exercism Java track (free): 159 exercises whose tests you run in IntelliJ, so you always know if you got it right",
   "Head First Java (3rd ed.): friendly explanations of OOP; read alongside dev.java",
-  "⭐ Algorithms (Sedgewick & Wayne, 4th ed.) + the free Princeton Algorithms I & II courses on Coursera: main resource for Parts B and C, all in Java",
+  "⭐ Algorithms (Sedgewick & Wayne, 4th ed.) + the free Princeton Algorithms I & II courses on Coursera: main resource for Parts C and E, all in Java",
   "NeetCode (free): a clear video explanation for almost every problem in this plan. The plan's own problem list is your only list; use NeetCode to understand each one",
   "Striver's DP series (takeuforward, free): the core for the dynamic programming weeks; Kunal Kushwaha's recursion series for the recursion week",
   "Effective Java (Joshua Bloch, 3rd ed.): read after Part A, one item at a time",
@@ -112,24 +112,29 @@ export const JAVA_CORE_RESOURCES = [
 ];
 
 export const PHASE_SUMMARY: Record<string, { unlocks: string; milestone: string }> = {
-  "Phase 1": { unlocks: "Nothing feels like magic below your code: processes, files, ports, packets, HTTP", milestone: 'Your own HTTP server on raw TCP + a written "What happens when I type a URL" (network half)' },
-  "Phase 2": { unlocks: "You know what the browser does with every byte, and JS as a language and runtime", milestone: "A vanilla JS + TypeScript app with no frameworks; the URL note extended through rendering" },
-  "Phase 3": { unlocks: "You can build and reason about a production-shaped API and database", milestone: "A Node + Postgres + Redis API with auth, jobs, tests and a design README" },
-  "Phase 4": { unlocks: "React and Next.js stop being magic; you understand chunks, hydration and RSC", milestone: 'A mini bundler, a mini React, and a Next.js app with a "how this page loads" write-up' },
-  "Phase 5": { unlocks: "NGINX, gateways, WAF, Docker, Kubernetes and Ingress become ordinary programs", milestone: "Your full app running in Kubernetes behind NGINX Ingress, deployed by CI/CD" },
-  "Phase 6": { unlocks: "You can design a system for a given scale and defend every tradeoff", milestone: "Capstone project + design doc + a 20-minute talk" },
+  "Phase 1": { unlocks: "You can write, compile and debug small programs from a blank file", milestone: "CS50x Problem Sets 1 and 2 with every check green" },
+  "Phase 2": { unlocks: "Nothing feels like magic below your code: processes, files, ports, packets, HTTP", milestone: 'Your own HTTP server on raw TCP + a written "What happens when I type a URL" (network half)' },
+  "Phase 3": { unlocks: "You know what the browser does with every byte, and JS as a language and runtime", milestone: "A vanilla JS + TypeScript app with no frameworks, tested in CI; the URL note extended through rendering" },
+  "Phase 4": { unlocks: "You can build and reason about a production-shaped API and database", milestone: "A Node + Postgres + Redis API in strict TypeScript with auth, jobs, tests and a design README" },
+  "Phase 5": { unlocks: "You write code others can change, find your way in codebases you didn't write, and work like a team member", milestone: "Your API refactored, layered and ported to NestJS, plus a real open-source PR" },
+  "Phase 6": { unlocks: "Python as a second language, AI coding tools used safely, and LLM features you can test", milestone: "An AI feature in your API with retrieval, citations, guardrails and evals in CI" },
+  "Phase 7": { unlocks: "React and Next.js stop being magic; you understand chunks, hydration and RSC", milestone: 'A mini bundler, a mini React, and a Next.js app with a "how this page loads" write-up and Playwright tests' },
+  "Phase 8": { unlocks: "NGINX, gateways, WAF, Docker, Kubernetes and AWS become ordinary programs", milestone: "Your app in Kubernetes deployed by CI/CD, and on AWS from Terraform on a real domain" },
+  "Phase 9": { unlocks: "You can design a system for a given scale, defend every tradeoff, run it in production and get hired for it", milestone: "Capstone: reviewed design, built, deployed, operated through a game day, and in your portfolio" },
   "Part A": { unlocks: "Java from zero, OOP, paradigms, the JVM, Big-O", milestone: "Write well-structured Java programs and analyze their complexity" },
-  "Part B": { unlocks: "Arrays, hashing, lists, stacks, recursion, sorting, binary search, trees, heaps", milestone: "Implement every core structure from scratch and solve easy/medium problems by pattern" },
-  "Part C": { unlocks: "Tries, graphs, greedy, dynamic programming, strings, concurrency", milestone: "Solve medium problems reliably, attempt hard ones, and pass a DSA interview" },
+  "Part B": { unlocks: "Design patterns and low-level design: turning a problem statement into classes", milestone: "Parking lot, booking system and expense splitter designs with tests" },
+  "Part C": { unlocks: "Arrays, hashing, lists, stacks, recursion, sorting, binary search, trees, heaps", milestone: "Implement every core structure from scratch and solve easy/medium problems by pattern" },
+  "Part D": { unlocks: "Spring Boot: dependency injection, REST, JPA, transactions, security, Kafka", milestone: "Two production-shaped Spring Boot services talking through Kafka" },
+  "Part E": { unlocks: "Tries, graphs, greedy, dynamic programming, strings, concurrency", milestone: "Solve medium problems reliably, attempt hard ones, and pass a DSA interview" },
 };
 
 export const URL_NOTE_SECTIONS = [
-  { id: "p1", phase: "Phase 1", title: "Keypress to HTML bytes arriving", hint: "DNS → TCP → TLS → HTTP request → response. Processes, sockets, packets." },
-  { id: "p2", phase: "Phase 2", title: "The browser half", hint: "Parsing, DOM/CSSOM, render tree, layout, paint, composite, JS execution." },
-  { id: "p3", phase: "Phase 3", title: "Into your server and database", hint: "Node event loop, routing, auth, SQL, indexes, transactions, caches, queues." },
-  { id: "p4", phase: "Phase 4", title: "How this page loads", hint: "Bundles and chunks, SSR/RSC, hydration, React reconciliation." },
-  { id: "p5", phase: "Phase 5", title: "Through the infrastructure", hint: "CDN, WAF, gateway, NGINX/Ingress, load balancer, containers, Kubernetes." },
-  { id: "p6", phase: "Phase 6", title: "At scale", hint: "Replication, partitioning, consistency, consensus, messaging." },
+  { id: "p1", phase: "Phase 2", title: "Keypress to HTML bytes arriving", hint: "DNS → TCP → TLS → HTTP request → response. Processes, sockets, packets." },
+  { id: "p2", phase: "Phase 3", title: "The browser half", hint: "Parsing, DOM/CSSOM, render tree, layout, paint, composite, JS execution." },
+  { id: "p3", phase: "Phase 4", title: "Into your server and database", hint: "Node event loop, routing, auth, SQL, indexes, transactions, caches, queues." },
+  { id: "p4", phase: "Phase 7", title: "How this page loads", hint: "Bundles and chunks, SSR/RSC, hydration, React reconciliation." },
+  { id: "p5", phase: "Phase 8", title: "Through the infrastructure", hint: "CDN, WAF, gateway, Gateway API, load balancer, containers, Kubernetes, the cloud." },
+  { id: "p6", phase: "Phase 9", title: "At scale", hint: "Replication, partitioning, consistency, consensus, messaging." },
 ];
 
 export const GLOSSARY: { term: string; meaning: string; weeks: string[] }[] = [

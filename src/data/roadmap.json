@@ -1,7 +1,101 @@
 {
  "main": [
   {
-   "n": 1,
+   "id": "M37",
+   "title": "Learn to program — your first programs, from Scratch to C",
+   "why": "the Main track starts by looking inside the computer, and the first builds ask you to write small C programs. This step teaches you to program at all, so those builds are reachable on day one. No experience assumed.",
+   "mustKnow": [
+    {
+     "t": "What a program is: a precise list of instructions a computer follows, with no guessing",
+     "c": []
+    },
+    {
+     "t": "The building blocks every language shares",
+     "c": [
+      "Values and variables",
+      "Conditions (if / else) and boolean expressions",
+      "Loops (while, for)",
+      "Functions: naming a piece of work, inputs (parameters) and outputs (return values)"
+     ]
+    },
+    {
+     "t": "Thinking in steps: breaking a problem into smaller problems (decomposition) and writing pseudocode first",
+     "c": []
+    },
+    {
+     "t": "Your first compiled language, C: source code, the compiler (clang or gcc), running the program from a terminal",
+     "c": []
+    },
+    {
+     "t": "Types in C: int, char, float, bool, strings as arrays of char; why the computer needs to know a value's size",
+     "c": []
+    },
+    {
+     "t": "Arrays: many values of the same type side by side in memory; indexing from 0",
+     "c": []
+    },
+    {
+     "t": "Bugs are normal: reading a compiler error top to bottom, printf debugging, and using a debugger to step through a line at a time",
+     "c": []
+    }
+   ],
+   "niche": [
+    "Integer overflow and floating-point imprecision (you'll see why in Week 1)",
+    "Command-line arguments: argc and argv",
+    "Why C has no bounds checking and what a buffer overflow is",
+    "Style: naming, indentation and comments that say why, not what"
+   ],
+   "resources": [
+    {
+     "text": "CS50x (Harvard, free): lectures 0 (Scratch), 1 (C) and 2 (Arrays) — lectures, sections and problem sets, done in the CS50 browser IDE (cs50.dev) so there is nothing to install",
+     "core": true
+    },
+    {
+     "text": "CS50x shorts and notes for each week (if a lecture moves too fast)",
+     "core": false
+    },
+    {
+     "text": "Exercism C track (free) for extra practice with automatic checks",
+     "core": false
+    }
+   ],
+   "sessions": [
+    {
+     "label": "Lecture 0 + Scratch",
+     "hours": 3,
+     "text": "Watch the CS50x lecture 0. Build the Problem Set 0 Scratch project: a small game or story that uses at least one loop, one condition and one variable."
+    },
+    {
+     "label": "Lecture 1: C",
+     "hours": 2.5,
+     "text": "Watch the CS50x lecture 1 and read its notes. Write hello.c in cs50.dev, compile it with make, run it, then break it on purpose and read the compiler error."
+    },
+    {
+     "label": "Problem Set 1",
+     "hours": 3,
+     "text": "Solve Problem Set 1 (Mario and Cash, or the more comfortable versions). Write pseudocode before each program. Run check50 until every check is green."
+    },
+    {
+     "label": "Lecture 2: arrays",
+     "hours": 2,
+     "text": "Watch the CS50x lecture 2: compiling in four steps, debugging with debug50, arrays, strings and command-line arguments."
+    },
+    {
+     "label": "Problem Set 2",
+     "hours": 3,
+     "text": "Solve Problem Set 2 (Scrabble and Readability, then Caesar or Substitution). Step through one bug with debug50 instead of guessing."
+    }
+   ],
+   "checklist": [],
+   "doneWhen": "you can write, compile and debug a C program with loops, functions and arrays from a blank file, and explain what each line does.",
+   "build": "",
+   "problems": [],
+   "problemNote": "",
+   "after": [],
+   "extra": []
+  },
+  {
+   "id": "M1",
    "title": "How a computer works",
    "why": "every abstraction you use (JS, Docker, Kubernetes) is eventually a CPU executing instructions on bytes in memory.",
    "mustKnow": [
@@ -53,10 +147,6 @@
      "core": true
     },
     {
-     "text": "CS50 (Harvard, free on edX/YouTube) Week 0-1 lectures for a gentle start",
-     "core": false
-    },
-    {
      "text": "Crash Course Computer Science (YouTube), episodes 1-10",
      "core": false
     },
@@ -91,7 +181,7 @@
    "extra": []
   },
   {
-   "n": 2,
+   "id": "M2",
    "title": "Operating systems I — processes, threads, memory",
    "why": "your Node server, your browser tabs and your Docker containers are all processes. You need to know what that means.",
    "mustKnow": [
@@ -172,7 +262,7 @@
    "extra": []
   },
   {
-   "n": 3,
+   "id": "M3",
    "title": "Operating systems II — files, syscalls, I/O, concurrency",
    "why": "every file read, network request and log line in your app is a system call. Concurrency bugs are the hardest bugs you'll face.",
    "mustKnow": [
@@ -251,7 +341,7 @@
    "extra": []
   },
   {
-   "n": 4,
+   "id": "M4",
    "title": "Linux and the shell",
    "why": "every server you deploy to is Linux. Being slow in the terminal makes every later topic slower.",
    "mustKnow": [
@@ -344,7 +434,7 @@
    "extra": []
   },
   {
-   "n": 5,
+   "id": "M5",
    "title": "Git, from the inside",
    "why": "you use Git daily. Once you see it's just a small database of snapshots, merge conflicts and rebases stop being scary.",
    "mustKnow": [
@@ -428,7 +518,7 @@
    "extra": []
   },
   {
-   "n": 6,
+   "id": "M6",
    "title": "Networking — IP, TCP, UDP, DNS",
    "why": "every API call, every database query and every Kubernetes service is network traffic. Most production mysteries are network mysteries.",
    "mustKnow": [
@@ -527,7 +617,7 @@
    "extra": []
   },
   {
-   "n": 7,
+   "id": "M7",
    "title": "HTTP and TLS",
    "why": "HTTP is the language of everything you build. You'll write a server that speaks it with no framework.",
    "mustKnow": [
@@ -633,7 +723,7 @@
    "extra": []
   },
   {
-   "n": 8,
+   "id": "M8",
    "title": "How the browser renders a page",
    "why": "HTML, CSS and JS only make sense once you know the machine that runs them.",
    "mustKnow": [
@@ -716,7 +806,7 @@
    "extra": []
   },
   {
-   "n": 9,
+   "id": "M9",
    "title": "HTML and accessibility",
    "why": "HTML is the structure everything else hangs on, and most developers have never learned it properly.",
    "mustKnow": [
@@ -801,7 +891,7 @@
    "extra": []
   },
   {
-   "n": 10,
+   "id": "M10",
    "title": "CSS I — the cascade, box model, flow and stacking",
    "why": "CSS feels random only when you don't know its rules. It has very few, and they're strict.",
    "mustKnow": [
@@ -897,7 +987,7 @@
    "extra": []
   },
   {
-   "n": 11,
+   "id": "M11",
    "title": "CSS II — Flexbox, Grid, responsive, performance",
    "why": "modern layout is Flexbox and Grid. With them plus Week 10's rules, you can build any layout.",
    "mustKnow": [
@@ -982,7 +1072,7 @@
    "extra": []
   },
   {
-   "n": 12,
+   "id": "M12",
    "title": "JavaScript, the language I",
    "why": "frameworks come and go; the language underneath them stays. By now your Java track has taught you programming basics, so JS will feel familiar.",
    "mustKnow": [
@@ -1068,10 +1158,10 @@
     },
     {
      "day": "Sat",
-     "text": "Implement from scratch: debounce, throttle, once, memoize, curry, deepClone, deepEqual. Write tests with plain console.assert."
+     "text": "Implement from scratch: debounce, throttle, once, memoize, curry, deepClone, deepEqual. Write tests with Node's built-in test runner (node:test, run with node --test)."
     }
    ],
-   "doneWhen": "you can explain a closure with a memory diagram and predict the output of the classic for (var i...) setTimeout puzzle, and fix it two ways.",
+   "doneWhen": "you can explain a closure with a memory diagram and predict the output of the classic for (var i...) setTimeout puzzle, and fix it two ways. Your utilities have node:test tests that pass.",
    "build": "",
    "problems": [],
    "problemNote": "",
@@ -1079,7 +1169,7 @@
    "extra": []
   },
   {
-   "n": 13,
+   "id": "M13",
    "title": "JavaScript, the language II + the runtime",
    "why": "this, prototypes and the event loop are where most JS confusion lives. After this week, async code will stop surprising you.",
    "mustKnow": [
@@ -1173,7 +1263,7 @@
    "extra": []
   },
   {
-   "n": 14,
+   "id": "M14",
    "title": "The DOM, Web APIs and TypeScript",
    "why": "this is what frameworks automate. Doing it by hand once makes React's purpose obvious.",
    "mustKnow": [
@@ -1210,6 +1300,10 @@
       "Generics and constraints; utility types (Partial, Pick, Omit, Record, ReturnType)",
       "tsconfig essentials: strict, target, module"
      ]
+    },
+    {
+     "t": "Continuous integration from now on: a GitHub Actions workflow that runs lint, type-check and tests on every push, so every later build is checked automatically",
+     "c": []
     }
    ],
    "niche": [
@@ -1232,6 +1326,10 @@
     {
      "text": "Effective TypeScript (Dan Vanderkam, 2nd ed.) for later depth",
      "core": false
+    },
+    {
+     "text": "GitHub Actions docs: Quickstart and Building and testing Node.js",
+     "core": false
     }
    ],
    "checklist": [
@@ -1249,7 +1347,7 @@
     },
     {
      "day": "Sat",
-     "text": "Build a vanilla JS todo app (add, edit, delete, filter, persist to localStorage, event delegation). Then convert it to TypeScript with strict: true."
+     "text": "Build a vanilla JS todo app (add, edit, delete, filter, persist to localStorage, event delegation). Then convert it to TypeScript with strict: true, and add a GitHub Actions workflow to your foundations repo that runs ESLint, tsc and your tests on every push."
     }
    ],
    "doneWhen": "your todo app works with no framework, and you can explain event delegation and what TypeScript does (and doesn't do) at runtime.",
@@ -1260,7 +1358,7 @@
    "extra": []
   },
   {
-   "n": 15,
+   "id": "M15",
    "title": "Node.js internals",
    "why": "Node is \"just\" V8 plus an event loop over epoll (Week 3). Seeing that removes all the mystery.",
    "mustKnow": [
@@ -1357,7 +1455,7 @@
    "extra": []
   },
   {
-   "n": 16,
+   "id": "M16",
    "title": "Building HTTP APIs and API design",
    "why": "you'll write the framework yourself so Express, Fastify and NestJS become readable code instead of magic.",
    "mustKnow": [
@@ -1435,10 +1533,10 @@
     },
     {
      "day": "Sat",
-     "text": "Build a REST API on your framework (e.g. a notes or bookmarks app, in-memory for now) with cursor pagination, validation, idempotency keys and an OpenAPI spec. Add a WebSocket endpoint for live updates."
+     "text": "Build a REST API in strict TypeScript on your framework (e.g. a notes or bookmarks app, in-memory for now) with cursor pagination, validation, idempotency keys and an OpenAPI spec. Add a WebSocket endpoint for live updates. Write tests for what you added (node:test or Vitest) and keep CI green."
     }
    ],
-   "doneWhen": "you can explain how middleware chaining works internally and design a clean REST API for any domain on a whiteboard.",
+   "doneWhen": "you can explain how middleware chaining works internally and design a clean REST API for any domain on a whiteboard, and this week's code has passing tests in CI.",
    "build": "",
    "problems": [],
    "problemNote": "",
@@ -1446,7 +1544,7 @@
    "extra": []
   },
   {
-   "n": 17,
+   "id": "M17",
    "title": "Authentication and web security",
    "why": "most real-world breaches are auth and input-handling mistakes. These are not optional topics.",
    "mustKnow": [
@@ -1483,11 +1581,19 @@
      "c": []
     },
     {
+     "t": "Relationship-based authorization (the Zanzibar model): permissions stored as relationships between users and objects (\"Asha is an editor of doc 7\"), as in Google Docs sharing; OpenFGA as an open-source implementation",
+     "c": []
+    },
+    {
      "t": "OWASP Top 10: broken access control, injection (SQL, command), XSS (stored, reflected, DOM), CSRF, SSRF, insecure deserialization, security misconfiguration",
      "c": []
     },
     {
      "t": "Defenses: parameterized queries, output encoding, CSP, CSRF tokens + SameSite, rate limiting, security headers",
+     "c": []
+    },
+    {
+     "t": "Threat modeling with STRIDE: before building, list what could go wrong (spoofing, tampering, repudiation, information disclosure, denial of service, elevation of privilege) and how you'll stop each",
      "c": []
     }
    ],
@@ -1512,6 +1618,10 @@
     {
      "text": "PortSwigger Web Security Academy (free labs: SQL injection, XSS, CSRF, access control)",
      "core": false
+    },
+    {
+     "text": "OWASP Threat Modeling Cheat Sheet and the OpenFGA docs: Concepts",
+     "core": false
     }
    ],
    "checklist": [
@@ -1529,10 +1639,10 @@
     },
     {
      "day": "Sat",
-     "text": "Add auth to your Week 16 API twice: sessions in cookies, then JWT access + refresh tokens. Add role-based authorization and \"Sign in with Google\". Add security headers and a CSP."
+     "text": "Add auth to your Week 16 API twice: sessions in cookies, then JWT access + refresh tokens. Add role-based authorization and \"Sign in with Google\". Add security headers and a CSP. Write a one-page STRIDE threat model for your API. Write tests for what you added (node:test or Vitest) and keep CI green."
     }
    ],
-   "doneWhen": "you can explain where a token should live in the browser and why, and walk through the OAuth authorization code flow from memory.",
+   "doneWhen": "you can explain where a token should live in the browser and why, and walk through the OAuth authorization code flow from memory, and this week's code has passing tests in CI.",
    "build": "",
    "problems": [],
    "problemNote": "",
@@ -1540,7 +1650,7 @@
    "extra": []
   },
   {
-   "n": 18,
+   "id": "M18",
    "title": "SQL and data modeling",
    "why": "data outlives code. Bad schemas cause more long-term pain than bad code.",
    "mustKnow": [
@@ -1615,10 +1725,10 @@
     },
     {
      "day": "Sat",
-     "text": "Design the schema for your API (users, roles, the main domain, M:N relationships), draw the ER diagram, write migrations, and replace the in-memory store with Postgres using raw SQL first, then an ORM. Spot and fix one N+1 query."
+     "text": "Design the schema for your API (users, roles, the main domain, M:N relationships), draw the ER diagram, write migrations, and replace the in-memory store with Postgres using raw SQL first, then an ORM. Spot and fix one N+1 query. Write tests for what you added (node:test or Vitest) and keep CI green."
     }
    ],
-   "doneWhen": "you can model any domain on a whiteboard in 3NF and write a window- function query without looking anything up.",
+   "doneWhen": "you can model any domain on a whiteboard in 3NF and write a window- function query without looking anything up, and this week's code has passing tests in CI.",
    "build": "",
    "problems": [],
    "problemNote": "",
@@ -1626,7 +1736,7 @@
    "extra": []
   },
   {
-   "n": 19,
+   "id": "M19",
    "title": "Database internals — storage, indexes, transactions",
    "why": "\"add an index\" and \"use a transaction\" are the two most common database fixes. You'll know exactly what they do on disk.",
    "mustKnow": [
@@ -1637,7 +1747,7 @@
     {
      "t": "Indexes",
      "c": [
-      "B-tree / B+tree structure and lookups in O(log n) (links to your DSA track, weeks 21- 22)",
+      "B-tree / B+tree structure and lookups in O(log n) (links to your DSA track, weeks 21-22)",
       "Hash indexes; composite indexes and column order (the leftmost prefix rule); covering indexes; partial and expression indexes",
       "Index costs on writes and storage",
       "Reading EXPLAIN ANALYZE: seq scan vs index scan vs index-only scan vs bitmap scan; join algorithms (nested loop, hash join, merge join)"
@@ -1704,10 +1814,10 @@
     },
     {
      "day": "Sat",
-     "text": "Load 1M+ rows into your schema. Write slow queries, read EXPLAIN ANALYZE, fix with indexes, record before/after. In two psql windows, reproduce a lost update, then fix it with FOR UPDATE and again with a higher isolation level."
+     "text": "Load 1M+ rows into your schema. Write slow queries, read EXPLAIN ANALYZE, fix with indexes, record before/after. In two psql windows, reproduce a lost update, then fix it with FOR UPDATE and again with a higher isolation level. Write tests for what you added (node:test or Vitest) and keep CI green."
     }
    ],
-   "doneWhen": "you can explain why an index speeds reads and slows writes, and what \"repeatable read\" guarantees and doesn't.",
+   "doneWhen": "you can explain why an index speeds reads and slows writes, and what \"repeatable read\" guarantees and doesn't, and this week's code has passing tests in CI.",
    "build": "",
    "problems": [],
    "problemNote": "",
@@ -1715,7 +1825,7 @@
    "extra": []
   },
   {
-   "n": 20,
+   "id": "M20",
    "title": "Caching, Redis, queues and NoSQL",
    "why": "once one database isn't enough, you reach for caches and queues. Each brings consistency problems you need to see coming.",
    "mustKnow": [
@@ -1789,10 +1899,10 @@
     },
     {
      "day": "Sat",
-     "text": "Add Redis cache-aside to your API (measure p50/p95 latency before/after). Write a token-bucket rate limiter yourself in Redis. Move email/notifications to a BullMQ job queue with retries and a dead letter queue."
+     "text": "Add Redis cache-aside to your API (measure p50/p95 latency before/after). Write a token-bucket rate limiter yourself in Redis. Move email/notifications to a BullMQ job queue with retries and a dead letter queue. Write tests for what you added (node:test or Vitest) and keep CI green."
     }
    ],
-   "doneWhen": "you can explain why cache invalidation is hard with a concrete stale-data example, and why consumers must be idempotent.",
+   "doneWhen": "you can explain why cache invalidation is hard with a concrete stale-data example, and why consumers must be idempotent, and this week's code has passing tests in CI.",
    "build": "",
    "problems": [],
    "problemNote": "",
@@ -1800,8 +1910,8 @@
    "extra": []
   },
   {
-   "n": 21,
-   "title": "Testing, logging, real-time, and the Phase 3 project",
+   "id": "M21",
+   "title": "Testing, logging, real-time, and the Phase 4 project",
    "why": "production code is code you can trust and debug. This week ties the phase together.",
    "mustKnow": [
     {
@@ -1810,7 +1920,8 @@
       "The test pyramid: unit, integration, end-to-end; what each catches",
       "Test doubles: mocks, stubs, fakes, spies; when mocking hurts",
       "Testing an API against a real database (Testcontainers or a test DB)",
-      "Test coverage and its limits; TDD as a design tool"
+      "Test coverage and its limits; TDD as a design tool",
+      "Contract testing between services (Pact): checking that a consumer and provider agree on an API without running both"
      ]
     },
     {
@@ -1835,7 +1946,6 @@
    ],
    "niche": [
     "Flaky tests: causes (time, ordering, shared state) and fixes",
-    "Contract testing (Pact) between services",
     "Property-based testing (fast-check)",
     "Coordinated omission in load testing (why your benchmark lies)",
     "Logging PII and secrets by accident",
@@ -1881,7 +1991,820 @@
    "extra": []
   },
   {
-   "n": 22,
+   "id": "M38",
+   "title": "Design kata 1 — a pastebin, using only what you know",
+   "why": "design skill grows from many small reps, not one big course at the end. You now know HTTP, Node, Postgres, Redis and queues, which is exactly enough to design a real product. This is the first of three katas between phases.",
+   "mustKnow": [
+    {
+     "t": "The design process, short version: requirements → estimates → API → data model → diagram → the hardest part → failure modes",
+     "c": []
+    },
+    {
+     "t": "Functional vs non-functional requirements; writing down what is out of scope",
+     "c": []
+    },
+    {
+     "t": "Back-of-envelope sizing: reads per second, writes per second, storage per year, using round numbers",
+     "c": []
+    },
+    {
+     "t": "Choosing storage from access patterns: what you look up by, how often, how big",
+     "c": []
+    },
+    {
+     "t": "Expiry and cleanup jobs; generating short unique IDs (random vs counter vs hash) and collisions",
+     "c": []
+    },
+    {
+     "t": "Where the cache goes, and what happens when it's cold",
+     "c": []
+    }
+   ],
+   "niche": [
+    "Read-heavy vs write-heavy systems change almost every choice",
+    "Abuse: a pastebin is a malware host if you let it be (rate limits, size caps, scanning)",
+    "Storing large values in Postgres vs object storage (you'll meet S3 in the cloud step)"
+   ],
+   "resources": [
+    {
+     "text": "Your own notes from Weeks 15-21: they are the only reference allowed during the design",
+     "core": true
+    },
+    {
+     "text": "System Design Primer (GitHub): the Pastebin and URL shortener exercises, read only after you finish",
+     "core": false
+    }
+   ],
+   "sessions": [
+    {
+     "label": "Design it",
+     "hours": 2.5,
+     "text": "Design a pastebin (create a paste, read it by short URL, optional expiry, 10M new pastes a month, reads 10x writes) in 90 minutes on paper. Use only Phase 4 knowledge. Write requirements, estimates, API, schema and a diagram."
+    },
+    {
+     "label": "Compare and revise",
+     "hours": 1.5,
+     "text": "Compare with the System Design Primer's solution. Write down three things you missed and why. Revise your diagram."
+    },
+    {
+     "label": "Prove one decision",
+     "hours": 2,
+     "text": "Pick the riskiest decision (ID generation, or the cache) and test it in code against your Phase 4 API: generate 1M IDs and count collisions, or measure cache hit rate under a k6 test."
+    }
+   ],
+   "checklist": [],
+   "doneWhen": "you can design a small read-heavy service in 90 minutes and back one choice with a measurement.",
+   "build": "",
+   "problems": [],
+   "problemNote": "",
+   "after": [],
+   "extra": []
+  },
+  {
+   "id": "M39",
+   "title": "Writing code people can change",
+   "why": "most of an engineer's time goes into changing code that already exists, usually someone else's. Code that works but is hard to change slows the whole team down. This step teaches what makes code easy to change, and how to improve code safely.",
+   "mustKnow": [
+    {
+     "t": "Complexity: what makes code hard to change (change amplification, cognitive load, unknown unknowns)",
+     "c": []
+    },
+    {
+     "t": "Deep vs shallow modules: a simple interface hiding a lot of work; information hiding and leakage",
+     "c": []
+    },
+    {
+     "t": "Naming, function size and comments that explain why",
+     "c": []
+    },
+    {
+     "t": "Coupling and cohesion at the module level; dependencies pointing one way",
+     "c": []
+    },
+    {
+     "t": "Code smells: duplicated code, long function, long parameter list, feature envy, primitive obsession, shotgun surgery",
+     "c": []
+    },
+    {
+     "t": "Refactoring: changing structure without changing behaviour, in small steps, with tests as the safety net",
+     "c": [
+      "Extract function / inline function",
+      "Rename",
+      "Introduce parameter object",
+      "Replace conditional with polymorphism",
+      "Move function"
+     ]
+    },
+    {
+     "t": "Mutation testing: checking whether your tests would actually catch a bug (Stryker for JS/TS, PIT for Java)",
+     "c": []
+    },
+    {
+     "t": "Linters and formatters (ESLint, Prettier) so style is never a review comment",
+     "c": []
+    }
+   ],
+   "niche": [
+    "Tactical vs strategic programming (Ousterhout)",
+    "The rule of three before extracting an abstraction",
+    "Wrong abstractions cost more than duplication",
+    "Code review comments as design feedback, not style policing"
+   ],
+   "resources": [
+    {
+     "text": "A Philosophy of Software Design (John Ousterhout, 2nd ed.), chapters 1-10",
+     "core": true
+    },
+    {
+     "text": "Refactoring (Martin Fowler, 2nd ed., JavaScript examples), chapters 1-3, then the catalog as reference",
+     "core": true
+    },
+    {
+     "text": "refactoring.guru: code smells and refactoring catalog (free)",
+     "core": false
+    },
+    {
+     "text": "Stryker Mutator docs (JS/TS)",
+     "core": false
+    }
+   ],
+   "sessions": [
+    {
+     "label": "Complexity and modules",
+     "hours": 2.5,
+     "text": "A Philosophy of Software Design ch. 1-6. List three shallow modules in your own Phase 4 API."
+    },
+    {
+     "label": "Interfaces, errors, comments",
+     "hours": 2,
+     "text": "A Philosophy of Software Design ch. 7-10. Rewrite the comments in one file so each says why."
+    },
+    {
+     "label": "Refactoring by example",
+     "hours": 2.5,
+     "text": "Refactoring ch. 1 (follow along in code), then ch. 2-3 on smells."
+    },
+    {
+     "label": "Refactor with a safety net",
+     "hours": 3,
+     "text": "Refactor your Phase 3 todo app and one module of your Phase 4 API: characterise with tests first, then remove three smells in small commits. Run Stryker on that module and kill at least three surviving mutants by improving tests."
+    }
+   ],
+   "checklist": [],
+   "doneWhen": "you can point at a module and name what makes it hard to change, and refactor it in small, tested steps without changing behaviour.",
+   "build": "",
+   "problems": [],
+   "problemNote": "",
+   "after": [],
+   "extra": []
+  },
+  {
+   "id": "M40",
+   "title": "Debugging, real codebases, open source and code review",
+   "why": "your first job starts in a codebase with hundreds of thousands of lines you didn't write. Finding your way around it, fixing bugs in it, and reviewing other people's changes to it are the daily work of an engineer.",
+   "mustKnow": [
+    {
+     "t": "Debugging as a method: reproduce, form a hypothesis, test it, narrow down; never change two things at once",
+     "c": []
+    },
+    {
+     "t": "Minimal reproductions: cutting a bug down until only the cause is left",
+     "c": []
+    },
+    {
+     "t": "Debuggers: breakpoints, conditional breakpoints, step over / into / out, watch expressions, call stacks (VS Code for Node, IntelliJ for Java)",
+     "c": []
+    },
+    {
+     "t": "Reading stack traces and logs; git bisect to find the commit that broke it (Week 5)",
+     "c": []
+    },
+    {
+     "t": "Finding your way in a large codebase: start from an entry point or a test, follow one request end to end, keep a map",
+     "c": []
+    },
+    {
+     "t": "Legacy code: code without tests; characterisation tests and seams so you can change it safely",
+     "c": []
+    },
+    {
+     "t": "Open source: how a project works (issues, labels, CONTRIBUTING, CI), picking a good first issue, writing a PR that gets merged",
+     "c": []
+    },
+    {
+     "t": "Code review: what to look for (correctness, design, tests, naming), giving kind and specific comments, receiving review",
+     "c": []
+    }
+   ],
+   "niche": [
+    "Heisenbugs: bugs that vanish when you observe them (timing, optimisation)",
+    "Rubber-duck debugging and why explaining works",
+    "Keeping a bug journal",
+    "Reading a project's git log and blame to learn why code looks the way it does"
+   ],
+   "resources": [
+    {
+     "text": "Debugging: The 9 Indispensable Rules (David Agans) — the whole book is short",
+     "core": true
+    },
+    {
+     "text": "Google's Engineering Practices: How to do a code review, and The CL author's guide (free)",
+     "core": true
+    },
+    {
+     "text": "Working Effectively with Legacy Code (Michael Feathers), chapters on characterisation tests and seams",
+     "core": false
+    },
+    {
+     "text": "VS Code docs: Node.js debugging; IntelliJ docs: Debug code",
+     "core": false
+    },
+    {
+     "text": "GitHub: Contributing to a project (first-contributions guide)",
+     "core": false
+    }
+   ],
+   "sessions": [
+    {
+     "label": "The debugging rules",
+     "hours": 2,
+     "text": "Read Agans's 9 rules. Take one real bug from your earlier builds and write down how each rule would have found it faster."
+    },
+    {
+     "label": "Debugger practice",
+     "hours": 1.5,
+     "text": "Set breakpoints in your Phase 4 API in VS Code and in a Java DSA solution in IntelliJ. Use a conditional breakpoint and walk the call stack."
+    },
+    {
+     "label": "Find your way in a real codebase",
+     "hours": 3,
+     "text": "Clone a mid-size open-source project in a language you know (for example a Node library you use). Get its tests running, then trace one feature end to end and draw the map."
+    },
+    {
+     "label": "Contribute",
+     "hours": 2.5,
+     "text": "Pick a good first issue (or a docs or test gap), fix it, and open a PR following the project's CONTRIBUTING guide."
+    },
+    {
+     "label": "Review",
+     "hours": 1.5,
+     "text": "Read Google's code review guides. Review one open PR in that project (or a friend's PR) and write at least three useful comments."
+    }
+   ],
+   "checklist": [],
+   "doneWhen": "you can find the cause of an unfamiliar bug methodically, find your way around a codebase you didn't write, and you have opened a real PR and reviewed one.",
+   "build": "",
+   "problems": [],
+   "problemNote": "",
+   "after": [],
+   "extra": []
+  },
+  {
+   "id": "M41",
+   "title": "Application architecture, then NestJS",
+   "why": "your Phase 4 API works, but its business rules are tangled with HTTP and SQL. Architecture is how you keep the rules of the product separate from the details, so each can change without breaking the other. Then you'll see that a real framework is the same ideas with conventions.",
+   "mustKnow": [
+    {
+     "t": "Why architecture: separating policy (business rules) from details (HTTP, database, queues)",
+     "c": []
+    },
+    {
+     "t": "Layered architecture: controller → service → repository; what goes in each, and what must not",
+     "c": []
+    },
+    {
+     "t": "Hexagonal (ports and adapters) and clean architecture: dependencies point inward, the core knows no framework",
+     "c": []
+    },
+    {
+     "t": "Dependency injection: passing dependencies in instead of creating them; DI containers",
+     "c": []
+    },
+    {
+     "t": "Domain-driven design basics: entities, value objects, aggregates, repositories, bounded contexts, ubiquitous language",
+     "c": []
+    },
+    {
+     "t": "The modular monolith: modules with clear public interfaces inside one deployable (before any microservices)",
+     "c": []
+    },
+    {
+     "t": "NestJS: modules, controllers, providers, dependency injection, pipes (validation), guards (auth), interceptors, exception filters",
+     "c": []
+    },
+    {
+     "t": "Strict TypeScript across the codebase: strict: true, no implicit any, typed boundaries (Zod at the edges)",
+     "c": []
+    }
+   ],
+   "niche": [
+    "Anaemic domain models vs rich domain models",
+    "Over-architecting: when three layers is two too many",
+    "Transactions across repositories (unit of work)",
+    "NestJS vs Spring: the same DI ideas, which you'll meet again in the Java track"
+   ],
+   "resources": [
+    {
+     "text": "NestJS docs: Overview (first steps to exception filters) and Fundamentals (custom providers, injection scopes, testing)",
+     "core": true
+    },
+    {
+     "text": "Martin Fowler: Presentation Domain Data Layering, and Alistair Cockburn's Hexagonal Architecture article",
+     "core": false
+    },
+    {
+     "text": "Domain-Driven Design Distilled (Vaughn Vernon), chapters 1-4",
+     "core": false
+    },
+    {
+     "text": "Clean Architecture (Robert C. Martin), part V (architecture), as later reading",
+     "core": false
+    }
+   ],
+   "sessions": [
+    {
+     "label": "Layers and hexagons",
+     "hours": 2,
+     "text": "Read Fowler's layering article and Cockburn's hexagonal architecture. Draw your Phase 4 API as it is, then as it should be."
+    },
+    {
+     "label": "DDD basics",
+     "hours": 2,
+     "text": "DDD Distilled ch. 1-4. Find one entity, one value object and one aggregate in your domain."
+    },
+    {
+     "label": "Restructure your API",
+     "hours": 3,
+     "text": "Restructure your Phase 4 API into layers with constructor injection. Business rules must not import express, pg or redis. Keep every test green."
+    },
+    {
+     "label": "Port it to NestJS",
+     "hours": 3,
+     "text": "Work through the NestJS Overview, then port two modules of your API to NestJS with validation pipes and an auth guard. Write down which NestJS concept matches which piece you built by hand."
+    }
+   ],
+   "checklist": [],
+   "doneWhen": "your API's business rules have no framework or database imports, and you can explain each NestJS concept by the hand-built piece it replaces.",
+   "build": "",
+   "problems": [],
+   "problemNote": "",
+   "after": [],
+   "extra": []
+  },
+  {
+   "id": "M42",
+   "title": "Working on a team",
+   "why": "software is built by teams, and job postings ask for communication more than any single technology. Knowing how work flows through a team (tickets, estimates, reviews, design docs, on-call) makes you useful from your first week.",
+   "mustKnow": [
+    {
+     "t": "How teams plan work: Scrum and Kanban as practised (sprints, stand-ups, retros, boards), and why most teams adapt them",
+     "c": []
+    },
+    {
+     "t": "Breaking work down: epics, stories, tasks; small vertical slices that ship",
+     "c": []
+    },
+    {
+     "t": "Estimating: relative sizing, why estimates are ranges, saying 'I don't know yet' usefully",
+     "c": []
+    },
+    {
+     "t": "Writing for engineers: PR descriptions, commit messages, bug reports, design docs and RFCs",
+     "c": []
+    },
+    {
+     "t": "Async communication: status updates, asking good questions (what you tried, what you expected), documentation",
+     "c": []
+    },
+    {
+     "t": "Trunk-based development, feature flags, release trains; branch naming and protected branches",
+     "c": []
+    },
+    {
+     "t": "On-call: alerts, runbooks, escalation, blameless postmortems (you'll practise these on the capstone)",
+     "c": []
+    }
+   ],
+   "niche": [
+    "Definition of done vs acceptance criteria",
+    "Bus factor and knowledge sharing",
+    "Disagreeing well in a review or a design meeting",
+    "Remote and cross-time-zone teams"
+   ],
+   "resources": [
+    {
+     "text": "The Staff Engineer's Path (Tanya Reilly) chapter 1, and Google's Engineering Practices: writing good CL descriptions",
+     "core": true
+    },
+    {
+     "text": "Scrum Guide (2020, free, 13 pages) and the Kanban Guide",
+     "core": false
+    },
+    {
+     "text": "Atlassian Team Playbook: retrospectives and project kickoffs (free)",
+     "core": false
+    },
+    {
+     "text": "Design Docs at Google (Malte Ubl's article on industrialempathy.com)",
+     "core": false
+    }
+   ],
+   "sessions": [
+    {
+     "label": "How teams plan",
+     "hours": 1.5,
+     "text": "Read the Scrum Guide and the Kanban Guide. Write a half page on what each is for and when you'd use which."
+    },
+    {
+     "label": "Break down real work",
+     "hours": 2,
+     "text": "Take the capstone idea you're considering and break it into an epic, stories and tasks on a GitHub Projects board. Estimate each as S/M/L with a reason."
+    },
+    {
+     "label": "Write like an engineer",
+     "hours": 2,
+     "text": "Rewrite the descriptions of three of your past PRs and one README section using Google's CL description guide. Write a one-page design doc for a small feature."
+    },
+    {
+     "label": "Run a retro",
+     "hours": 1,
+     "text": "Run a retrospective on your own last month of the plan: what went well, what didn't, one change. Keep it in your notes."
+    }
+   ],
+   "checklist": [],
+   "doneWhen": "you can break a feature into shippable tickets, write a PR description and a short design doc that a teammate can act on, and explain how your team would handle an incident.",
+   "build": "",
+   "problems": [],
+   "problemNote": "",
+   "after": [],
+   "extra": []
+  },
+  {
+   "id": "M43",
+   "title": "Python as a second language",
+   "why": "Python is the second most used language after JavaScript and the main language of AI, data and automation. You already know two languages, so this is about learning what is different, quickly, and using it for real work.",
+   "mustKnow": [
+    {
+     "t": "Python's model: dynamically typed, interpreted (CPython bytecode), everything is an object, indentation as syntax",
+     "c": []
+    },
+    {
+     "t": "Core types: int (unbounded), float, str, list, tuple, dict, set; comprehensions; slicing",
+     "c": []
+    },
+    {
+     "t": "Functions: default and keyword arguments, *args / **kwargs, closures, decorators",
+     "c": []
+    },
+    {
+     "t": "Classes, dataclasses, duck typing, dunder methods; protocols instead of interfaces",
+     "c": []
+    },
+    {
+     "t": "Iterators, generators and yield; context managers (with)",
+     "c": []
+    },
+    {
+     "t": "Modules and packages; virtual environments; dependency management with uv and pyproject.toml",
+     "c": []
+    },
+    {
+     "t": "Type hints and checking them (mypy or pyright); why hints don't change runtime",
+     "c": []
+    },
+    {
+     "t": "Python for real work: scripting files and HTTP calls, a small FastAPI service, pytest, and just enough pandas to analyse a CSV",
+     "c": []
+    },
+    {
+     "t": "The GIL and concurrency options (threads, asyncio, multiprocessing), compared with Node and Java",
+     "c": []
+    }
+   ],
+   "niche": [
+    "Mutable default arguments",
+    "is vs ==, and small-integer caching",
+    "Free-threaded Python (PEP 703) removing the GIL",
+    "Packaging history: pip, venv, poetry, uv"
+   ],
+   "resources": [
+    {
+     "text": "The official Python Tutorial (docs.python.org), sections 3-9",
+     "core": true
+    },
+    {
+     "text": "FastAPI docs: Tutorial - User Guide (first steps through dependencies and testing)",
+     "core": true
+    },
+    {
+     "text": "uv docs: Getting started and Working on projects",
+     "core": false
+    },
+    {
+     "text": "Fluent Python (Luciano Ramalho, 2nd ed.) as the deep reference",
+     "core": false
+    },
+    {
+     "text": "Exercism Python track (free) for practice",
+     "core": false
+    }
+   ],
+   "sessions": [
+    {
+     "label": "The language",
+     "hours": 3,
+     "text": "Python Tutorial sections 3-6. Solve five Exercism Python exercises, writing each the Pythonic way (comprehensions, unpacking)."
+    },
+    {
+     "label": "Classes, generators, tooling",
+     "hours": 2.5,
+     "text": "Tutorial sections 7-9 plus dataclasses. Set up a uv project with pyproject.toml, ruff and pytest, with type hints checked by pyright."
+    },
+    {
+     "label": "Automate something",
+     "hours": 1.5,
+     "text": "Write a script that does a chore of yours: rename files, call an API and save JSON, or parse logs from your Phase 4 API and print the slowest endpoints."
+    },
+    {
+     "label": "A FastAPI service",
+     "hours": 3,
+     "text": "Build a small FastAPI service with typed models, a Postgres or SQLite table, dependency injection and pytest tests. Load a CSV with pandas and serve one aggregate from it."
+    }
+   ],
+   "checklist": [],
+   "doneWhen": "you can write idiomatic, typed, tested Python with a proper project setup, and explain how Python differs from JavaScript and Java in typing, concurrency and packaging.",
+   "build": "",
+   "problems": [],
+   "problemNote": "",
+   "after": [],
+   "extra": []
+  },
+  {
+   "id": "M44",
+   "title": "Engineering with AI coding tools",
+   "why": "almost every engineer now writes code with AI assistants and agents. They make you faster only if you can direct them and catch their mistakes. The skill employers want is using AI and verifying it, not either one alone.",
+   "mustKnow": [
+    {
+     "t": "What a coding model is and isn't: predicting likely code from context; why it can be confidently wrong",
+     "c": []
+    },
+    {
+     "t": "Tool types: inline completion, chat in the editor, and agents that read files, run commands and edit code",
+     "c": []
+    },
+    {
+     "t": "Giving context: the right files, conventions (project instructions files), the goal and the constraints",
+     "c": []
+    },
+    {
+     "t": "Working in small, reviewable steps: plan first, one change at a time, run the tests after each",
+     "c": []
+    },
+    {
+     "t": "Verifying generated code: read every line, run it, test edge cases, check for invented APIs and packages",
+     "c": []
+    },
+    {
+     "t": "Security: never paste secrets; sandboxing agents (containers, limited permissions), prompt injection through files and web pages, supply-chain risk of suggested packages",
+     "c": []
+    },
+    {
+     "t": "When not to use AI: learning something for the first time, security-critical code you can't review, code you can't explain",
+     "c": []
+    },
+    {
+     "t": "Using AI to learn faster: asking for explanations, test cases and code review, then checking them against docs",
+     "c": []
+    }
+   ],
+   "niche": [
+    "Hallucinated package names and typosquatting ('slopsquatting')",
+    "Licence and attribution questions for generated code",
+    "Measuring whether a tool actually makes you faster",
+    "Team rules: disclosure in PRs, review standards for AI-written changes"
+   ],
+   "resources": [
+    {
+     "text": "The documentation of the AI coding tool you use (for example Claude Code, GitHub Copilot or Cursor): its best-practices and security pages",
+     "core": true
+    },
+    {
+     "text": "OWASP Top 10 for Large Language Model Applications (free) — the prompt injection and supply chain entries",
+     "core": false
+    },
+    {
+     "text": "Simon Willison's blog posts on prompt injection and using LLMs for code (free)",
+     "core": false
+    }
+   ],
+   "sessions": [
+    {
+     "label": "Set up and learn the tool",
+     "hours": 1.5,
+     "text": "Install one AI coding tool, read its best-practices and security pages, and write a project instructions file for your foundations repo (conventions, test command, what not to touch)."
+    },
+    {
+     "label": "Build with it, carefully",
+     "hours": 3,
+     "text": "Add a feature to your Phase 4 API with an agent: plan first, approve each step, run tests after each change. Keep a log of every mistake it made and how you caught it."
+    },
+    {
+     "label": "Review its work like a stranger's",
+     "hours": 2,
+     "text": "Ask the tool for a non-trivial function (for example a retry helper with jitter). Review it line by line, write tests that break it, then fix it yourself."
+    },
+    {
+     "label": "Break it on purpose",
+     "hours": 1.5,
+     "text": "Read the OWASP LLM prompt injection entry. Put a hidden instruction in a README and see whether your agent follows it. Write down the guardrails you'll keep (sandbox, permissions, no secrets)."
+    }
+   ],
+   "checklist": [],
+   "doneWhen": "you can ship a change made with an AI agent that you fully understand and have tested, and you can name the mistakes these tools make and how you catch each one.",
+   "build": "",
+   "problems": [],
+   "problemNote": "",
+   "after": [],
+   "extra": []
+  },
+  {
+   "id": "M45",
+   "title": "Building with LLMs I — model APIs, tools and agents",
+   "why": "products now include features built on large language models: summaries, search, support bots, agents that take actions. Building them well is backend engineering with a new, unpredictable component, so everything you know about APIs, failures and cost applies.",
+   "mustKnow": [
+    {
+     "t": "What an LLM does: tokens, next-token prediction, context windows, temperature; why outputs vary",
+     "c": []
+    },
+    {
+     "t": "Calling a model API: messages and roles, system prompts, streaming responses (SSE, Week 21), token counts and pricing",
+     "c": []
+    },
+    {
+     "t": "Prompting as specification: clear instructions, examples, output format; keeping prompts in version control",
+     "c": []
+    },
+    {
+     "t": "Structured output: asking for JSON that matches a schema and validating it (Zod or Pydantic) before trusting it",
+     "c": []
+    },
+    {
+     "t": "Tool calling: the model asks your code to run a function, you run it and return the result; the agent loop",
+     "c": []
+    },
+    {
+     "t": "Agents: when a loop of model + tools is worth it, and when a fixed pipeline is better; step limits and human approval for risky actions",
+     "c": []
+    },
+    {
+     "t": "The Model Context Protocol (MCP): a standard way to expose tools and data to models; writing a small MCP server",
+     "c": []
+    },
+    {
+     "t": "Production concerns: timeouts, retries, rate limits, fallbacks, caching, cost and latency budgets",
+     "c": []
+    }
+   ],
+   "niche": [
+    "Prompt caching to cut cost and latency",
+    "Model choice: large vs small models for different steps",
+    "Batch APIs for offline work",
+    "Why frameworks (LangChain and others) change fast, and why the primitives matter more"
+   ],
+   "resources": [
+    {
+     "text": "The developer documentation of one model provider (for example Anthropic's Claude docs or OpenAI's API docs): quickstart, messages, streaming, tool use and structured output",
+     "core": true
+    },
+    {
+     "text": "Model Context Protocol docs (modelcontextprotocol.io): introduction and building a server",
+     "core": false
+    },
+    {
+     "text": "Anthropic's article Building effective agents (free)",
+     "core": false
+    }
+   ],
+   "sessions": [
+    {
+     "label": "First calls",
+     "hours": 2,
+     "text": "Read the provider's quickstart. From your Phase 4 API (TypeScript) or a Python script, make a call, stream a response, and log tokens and cost per request."
+    },
+    {
+     "label": "Structured output",
+     "hours": 2,
+     "text": "Add an endpoint that turns free text (for example a bug report) into a validated JSON object. Reject and retry on invalid output; count how often it happens."
+    },
+    {
+     "label": "Tools and an agent loop",
+     "hours": 3,
+     "text": "Give the model two tools backed by your API (search notes, create note). Write the agent loop yourself with a step limit and an approval step before any write."
+    },
+    {
+     "label": "An MCP server",
+     "hours": 2,
+     "text": "Expose the same two tools as an MCP server and use it from an MCP-capable client. Write down what MCP standardises and what it doesn't."
+    }
+   ],
+   "checklist": [],
+   "doneWhen": "you can add an LLM feature to an API that validates the model's output, calls tools safely, and stays inside a cost and latency budget you can state.",
+   "build": "",
+   "problems": [],
+   "problemNote": "",
+   "after": [],
+   "extra": []
+  },
+  {
+   "id": "M46",
+   "title": "Building with LLMs II — retrieval, evals and guardrails",
+   "why": "a model only knows what it was trained on and what you put in the prompt. Retrieval lets it answer from your own data, and evals tell you whether a change made it better or worse. Without evals, an AI feature is a demo, not a product.",
+   "mustKnow": [
+    {
+     "t": "Embeddings: turning text into vectors so similar meaning is close together; cosine similarity",
+     "c": []
+    },
+    {
+     "t": "Vector search: exact vs approximate nearest neighbour (HNSW), and pgvector in the Postgres you already run",
+     "c": []
+    },
+    {
+     "t": "Retrieval-augmented generation (RAG): chunk, embed, store, retrieve, put in the prompt, cite sources",
+     "c": []
+    },
+    {
+     "t": "Chunking and hybrid search (keywords + vectors); reranking",
+     "c": []
+    },
+    {
+     "t": "Evals: a test suite for model behaviour; golden datasets, graded checks, model-graded checks and their limits; running evals in CI",
+     "c": []
+    },
+    {
+     "t": "Guardrails: prompt injection through retrieved content, output filtering, least-privilege tools, PII handling",
+     "c": []
+    },
+    {
+     "t": "Observability for LLM features: logging prompts and responses safely, tracing each step, tracking cost per user",
+     "c": []
+    }
+   ],
+   "niche": [
+    "Embedding model changes force re-indexing",
+    "Long context vs retrieval: when to just put everything in the prompt",
+    "Fine-tuning vs retrieval vs better prompts",
+    "Evaluating agents (task success, steps, cost) vs single answers"
+   ],
+   "resources": [
+    {
+     "text": "pgvector README (github.com/pgvector/pgvector): installation, querying and indexing",
+     "core": true
+    },
+    {
+     "text": "Promptfoo docs: getting started and configuration (free, open source)",
+     "core": true
+    },
+    {
+     "text": "Your model provider's docs on embeddings, retrieval and building evals",
+     "core": false
+    },
+    {
+     "text": "OWASP Top 10 for LLM Applications: prompt injection, sensitive information disclosure, excessive agency",
+     "core": false
+    }
+   ],
+   "sessions": [
+    {
+     "label": "Embeddings and pgvector",
+     "hours": 2,
+     "text": "Add pgvector to your Postgres. Embed your API's notes (or a set of docs you choose) and run similarity queries; compare exact search with an HNSW index on 10k+ rows."
+    },
+    {
+     "label": "RAG endpoint",
+     "hours": 3,
+     "text": "Build an /ask endpoint: retrieve the top chunks, answer only from them, and return citations. Make it say 'I don't know' when nothing relevant is found."
+    },
+    {
+     "label": "Evals",
+     "hours": 2.5,
+     "text": "Write 25+ eval cases in Promptfoo (good answers, refusals, injection attempts in retrieved text). Run them in CI and make one change that measurably improves the score."
+    },
+    {
+     "label": "Guardrails and tracing",
+     "hours": 1.5,
+     "text": "Add a hidden instruction to one stored note and make sure your endpoint ignores it. Trace each step (retrieve, generate) with OpenTelemetry or logs, with cost per request."
+    }
+   ],
+   "checklist": [],
+   "doneWhen": "your RAG endpoint answers with citations, refuses when it should, survives a prompt injection test, and has an eval suite in CI that tells you if a change made it worse.",
+   "build": "",
+   "problems": [],
+   "problemNote": "",
+   "after": [],
+   "extra": []
+  },
+  {
+   "id": "M22",
    "title": "Modules, bundlers and chunks",
    "why": "this answers \"what are chunks and how are they served\" before you touch Next.js. Every framework build is a bundler underneath.",
    "mustKnow": [
@@ -1976,7 +2899,7 @@
    "extra": []
   },
   {
-   "n": 23,
+   "id": "M23",
    "title": "React internals I — elements, reconciliation, Fiber",
    "why": "most developers use React every day without knowing what it does. This week you'll see what actually happens when you call setState.",
    "mustKnow": [
@@ -2068,7 +2991,7 @@
    "extra": []
   },
   {
-   "n": 24,
+   "id": "M24",
    "title": "React internals II — hooks, effects, concurrency, state",
    "why": "most React bugs are effect bugs and state-design bugs. This week fixes how you write React.",
    "mustKnow": [
@@ -2149,7 +3072,7 @@
     },
     {
      "day": "Sat",
-     "text": "Build a React front end (Vite) for your Phase 3 API: auth, lists with pagination, forms, optimistic updates with TanStack Query. Profile it with React DevTools and remove one unnecessary re-render."
+     "text": "Build a React front end (Vite) for your Phase 4 API: auth, lists with pagination, forms, optimistic updates with TanStack Query. Profile it with React DevTools and remove one unnecessary re-render."
     }
    ],
    "doneWhen": "you can explain why hooks can't be inside conditions, and refactor an effect- heavy component into one with no unnecessary effects.",
@@ -2160,9 +3083,12 @@
    "extra": []
   },
   {
-   "n": 25,
-   "title": "Next.js I — rendering strategies, hydration, routing",
-   "why": "you now know bundlers, React and HTTP, so Next.js becomes a combination of things you understand.",
+   "id": "M25",
+   "aliases": [
+    "M26"
+   ],
+   "title": "Next.js — rendering, hydration, Server Components and caching",
+   "why": "you now know bundlers, React and HTTP, so Next.js becomes a combination of things you understand. The durable ideas are rendering strategies, hydration and Server Components; the framework's own caching details change every major release, so they get less time.",
    "mustKnow": [
     {
      "t": "The problem: a plain React SPA ships an almost empty HTML page plus a large JS bundle → slow first paint, poor SEO, a blank screen on slow phones",
@@ -2181,131 +3107,66 @@
      "c": []
     },
     {
-     "t": "Next.js App Router: file-system routing, layouts, nested routes, loading.js / error.js, route groups, dynamic segments",
+     "t": "Next.js App Router: file-system routing, layouts, nested routes, loading.js / error.js, dynamic segments",
      "c": []
     },
     {
-     "t": "Server vs client boundaries: \"use client\"",
-     "c": []
+     "t": "React Server Components",
+     "c": [
+      "Server components run only on the server and are never shipped as JS",
+      "The RSC payload: a serialized description of the rendered tree, with references to client components and their props",
+      "\"use client\" boundaries and how client components are bundled into chunks",
+      "Navigation fetches the RSC payload for the next route and merges it without a full reload"
+     ]
     },
     {
      "t": "Data fetching on the server; Server Actions for mutations",
      "c": []
     },
     {
-     "t": "Next.js Pages Router (legacy) at a glance, since many codebases still use it",
+     "t": "Caching in Next.js 16 at the level of ideas: Cache Components and \"use cache\", revalidation by time and by tag",
+     "c": []
+    },
+    {
+     "t": "Core Web Vitals: LCP, INP, CLS; measuring in the field vs the lab",
+     "c": []
+    },
+    {
+     "t": "End-to-end browser tests with Playwright: testing what a user does, not how the code is built",
      "c": []
     }
    ],
    "niche": [
     "Selective/progressive hydration with Suspense boundaries",
     "Islands architecture (Astro) as an alternative to full hydration",
-    "Time-to-interactive gap: a page that looks ready but isn't clickable",
     "suppressHydrationWarning and why dates/random values cause mismatches",
-    "Edge runtime vs Node runtime and their API limits"
+    "next build output: the .next/ folder, route and shared chunks, build manifests",
+    "<Link> prefetching of route payloads and chunks",
+    "Serialization rules at the server/client boundary (functions and classes can't cross)",
+    "server-only package to keep secrets out of client bundles",
+    "Middleware, edge vs Node runtimes and their API limits",
+    "Deployment models: Node server, standalone output, static export, serverless",
+    "Next.js Pages Router (legacy), since many codebases still use it"
    ],
    "resources": [
     {
-     "text": "Next.js docs: Getting Started and the App Router Building Your Application sections (routing, rendering)",
+     "text": "Next.js docs: Getting Started (routing, layouts, server and client components, fetching data, caching)",
      "core": true
-    },
-    {
-     "text": "react.dev: renderToPipeableStream and hydrateRoot reference pages",
-     "core": false
     },
     {
      "text": "patterns.dev rendering patterns section (free)",
      "core": false
-    }
-   ],
-   "checklist": [
-    {
-     "day": "Mon",
-     "text": "patterns.dev rendering patterns: CSR, SSR, SSG, ISR, streaming, islands."
-    },
-    {
-     "day": "Wed",
-     "text": "SSR by hand: Express server calls renderToString, sends HTML; a client bundle (from your Vite or your own bundler) calls hydrateRoot. Cause a hydration mismatch on purpose."
-    },
-    {
-     "day": "Fri",
-     "text": "Next.js docs: routing, layouts, server/client components."
-    },
-    {
-     "day": "Sat",
-     "text": "Rebuild your Week 24 front end in Next.js App Router, fetching from your API on the server."
-    }
-   ],
-   "doneWhen": "you can explain hydration and its cost, and choose the right rendering strategy for a given page.",
-   "build": "",
-   "problems": [],
-   "problemNote": "",
-   "after": [],
-   "extra": []
-  },
-  {
-   "n": 26,
-   "title": "Next.js II — RSC, caching, chunks and performance",
-   "why": "this is where Next.js stops being magic: what it actually sends over the wire, and why.",
-   "mustKnow": [
-    {
-     "t": "React Server Components",
-     "c": [
-      "Server components run only on the server and are never shipped as JS",
-      "The RSC payload: a serialized description of the rendered tree, with references to client components (by chunk id) and their props",
-      "How client components are found at build time (\"use client\" boundaries) and bundled into chunks",
-      "Navigation: the client fetches the RSC payload for the next route (requests with the RSC header / _rsc param) and merges it without a full reload"
-     ]
-    },
-    {
-     "t": "Next.js build output",
-     "c": [
-      "next build and the.next/ folder: server bundles, client chunks in _next/static/chunks/, build manifests",
-      "Per-route chunks, shared chunks, the framework and main chunks",
-      "Static assets served with long-lived immutable cache headers (content hashes)",
-      "<Link> prefetching of route payloads and chunks"
-     ]
-    },
-    {
-     "t": "Caching in Next.js 16: Cache Components, the \"use cache\" directive, cacheLife and cacheTag, revalidation (time-based and on-demand with tags); how earlier versions' implicit fetch cache and router cache differed",
-     "c": []
-    },
-    {
-     "t": "Middleware",
-     "c": []
-    },
-    {
-     "t": "Optimizations: next/image, next/font, next/script, dynamic imports for client components",
-     "c": []
-    },
-    {
-     "t": "Core Web Vitals: LCP, INP, CLS; measuring them in the field vs lab",
-     "c": []
-    },
-    {
-     "t": "Deployment models: Node server, standalone output, static export, serverless/edge",
-     "c": []
-    }
-   ],
-   "niche": [
-    "Serialization rules at the server/client boundary (functions and classes can't cross)",
-    "Accidentally marking a whole tree \"use client\" and shipping it all as JS",
-    "server-only package to keep secrets out of client bundles",
-    "Version skew between deployments",
-    "Partial prerendering",
-    "CMS integration: headless CMS (Contentful, Sanity, Strapi) + ISR/on-demand revalidation webhooks"
-   ],
-   "resources": [
-    {
-     "text": "Next.js docs: Server and Client Components, Cache Components, Optimizing, Deploying",
-     "core": true
     },
     {
      "text": "Josh Comeau's Making Sense of React Server Components",
      "core": false
     },
     {
-     "text": "Dan Abramov's posts on RSC on overreacted.io",
+     "text": "react.dev: renderToPipeableStream and hydrateRoot reference pages",
+     "core": false
+    },
+    {
+     "text": "Playwright docs: Getting started, Writing tests, Locators",
      "core": false
     },
     {
@@ -2313,25 +3174,40 @@
      "core": false
     }
    ],
-   "checklist": [
+   "sessions": [
     {
-     "day": "Mon",
-     "text": "Josh Comeau's RSC article + Next docs Server and Client Components."
+     "label": "Rendering strategies",
+     "hours": 1.5,
+     "text": "patterns.dev rendering patterns: CSR, SSR, SSG, ISR, streaming, islands."
     },
     {
-     "day": "Wed",
-     "text": "Next docs on Cache Components and the \"use cache\" directive (Next.js 16). Draw what is prerendered, what is cached and what streams at request time."
+     "label": "SSR and hydration by hand",
+     "hours": 2.5,
+     "text": "Express server calls renderToString and sends HTML; a client bundle (from your Vite or your own bundler) calls hydrateRoot. Cause a hydration mismatch on purpose."
     },
     {
-     "day": "Fri",
-     "text": "Run next build on your app. Open.next/, find the route chunks and manifests. Add @next/bundle-analyzer and inspect every chunk."
+     "label": "App Router and Server Components",
+     "hours": 2,
+     "text": "Next.js docs: routing, layouts, server and client components. Josh Comeau's RSC article."
     },
     {
-     "day": "Sat",
-     "text": "In DevTools Network, record: a first load, a <Link> navigation (find the RSC payload request and read it), and a prefetch. Write How this page loads with screenshots explaining every request. Measure Core Web Vitals and improve one."
+     "label": "Rebuild your front end",
+     "hours": 3,
+     "text": "Rebuild your Week 24 front end in the Next.js App Router, fetching from your API on the server. Keep client components to the interactive pieces only."
+    },
+    {
+     "label": "How this page loads",
+     "hours": 2.5,
+     "text": "In DevTools Network, record a first load, a <Link> navigation (find the RSC payload request and read it) and a prefetch. Write How this page loads explaining every request. Measure Core Web Vitals and improve one."
+    },
+    {
+     "label": "Playwright",
+     "hours": 1.5,
+     "text": "Write Playwright tests for the three main user journeys of your app and run them in CI."
     }
    ],
-   "doneWhen": "you can explain the full Next.js page lifecycle from request to interactive, including what ran on the server, which chunks were downloaded, and what the RSC payload contains.",
+   "checklist": [],
+   "doneWhen": "you can explain the page lifecycle from request to interactive (what ran on the server, which chunks downloaded, what the RSC payload contains), choose a rendering strategy per page, and your main journeys are covered by Playwright tests.",
    "build": "",
    "problems": [],
    "problemNote": "",
@@ -2339,9 +3215,78 @@
    "extra": []
   },
   {
-   "n": 27,
-   "title": "Proxies, NGINX and load balancers",
-   "why": "NGINX sits in front of a huge share of the web, and most Kubernetes traffic still enters through a proxy configured exactly like it. After this week it's just a config file you can read.",
+   "id": "M47",
+   "title": "Design kata 2 — a news site that loads fast everywhere",
+   "why": "the second kata uses what you just learned about bundles, React and rendering. The question is no longer only 'where is the data' but 'what does the user's phone download, and when'.",
+   "mustKnow": [
+    {
+     "t": "Choosing a rendering strategy per page: static, revalidated, server-rendered per request, streamed",
+     "c": []
+    },
+    {
+     "t": "Cache layers end to end: browser, CDN, framework cache, API cache, database",
+     "c": []
+    },
+    {
+     "t": "Invalidation when an article changes: tags, purges, versioned assets",
+     "c": []
+    },
+    {
+     "t": "Performance budgets: JS size, LCP and INP targets on a slow phone",
+     "c": []
+    },
+    {
+     "t": "Personalised parts on a cached page: islands of dynamic content",
+     "c": []
+    }
+   ],
+   "niche": [
+    "Breaking news: a traffic spike 50x normal on one URL",
+    "Paywalls and caching per user",
+    "Images: formats, sizes, responsive loading"
+   ],
+   "resources": [
+    {
+     "text": "Your notes from Weeks 22-25",
+     "core": true
+    },
+    {
+     "text": "web.dev: Core Web Vitals articles and the rendering patterns on patterns.dev, after you finish",
+     "core": false
+    }
+   ],
+   "sessions": [
+    {
+     "label": "Design it",
+     "hours": 2.5,
+     "text": "Design a news site (home page, article pages, a personalised 'for you' rail, 50M page views a day, breaking-news spikes) in 90 minutes. Decide rendering and caching per page and the invalidation path when an editor fixes a typo."
+    },
+    {
+     "label": "Compare and revise",
+     "hours": 1.5,
+     "text": "Compare with a public engineering write-up of a large news or content site's front end. Write down three differences and which you'd adopt."
+    },
+    {
+     "label": "Prove one decision",
+     "hours": 2,
+     "text": "In your Next.js app, build one article page your way and measure LCP and JS bytes on a throttled mobile profile. Show the effect of one caching or rendering change."
+    }
+   ],
+   "checklist": [],
+   "doneWhen": "you can choose a rendering and caching strategy per page and prove one choice with real measurements on a slow device.",
+   "build": "",
+   "problems": [],
+   "problemNote": "",
+   "after": [],
+   "extra": []
+  },
+  {
+   "id": "M27",
+   "aliases": [
+    "M28"
+   ],
+   "title": "The edge stack — proxies, load balancers, CDN, gateway and WAF",
+   "why": "between a user and your code sit several specialised reverse proxies: a CDN, a WAF, load balancers and an API gateway. They appear in almost every production diagram, and each is a config file you can read once you know what problem it solves.",
    "mustKnow": [
     {
      "t": "Forward proxy vs reverse proxy; why reverse proxies exist (TLS termination, static files, buffering slow clients, load balancing, hiding internals)",
@@ -2352,7 +3297,7 @@
      "c": []
     },
     {
-     "t": "NGINX configuration: http / server / location blocks, location matching order, proxy_pass, upstream, headers (X-Forwarded-For, X-Real-IP, X-Forwarded- Proto), try_files, gzip/brotli, caching (proxy_cache), rate limiting (limit_req), TLS config",
+     "t": "NGINX configuration: http / server / location blocks, location matching order, proxy_pass, upstream, X-Forwarded-For / X-Forwarded-Proto, gzip, proxy_cache, limit_req, TLS",
      "c": []
     },
     {
@@ -2365,11 +3310,23 @@
      ]
     },
     {
-     "t": "Other proxies: HAProxy, Envoy (service-mesh sidecar), Caddy, Traefik",
+     "t": "CDN",
+     "c": [
+      "Edge locations (PoPs), anycast (Week 6), origin servers, origin shield",
+      "Cache keys, Cache-Control / s-maxage / stale-while-revalidate (Week 7), purging and versioned URLs",
+      "Edge compute (Cloudflare Workers, Vercel Edge)"
+     ]
+    },
+    {
+     "t": "API gateway: one front door for many services (routing, JWT validation, rate limits and quotas, transformation); API management adds a developer portal, keys and analytics",
      "c": []
     },
     {
-     "t": "Cloud load balancers (AWS ALB/NLB, GCP, Azure) as managed versions of the same idea",
+     "t": "WAF: L7 inspection with the OWASP Core Rule Set; detection vs blocking; false positives and tuning; DDoS at L3/L4 vs L7",
+     "c": []
+    },
+    {
+     "t": "How the layers stack in practice (DNS → CDN → WAF → LB → gateway → service), and which ones a small company actually needs",
      "c": []
     }
    ],
@@ -2379,7 +3336,11 @@
     "Timeouts chain: client → NGINX → app → DB must be ordered sensibly",
     "502 (upstream refused/crashed) vs 504 (upstream too slow) debugging",
     "Client IP trust: spoofed X-Forwarded-For",
-    "WebSocket proxying needs explicit Upgrade headers"
+    "Caching authenticated responses at a CDN by mistake (data leaks)",
+    "WAF bypass techniques and why a WAF is not a substitute for secure code",
+    "Other proxies: HAProxy, Envoy, Caddy, Traefik",
+    "Backend-for-frontend (BFF) pattern",
+    "DNS in production: TTL strategy for migrations, geo and health-checked DNS"
    ],
    "resources": [
     {
@@ -2387,95 +3348,11 @@
      "core": true
     },
     {
-     "text": "Cloudflare Learning Center: reverse proxy, load balancing",
-     "core": false
-    },
-    {
-     "text": "Load Balancing interactive essay by Sam Rose (samwho.dev)",
-     "core": false
-    }
-   ],
-   "checklist": [
-    {
-     "day": "Mon",
-     "text": "Cloudflare articles + Sam Rose's load balancing essay."
-    },
-    {
-     "day": "Wed",
-     "text": "NGINX Beginner's Guide. Serve a static folder and proxy one path to your API."
-    },
-    {
-     "day": "Fri",
-     "text": "Put NGINX in front of 3 copies of your API: upstream, health, TLS (self-signed or mkcert), gzip, static caching, limit_req."
-    },
-    {
-     "day": "Sat",
-     "text": "Write your own reverse proxy in Node (~100 lines): round robin across 3 backends, forward headers, add X-Forwarded-For, mark a backend down after failures. Then kill a backend and trigger a 502 and a 504 deliberately in NGINX."
-    }
-   ],
-   "doneWhen": "you can read any NGINX config and explain what happens to a request, and explain the difference between a reverse proxy and a load balancer.",
-   "build": "",
-   "problems": [],
-   "problemNote": "",
-   "after": [],
-   "extra": []
-  },
-  {
-   "n": 28,
-   "title": "CDN, API gateway, APIM and WAF",
-   "why": "CDNs, API gateways, API management and WAFs appear in almost every production architecture diagram. Each is a specialized reverse proxy.",
-   "mustKnow": [
-    {
-     "t": "CDN",
-     "c": [
-      "Edge locations (PoPs), anycast (Week 6), origin servers, origin shield",
-      "Cache keys, Cache-Control / s-maxage / stale-while-revalidate (Week 7), purging and versioned URLs",
-      "Static vs dynamic content acceleration; edge compute (Cloudflare Workers, Vercel Edge)"
-     ]
-    },
-    {
-     "t": "DNS in production: hosted zones, TTL strategy for migrations, health-checked/geo DNS, CNAME flattening",
-     "c": []
-    },
-    {
-     "t": "API gateway",
-     "c": [
-      "One front door for many services: routing by path/host, authentication (validating JWTs), rate limiting/quotas, request/response transformation, aggregation, CORS",
-      "Examples: Kong, AWS API Gateway, Envoy-based gateways; Kubernetes Gateway API",
-      "Backend-for-frontend (BFF) pattern"
-     ]
-    },
-    {
-     "t": "APIM (API Management): gateway + developer portal + API keys/subscriptions + analytics + policies + versioning + monetization (e.g. Azure API Management, Apigee)",
-     "c": []
-    },
-    {
-     "t": "WAF (Web Application Firewall)",
-     "c": [
-      "L7 inspection of requests; rule sets (OWASP Core Rule Set) for SQLi, XSS, path traversal",
-      "Detection vs blocking mode; false positives; tuning and exclusions",
-      "Bot management and DDoS protection (L3/L4 vs L7 DDoS)"
-     ]
-    },
-    {
-     "t": "How they're layered in practice, and which ones a small company actually needs",
-     "c": []
-    }
-   ],
-   "niche": [
-    "Caching authenticated responses at a CDN by mistake (data leaks)",
-    "WAF bypass techniques (encoding tricks) and why a WAF is not a substitute for secure code",
-    "Gateway as a single point of failure; latency added per hop",
-    "mTLS between services; zero-trust networking",
-    "Origin protection: only accepting traffic from the CDN's IP ranges"
-   ],
-   "resources": [
-    {
-     "text": "Cloudflare Learning Center: CDN, WAF, DDoS, API gateway",
+     "text": "Cloudflare Learning Center: reverse proxy, load balancing, CDN, WAF, DDoS, API gateway",
      "core": true
     },
     {
-     "text": "Microsoft Learn: Azure API Management overview",
+     "text": "Load Balancing interactive essay by Sam Rose (samwho.dev)",
      "core": false
     },
     {
@@ -2487,25 +3364,35 @@
      "core": false
     }
    ],
-   "checklist": [
+   "sessions": [
     {
-     "day": "Mon",
-     "text": "Cloudflare CDN + DNS articles. Check cf-cache-status / age / x-cache headers on 5 real sites with curl -I."
+     "label": "Proxies and load balancing",
+     "hours": 1.5,
+     "text": "Cloudflare reverse proxy and load balancing articles + Sam Rose's load balancing essay."
     },
     {
-     "day": "Wed",
-     "text": "API gateway + APIM: Cloudflare article + Azure APIM overview. Write a table: gateway vs APIM vs reverse proxy."
+     "label": "NGINX in front of your API",
+     "hours": 2.5,
+     "text": "NGINX Beginner's Guide. Put NGINX in front of 3 copies of your API: upstream, health, TLS (mkcert), gzip, static caching, limit_req."
     },
     {
-     "day": "Fri",
-     "text": "WAF + DDoS articles + OWASP CRS intro."
+     "label": "Your own reverse proxy",
+     "hours": 2.5,
+     "text": "Write your own reverse proxy in Node (~100 lines): round robin across 3 backends, forward headers, add X-Forwarded-For, mark a backend down after failures. Then trigger a 502 and a 504 deliberately in NGINX."
     },
     {
-     "day": "Sat",
-     "text": "Run Kong (or NGINX) as a gateway in front of two services with JWT validation and rate limits. Put Coraza with the OWASP Core Rule Set in front of your API (for example the Coraza Caddy plugin or Coraza on Envoy) and fire SQL injection attempts at it; watch it block them, then find one false positive."
+     "label": "CDN, gateway and WAF",
+     "hours": 1.5,
+     "text": "Cloudflare CDN, API gateway, WAF and DDoS articles. Check cf-cache-status / age / x-cache headers on 5 real sites with curl -I."
+    },
+    {
+     "label": "Gateway and WAF hands-on",
+     "hours": 2.5,
+     "text": "Run Kong as a gateway in front of two services with JWT validation and rate limits. Put Coraza with the OWASP Core Rule Set in front of your API and fire SQL injection attempts at it; watch it block them, then find one false positive."
     }
    ],
-   "doneWhen": "you can draw the full edge stack (DNS → CDN → WAF → LB → gateway → service) and say what each layer does and what breaks without it.",
+   "checklist": [],
+   "doneWhen": "you can read any NGINX config and explain what happens to a request, and draw the full edge stack (DNS → CDN → WAF → LB → gateway → service) saying what each layer does and what breaks without it.",
    "build": "",
    "problems": [],
    "problemNote": "",
@@ -2513,7 +3400,7 @@
    "extra": []
   },
   {
-   "n": 29,
+   "id": "M29",
    "title": "Containers and Docker",
    "why": "a container is just a Linux process (Week 2) with isolation. Once you see that, Docker and Kubernetes become much smaller topics.",
    "mustKnow": [
@@ -2610,7 +3497,7 @@
    "extra": []
   },
   {
-   "n": 30,
+   "id": "M30",
    "title": "Kubernetes I — the model and core objects",
    "why": "Kubernetes is a control loop that keeps reality matching a YAML file. Learn that idea and the objects stop being a vocabulary list.",
    "mustKnow": [
@@ -2699,7 +3586,7 @@
    "extra": []
   },
   {
-   "n": 31,
+   "id": "M31",
    "title": "Kubernetes II — Ingress, networking, storage, cloud",
    "why": "this is where Ingress finally makes sense, along with how traffic enters and moves inside a cluster.",
    "mustKnow": [
@@ -2803,7 +3690,7 @@
    "extra": []
   },
   {
-   "n": 32,
+   "id": "M32",
    "title": "CI/CD, infrastructure as code, observability",
    "why": "shipping safely and seeing what production is doing are what make you trusted with production.",
    "mustKnow": [
@@ -2825,6 +3712,14 @@
     },
     {
      "t": "Container registries, image tagging strategy, secrets in pipelines",
+     "c": []
+    },
+    {
+     "t": "Software supply chain: lockfiles and pinned versions, dependency and image scanning (Dependabot, Trivy), SBOMs, signing images (Sigstore cosign) and verifying them before deploy",
+     "c": []
+    },
+    {
+     "t": "Secrets management: a secrets store (HashiCorp Vault or a cloud secrets manager), External Secrets in Kubernetes, never secrets in images or git, rotation",
      "c": []
     },
     {
@@ -2873,12 +3768,16 @@
     {
      "text": "Terraform tutorials on developer.hashicorp.com (Get Started)",
      "core": false
+    },
+    {
+     "text": "Sigstore docs: cosign quickstart",
+     "core": false
     }
    ],
    "checklist": [
     {
      "day": "Mon",
-     "text": "GitHub Actions docs. Build a CI workflow: install, lint, type-check, test, build an image."
+     "text": "GitHub Actions docs. Build a CI workflow: install, lint, type-check, test, build an image. Add Trivy image scanning and an SBOM, and sign the image with cosign."
     },
     {
      "day": "Wed",
@@ -2901,7 +3800,174 @@
    "extra": []
   },
   {
-   "n": 33,
+   "id": "M48",
+   "title": "Real cloud — AWS with Terraform",
+   "why": "everything so far ran on your laptop. Real systems run on a cloud provider, and you need to know its core building blocks, how to secure them, and what they cost. AWS has the largest market share; the ideas carry to Azure and GCP.",
+   "mustKnow": [
+    {
+     "t": "Accounts and IAM: root user lockdown, MFA, users vs roles, policies and least privilege; never long-lived keys in code",
+     "c": []
+    },
+    {
+     "t": "Networking: VPC, public and private subnets, route tables, internet and NAT gateways, security groups (Week 6 made real)",
+     "c": []
+    },
+    {
+     "t": "Compute: EC2 vs containers (ECS/Fargate or EKS) vs functions (Lambda); when each fits",
+     "c": []
+    },
+    {
+     "t": "Storage and data: S3 (buckets, presigned URLs for uploads), RDS Postgres, managed Redis (ElastiCache/Valkey), SQS",
+     "c": []
+    },
+    {
+     "t": "Edge: Route 53, CloudFront, Application Load Balancer, ACM certificates (Weeks 6-7 and Week 27 made real)",
+     "c": []
+    },
+    {
+     "t": "Operations: CloudWatch logs and metrics, alarms; secrets in Secrets Manager or SSM Parameter Store",
+     "c": []
+    },
+    {
+     "t": "Cost: the free tier, billing alarms and budgets, data transfer and NAT costs; cost as a design input",
+     "c": []
+    },
+    {
+     "t": "Infrastructure as Code for real: Terraform (or OpenTofu) modules, remote state with locking, plan in CI, destroy when done",
+     "c": []
+    }
+   ],
+   "niche": [
+    "The shared responsibility model",
+    "Multi-account setups (AWS Organizations) and why companies use them",
+    "Regions, availability zones and what 'multi-AZ' buys you",
+    "Azure and GCP equivalents of each service (one table)"
+   ],
+   "resources": [
+    {
+     "text": "AWS Skill Builder: AWS Cloud Practitioner Essentials (free) for the map, then the AWS docs page for each service you use",
+     "core": true
+    },
+    {
+     "text": "Terraform tutorials on developer.hashicorp.com: AWS Get Started and Manage state",
+     "core": true
+    },
+    {
+     "text": "AWS Well-Architected Framework: the six pillars overview",
+     "core": false
+    },
+    {
+     "text": "AWS Free Tier page and the Billing docs: create a budget",
+     "core": false
+    }
+   ],
+   "sessions": [
+    {
+     "label": "Account safety first",
+     "hours": 1.5,
+     "text": "Create an AWS account, lock the root user with MFA, set a $5 budget alarm, and create an IAM Identity Center user. Read the shared responsibility model."
+    },
+    {
+     "label": "The map",
+     "hours": 2.5,
+     "text": "Cloud Practitioner Essentials (the core modules). Draw where VPC, subnets, ALB, ECS, RDS, S3, SQS and CloudFront sit relative to each other."
+    },
+    {
+     "label": "Network and data with Terraform",
+     "hours": 3,
+     "text": "In Terraform with remote state, create a VPC with public and private subnets, an RDS Postgres in the private subnet, and an S3 bucket. Run plan in a GitHub Actions workflow on every PR."
+    },
+    {
+     "label": "Deploy your API publicly",
+     "hours": 3,
+     "text": "Deploy your API's container to ECS Fargate behind an ALB with an ACM certificate on a real domain (Route 53 or your registrar), with secrets from Secrets Manager and logs in CloudWatch. Add file uploads through S3 presigned URLs."
+    },
+    {
+     "label": "Measure, then tear down",
+     "hours": 1,
+     "text": "Check the bill, find the most expensive line, and explain it. Then terraform destroy everything and confirm nothing is left running."
+    }
+   ],
+   "checklist": [],
+   "doneWhen": "your API ran on a real domain with TLS on AWS, built entirely from Terraform with least-privilege IAM, and you can explain every line of its bill.",
+   "build": "",
+   "problems": [],
+   "problemNote": "",
+   "after": [],
+   "extra": []
+  },
+  {
+   "id": "M49",
+   "title": "Design kata 3 — the production setup for your own API",
+   "why": "the third kata designs something you know inside out: your own API. The question is how to run it for real users: highly available, secure, observable and affordable.",
+   "mustKnow": [
+    {
+     "t": "Availability targets and what they cost: one AZ vs multi-AZ vs multi-region",
+     "c": []
+    },
+    {
+     "t": "The full request path from DNS to database, with a reason for every box",
+     "c": []
+    },
+    {
+     "t": "Deploys without downtime: rolling, blue-green, canary; database migrations that don't lock tables",
+     "c": []
+    },
+    {
+     "t": "Security layers: network boundaries, IAM, secrets, WAF, dependency scanning",
+     "c": []
+    },
+    {
+     "t": "Observability plan: SLOs, the dashboards and alerts you'd need at 3 am",
+     "c": []
+    },
+    {
+     "t": "A monthly cost estimate and the biggest lever to cut it",
+     "c": []
+    }
+   ],
+   "niche": [
+    "Disaster recovery: RPO and RTO, backups you've actually restored",
+    "Expand-and-contract migrations",
+    "Kubernetes vs managed containers for a team of five"
+   ],
+   "resources": [
+    {
+     "text": "Your notes from Weeks 27-32 and the AWS step",
+     "core": true
+    },
+    {
+     "text": "AWS Well-Architected Framework: reliability and cost optimisation pillars, after you finish",
+     "core": false
+    }
+   ],
+   "sessions": [
+    {
+     "label": "Design it",
+     "hours": 2.5,
+     "text": "Write a design doc for running your API for 100k daily users at 99.9% availability: diagram, deploy strategy, migration strategy, security layers, SLOs and alerts, and a monthly cost estimate."
+    },
+    {
+     "label": "Review it",
+     "hours": 1.5,
+     "text": "Check it against the Well-Architected reliability and cost pillars. Write down every gap and fix the doc."
+    },
+    {
+     "label": "Restore a backup",
+     "hours": 2,
+     "text": "Prove your recovery plan: take a Postgres backup, destroy the database, restore it, and time it. Write the RPO and RTO you actually achieved."
+    }
+   ],
+   "checklist": [],
+   "doneWhen": "you can defend a production design for your own service, including its cost and a recovery time you have measured.",
+   "build": "",
+   "problems": [],
+   "problemNote": "",
+   "after": [],
+   "extra": []
+  },
+  {
+   "id": "M33",
    "title": "Distributed data — replication and partitioning",
    "why": "the moment data lives on more than one machine, every \"simple\" guarantee becomes a tradeoff.",
    "mustKnow": [
@@ -2980,7 +4046,7 @@
    "extra": []
   },
   {
-   "n": 34,
+   "id": "M34",
    "title": "Consistency, consensus and messaging patterns",
    "why": "this is the theory behind \"why is distributed systems hard\", plus the patterns that make microservices survivable.",
    "mustKnow": [
@@ -3005,6 +4071,14 @@
      "c": []
     },
     {
+     "t": "Encoding and schema evolution: JSON vs Protobuf vs Avro, backward and forward compatibility, schema registries; why a message written today must be readable by next year's code (DDIA ch. 5)",
+     "c": []
+    },
+    {
+     "t": "Durable workflows: Temporal (or a Postgres-backed job table) for long-running sagas whose steps, retries and timers survive crashes",
+     "c": []
+    },
+    {
      "t": "Reliability patterns: timeouts, retries with backoff and jitter, circuit breakers, bulkheads, idempotency (Week 16), dead letter queues (Week 20)",
      "c": []
     },
@@ -3026,11 +4100,19 @@
      "core": true
     },
     {
+     "text": "DDIA (2nd ed.) chapter 5 (encoding and evolution)",
+     "core": false
+    },
+    {
      "text": "The Raft paper website and its visualization",
      "core": false
     },
     {
      "text": "Microsoft Azure Architecture Center: Cloud design patterns (circuit breaker, saga, CQRS, retry)",
+     "core": false
+    },
+    {
+     "text": "Temporal docs: Temporal 101 course (free)",
      "core": false
     }
    ],
@@ -3049,7 +4131,7 @@
     },
     {
      "day": "Sat",
-     "text": "Split one feature of your app into a separate service that communicates via a queue; implement the outbox pattern, idempotent consumer, retries with jitter, and a circuit breaker on the synchronous call."
+     "text": "Split one feature of your app into a separate service that communicates via a queue; implement the outbox pattern, idempotent consumer, retries with jitter, and a circuit breaker on the synchronous call. Then rebuild the saga as a Temporal workflow and kill the worker halfway to watch it resume."
     }
    ],
    "doneWhen": "you can explain why you can't have strong consistency and full availability during a network partition, with a concrete example from your own app.",
@@ -3060,8 +4142,92 @@
    "extra": []
   },
   {
-   "n": 35,
-   "title": "System design practice",
+   "id": "M50",
+   "title": "Data systems — batch, streams, warehouses",
+   "why": "most products move data between systems: events into analytics, data into search, logs into dashboards, documents into AI features. This step covers how data flows at scale, beyond a single application database.",
+   "mustKnow": [
+    {
+     "t": "OLTP vs OLAP: why analytics queries need different storage; row vs columnar storage",
+     "c": []
+    },
+    {
+     "t": "Batch processing: MapReduce ideas, dataflow engines (Spark) at a concept level; ETL vs ELT",
+     "c": []
+    },
+    {
+     "t": "Warehouses and lakehouses: BigQuery, Snowflake, Parquet files and table formats (Iceberg) at a concept level",
+     "c": []
+    },
+    {
+     "t": "Hands-on analytics with DuckDB: SQL over Parquet and CSV on your laptop",
+     "c": []
+    },
+    {
+     "t": "Stream processing: Kafka topics, partitions, consumer groups, offsets; windowing; exactly-once claims",
+     "c": []
+    },
+    {
+     "t": "Change data capture (CDC, Debezium): turning database changes into a stream",
+     "c": []
+    },
+    {
+     "t": "Data contracts and schema evolution: Avro or Protobuf schemas, compatibility rules (DDIA ch. 5)",
+     "c": []
+    }
+   ],
+   "niche": [
+    "Late and out-of-order events; watermarks",
+    "Backfills and reprocessing",
+    "dbt for transformations in SQL",
+    "Data quality checks and lineage"
+   ],
+   "resources": [
+    {
+     "text": "DDIA (2nd ed.) chapters 11 (batch processing) and 12 (stream processing)",
+     "core": true
+    },
+    {
+     "text": "DuckDB docs: Getting started and reading Parquet/CSV",
+     "core": false
+    },
+    {
+     "text": "Kafka docs: Introduction and Quickstart; Debezium tutorial",
+     "core": false
+    }
+   ],
+   "sessions": [
+    {
+     "label": "Batch",
+     "hours": 2.5,
+     "text": "DDIA ch. 11. Draw how a batch job turns raw logs into a daily report."
+    },
+    {
+     "label": "DuckDB",
+     "hours": 2,
+     "text": "Export your API's events to Parquet and answer five analytics questions in DuckDB. Compare one query's speed with Postgres."
+    },
+    {
+     "label": "Streams",
+     "hours": 2.5,
+     "text": "DDIA ch. 12 (focus on what's new since Week 34). Run Kafka in Docker, produce events from your API, and consume them in two consumer groups."
+    },
+    {
+     "label": "CDC",
+     "hours": 2,
+     "text": "Stream your Postgres changes to Kafka with Debezium and build a consumer that keeps a search index or a Redis view in sync. Change a column and see what breaks."
+    }
+   ],
+   "checklist": [],
+   "doneWhen": "you can explain when data belongs in a warehouse instead of your app database, and you have a CDC pipeline that keeps a second store in sync.",
+   "build": "",
+   "problems": [],
+   "problemNote": "",
+   "after": [],
+   "extra": []
+  },
+  {
+   "id": "M35",
+   "title": "System design practice I — the classics",
    "why": "design is a skill you build by doing it repeatedly against a clock, then comparing with good answers.",
    "mustKnow": [
     {
@@ -3154,7 +4320,95 @@
    "extra": []
   },
   {
-   "n": 36,
+   "id": "M51",
+   "title": "System design practice II — more building blocks",
+   "why": "the first practice step covered the classic designs. These designs each need a building block you haven't designed with yet, so together they cover nearly everything an interview or a real design review asks.",
+   "mustKnow": [
+    {
+     "t": "File storage and sync: object storage, chunking, presigned uploads, metadata vs blob stores, conflict handling",
+     "c": []
+    },
+    {
+     "t": "Typeahead and search: tries and inverted indexes (Java track), ranking, updating the index",
+     "c": []
+    },
+    {
+     "t": "Location-based services: geohashing, quadtrees, nearby search, matching riders and drivers",
+     "c": []
+    },
+    {
+     "t": "Payments and ledgers: double-entry bookkeeping, idempotency keys, reconciliation, exactly-once money movement",
+     "c": []
+    },
+    {
+     "t": "Distributed job scheduler: leases, at-least-once execution, retries, cron at scale",
+     "c": []
+    },
+    {
+     "t": "Metrics and monitoring system: time-series storage, downsampling, high write volume",
+     "c": []
+    },
+    {
+     "t": "Reading real systems: one paper (Dynamo, GFS, Kafka or Spanner) and public postmortems as design teachers",
+     "c": []
+    }
+   ],
+   "niche": [
+    "Multi-region active-active and conflict resolution",
+    "Hot partitions in real life (celebrity accounts, viral items)",
+    "Designing for regulation: data residency (India's DPDP Act), audit logs"
+   ],
+   "resources": [
+    {
+     "text": "System Design Interview Vol. 2 (Alex Xu): proximity service, nearby friends, Google Maps, distributed message queue, metrics monitoring, payment system, digital wallet chapters",
+     "core": true
+    },
+    {
+     "text": "The Dynamo paper (Amazon, 2007) and the Kafka paper (LinkedIn, 2011) — both free",
+     "core": false
+    },
+    {
+     "text": "Public postmortems: the GitHub, Cloudflare and AWS post-incident reports (free)",
+     "core": false
+    }
+   ],
+   "sessions": [
+    {
+     "label": "Files and sync",
+     "hours": 2,
+     "text": "Design a file storage and sync service (like a shared drive) in 60 minutes, then compare with Alex Xu Vol. 1's Google Drive chapter."
+    },
+    {
+     "label": "Location",
+     "hours": 2,
+     "text": "Design ride matching (nearby drivers, live location updates). Compare with Vol. 2's proximity service and nearby friends chapters."
+    },
+    {
+     "label": "Money",
+     "hours": 2,
+     "text": "Design a payment system with a ledger. Compare with Vol. 2's payment system chapter. Write down exactly where idempotency keys and reconciliation stop double charges."
+    },
+    {
+     "label": "Scheduler and metrics",
+     "hours": 2,
+     "text": "Design a distributed job scheduler and a metrics system (one hour each, compare with Vol. 2's metrics chapter)."
+    },
+    {
+     "label": "Read real systems",
+     "hours": 2,
+     "text": "Read the Dynamo paper sections 1-4 and two public postmortems. For each postmortem, write which design choice caused the outage and what you'd change."
+    }
+   ],
+   "checklist": [],
+   "doneWhen": "you can design file sync, location matching, payments, a scheduler and a metrics system, and explain one real outage by its design cause.",
+   "build": "",
+   "problems": [],
+   "problemNote": "",
+   "after": [],
+   "extra": []
+  },
+  {
+   "id": "M36",
    "title": "Capstone",
    "why": "integration is where understanding is proven. You're not learning new things; you're connecting everything.",
    "mustKnow": [],
@@ -3167,36 +4421,195 @@
     },
     {
      "day": "Wed",
-     "text": "Write the design doc (options, decision, risks) and the schema + API spec."
+     "text": "Write the design doc (options, decision, risks), a STRIDE threat model, and the schema + API spec. Get it reviewed (by a friend on the plan, or a recorded self-review against the Week 35 process) and revise it before building."
     },
     {
      "day": "Fri",
-     "text": "Build it by reusing your previous work: Next.js front end, Node API, Postgres, Redis, a queue, Docker, Kubernetes with Ingress, CI/CD, metrics and tracing."
+     "text": "Build it by reusing your previous work: Next.js front end, a Node (or Spring Boot) API, Postgres, Redis, a queue, Docker, Kubernetes with Gateway API, CI/CD, metrics and tracing, deployed to AWS with Terraform."
     },
     {
      "day": "Sat",
-     "text": "Finish, then give a 20-minute talk (to a colleague, friend, or recorded) on What happens when I type a URL, using your 36-week note."
+     "text": "Finish, then give a 20-minute talk (to a colleague, friend, or recorded) on What happens when I type a URL, using your URL note."
     }
    ],
-   "doneWhen": "every term in the glossary maps to something you've built or configured, and your capstone runs in your cluster.",
+   "doneWhen": "every term in the glossary maps to something you've built or configured, your design doc survived a review, and your capstone runs in the cloud.",
    "build": "",
    "problems": [],
    "problemNote": "",
    "after": [
-    "A second systems language: Go (natural for backend and infrastructure) or Rust",
+    "The Pragmatic Programmer (Hunt & Thomas, 20th anniversary ed.)",
     "Computer Systems: A Programmer's Perspective (Bryant & O'Hallaron) for deeper hardware/OS understanding",
     "Crafting Interpreters (free): after it, Babel, TypeScript and V8 make sense from the inside",
     "PortSwigger Web Security Academy, all labs",
-    "A Philosophy of Software Design (Ousterhout) and The Pragmatic Programmer",
     "build-your-own-x: one project a month (Redis, Git, a database, a DNS server)",
     "At work: volunteer for tickets in the layer you just studied, and read your company's infrastructure configs"
+   ],
+   "extra": []
+  },
+  {
+   "id": "M52",
+   "title": "Operating the capstone",
+   "why": "building a system is half the job; keeping it running is the other half. Real engineers own their services in production, so this step runs your capstone like a real service and breaks it on purpose.",
+   "mustKnow": [
+    {
+     "t": "SLIs, SLOs and error budgets for your own service; alerts on symptoms users feel",
+     "c": []
+    },
+    {
+     "t": "Runbooks: what to check first for each alert",
+     "c": []
+    },
+    {
+     "t": "Game days and chaos testing: injecting failures on purpose (kill pods, slow the database, fill a disk, cut a dependency)",
+     "c": []
+    },
+    {
+     "t": "Incident response: roles (incident commander, communicator), timeline, mitigation before root cause",
+     "c": []
+    },
+    {
+     "t": "Blameless postmortems: what happened, why the system allowed it, action items that change the system",
+     "c": []
+    },
+    {
+     "t": "Capacity and load: finding the breaking point with a load test, and the first thing that fails",
+     "c": []
+    }
+   ],
+   "niche": [
+    "Error budget policies: when to stop shipping features",
+    "Chaos tools: Chaos Mesh, Litmus, AWS Fault Injection Service",
+    "Toil and automating it away"
+   ],
+   "resources": [
+    {
+     "text": "Google SRE book: chapters on embracing risk, being on-call, emergency response, managing incidents, and postmortem culture (free)",
+     "core": true
+    },
+    {
+     "text": "Google SRE workbook: the example postmortem and alerting on SLOs chapters (free)",
+     "core": false
+    }
+   ],
+   "sessions": [
+    {
+     "label": "SLOs and alerts",
+     "hours": 2,
+     "text": "Define two SLOs for your capstone, build burn-rate alerts for them, and write a runbook for each alert."
+    },
+    {
+     "label": "Find the breaking point",
+     "hours": 2,
+     "text": "Load test the capstone until it fails. Record which component failed first and why."
+    },
+    {
+     "label": "Game day",
+     "hours": 3,
+     "text": "Run a game day with at least three failures (kill a node or pods, add latency to the database, fill a disk or break a dependency). Respond using your runbooks and keep a timeline."
+    },
+    {
+     "label": "Postmortem",
+     "hours": 1.5,
+     "text": "Write a blameless postmortem for the worst failure, with action items. Fix at least one of them."
+    }
+   ],
+   "checklist": [],
+   "doneWhen": "your capstone has SLOs with working alerts and runbooks, survived a game day, and has a postmortem whose action items you've already fixed.",
+   "build": "",
+   "problems": [],
+   "problemNote": "",
+   "after": [],
+   "extra": []
+  },
+  {
+   "id": "M53",
+   "title": "Getting hired",
+   "why": "skills only help your career once someone can see them. This step turns the work you did in the plan into a portfolio, a resume and interview performance.",
+   "mustKnow": [
+    {
+     "t": "The interview loop: online assessment, DSA rounds, low-level design, system design, behavioural and hiring manager rounds",
+     "c": []
+    },
+    {
+     "t": "A portfolio from the plan: three projects with READMEs, diagrams and design docs (your capstone, the Phase 4 API, one Java project)",
+     "c": []
+    },
+    {
+     "t": "Resume: one page, impact first, numbers where you have them, every line something you can talk about for 10 minutes",
+     "c": []
+    },
+    {
+     "t": "Behavioural interviews: the STAR format, a bank of 8-10 stories (conflict, failure, ownership, ambiguity)",
+     "c": []
+    },
+    {
+     "t": "Mock interviews: practising out loud, under time, with feedback",
+     "c": []
+    },
+    {
+     "t": "Finding roles: referrals, open-source contributions as proof, applying in batches, tracking applications",
+     "c": []
+    },
+    {
+     "t": "Offers: comparing total compensation, negotiation basics",
+     "c": []
+    }
+   ],
+   "niche": [
+    "Take-home assignments: scope and time-boxing",
+    "Talking about AI tools in interviews honestly",
+    "Public writing (a blog or LinkedIn posts) about what you built"
+   ],
+   "resources": [
+    {
+     "text": "Tech Interview Handbook (techinterviewhandbook.org, free): resume, behavioural interview and negotiation sections",
+     "core": true
+    },
+    {
+     "text": "Pramp or interviewing.io for free or low-cost mock interviews",
+     "core": false
+    }
+   ],
+   "sessions": [
+    {
+     "label": "Portfolio",
+     "hours": 3,
+     "text": "Polish three repos: README with a diagram, how to run it, design decisions, and tests passing in CI. Pin them on your GitHub profile."
+    },
+    {
+     "label": "Resume",
+     "hours": 2,
+     "text": "Write a one-page resume from your portfolio. Have two people review it and fix every comment."
+    },
+    {
+     "label": "Story bank",
+     "hours": 2,
+     "text": "Write 8 STAR stories from the plan, your work or college. Practise telling each in two minutes."
+    },
+    {
+     "label": "Mock loop",
+     "hours": 3,
+     "text": "Do a full mock loop with a friend or an online platform: one DSA, one LLD, one system design and one behavioural round. Write down what to fix from each."
+    }
+   ],
+   "checklist": [],
+   "doneWhen": "you have a portfolio and resume a stranger can evaluate in five minutes, and you've done a full mock interview loop and fixed what it exposed.",
+   "build": "",
+   "problems": [],
+   "problemNote": "",
+   "after": [
+    "Elective: Go, the language most cloud-native tools are written in (A Tour of Go, then Learn Go with Tests)",
+    "Elective: mobile with React Native (React Native docs and Expo), reusing your React knowledge",
+    "Elective: Azure or GCP: map every service from the AWS step to its equivalent and redeploy your API there",
+    "Elective: platform engineering: internal developer platforms and Backstage (backstage.io)",
+    "Elective: Rust, for systems programming (The Rust Programming Language book, free)"
    ],
    "extra": []
   }
  ],
  "java": [
   {
-   "n": 1,
+   "id": "J1",
    "title": "How Java runs; variables and types",
    "why": "before any code, know the machine: Java compiles to bytecode, and the JVM runs it everywhere.",
    "mustKnow": [
@@ -3285,7 +4698,7 @@
    "extra": []
   },
   {
-   "n": 2,
+   "id": "J2",
    "title": "Control flow and methods",
    "why": "conditions, loops and methods are the building blocks of every algorithm you'll write.",
    "mustKnow": [
@@ -3365,7 +4778,7 @@
    "extra": []
   },
   {
-   "n": 3,
+   "id": "J3",
    "title": "Arrays, strings and memory",
    "why": "arrays and strings are the first real data structures, and this is where references vs values start to matter.",
    "mustKnow": [
@@ -3449,7 +4862,7 @@
    "extra": []
   },
   {
-   "n": 4,
+   "id": "J4",
    "title": "Classes and objects",
    "why": "object-oriented programming starts here. A class is a blueprint that bundles data with the methods that act on it.",
    "mustKnow": [
@@ -3537,7 +4950,7 @@
    "extra": []
   },
   {
-   "n": 5,
+   "id": "J5",
    "title": "Inheritance, polymorphism, abstraction, interfaces",
    "why": "these are the other three pillars of OOP, and the most misunderstood.",
    "mustKnow": [
@@ -3622,7 +5035,7 @@
    "extra": []
   },
   {
-   "n": 6,
+   "id": "J6",
    "title": "OOP design, SOLID and exceptions",
    "why": "knowing OOP syntax is easy; designing good classes is the real skill.",
    "mustKnow": [
@@ -3705,9 +5118,9 @@
    "extra": []
   },
   {
-   "n": 7,
+   "id": "J7",
    "title": "Generics and the Collections Framework",
-   "why": "the Collections Framework is Java's library of data structures. You'll use it in every DSA problem, and in Part B you'll build each one yourself.",
+   "why": "the Collections Framework is Java's library of data structures. You'll use it in every DSA problem, and in Part C you'll build each one yourself.",
    "mustKnow": [
     {
      "t": "Generics: why (type safety, no casts), generic classes, generic methods, bounded types (<T extends Comparable<T>>), wildcards (? extends, ? super, PECS)",
@@ -3783,7 +5196,7 @@
    "extra": []
   },
   {
-   "n": 8,
+   "id": "J8",
    "title": "Programming paradigms — functional Java, lambdas, streams",
    "why": "you asked about paradigms. Every language mixes them; knowing them by name lets you choose deliberately.",
    "mustKnow": [
@@ -3855,7 +5268,7 @@
    "extra": []
   },
   {
-   "n": 9,
+   "id": "J9",
    "title": "The JVM, build tools and testing",
    "why": "knowing what the JVM does lets you reason about performance; build tools and tests make code real.",
    "mustKnow": [
@@ -3927,7 +5340,7 @@
    "extra": []
   },
   {
-   "n": 10,
+   "id": "J10",
    "title": "Complexity analysis",
    "why": "Big-O is the language of DSA. Without it, you can't compare solutions or know if yours is fast enough.",
    "mustKnow": [
@@ -4007,7 +5420,214 @@
    "extra": []
   },
   {
-   "n": 11,
+   "id": "J37",
+   "title": "Design patterns that matter",
+   "why": "patterns are names for designs that keep showing up. Knowing them lets you read frameworks (Spring is built from them), discuss designs in a few words, and recognise when a problem has a known shape. Week 6 introduced four; this week covers the rest of the everyday set.",
+   "mustKnow": [
+    {
+     "t": "What a pattern is: a named solution to a recurring design problem, with tradeoffs; not a template to force onto code",
+     "c": []
+    },
+    {
+     "t": "Creational: Factory Method, Abstract Factory, Builder (week 6), Singleton and why dependency injection usually replaces it",
+     "c": []
+    },
+    {
+     "t": "Structural: Adapter, Decorator, Facade, Proxy, Composite",
+     "c": []
+    },
+    {
+     "t": "Behavioural: Strategy and Observer (week 6), Command, State, Template Method, Iterator, Chain of Responsibility",
+     "c": []
+    },
+    {
+     "t": "Patterns in the JDK and frameworks: Iterator in collections, Decorator in java.io streams, Proxy in Spring, Template Method in JdbcTemplate",
+     "c": []
+    },
+    {
+     "t": "Modern Java alternatives: lambdas instead of one-method Strategy and Command classes; sealed interfaces and records with pattern matching instead of some Visitor uses",
+     "c": []
+    }
+   ],
+   "niche": [
+    "Pattern overuse: an AbstractFactoryFactory is a smell",
+    "Visitor and double dispatch",
+    "Memento and Flyweight at a concept level",
+    "Anti-patterns: God object, service locator, anaemic domain"
+   ],
+   "resources": [
+    {
+     "text": "Head First Design Patterns (2nd ed.): Command, Adapter and Facade, Template Method, Iterator and Composite, State, Proxy chapters",
+     "core": true
+    },
+    {
+     "text": "refactoring.guru design patterns catalog with Java examples (free)",
+     "core": false
+    }
+   ],
+   "sessions": [
+    {
+     "label": "Structural patterns",
+     "hours": 2,
+     "text": "Head First Design Patterns: Adapter and Facade, then Composite. Implement each in a few classes with a test."
+    },
+    {
+     "label": "Behavioural patterns",
+     "hours": 2,
+     "text": "Head First Design Patterns: Command, Template Method, State. Rewrite your Command example with lambdas and compare."
+    },
+    {
+     "label": "Patterns in real code",
+     "hours": 2,
+     "text": "Find Decorator in java.io (BufferedReader wrapping FileReader) and Iterator in your own MyArrayList. Build a small text-adventure or vending machine whose behaviour is a State machine."
+    }
+   ],
+   "checklist": [],
+   "doneWhen": "you can name the pattern in a piece of code, say what problem it solves and what it costs, and pick a simpler alternative when a pattern isn't worth it.",
+   "build": "",
+   "problems": [],
+   "problemNote": "",
+   "after": [],
+   "extra": []
+  },
+  {
+   "id": "J38",
+   "title": "Low-level design I — the method and first case studies",
+   "why": "low-level design (LLD) is designing the classes of one program: what objects exist, what each is responsible for, and how they talk. It's a standard interview round and the everyday work of writing a feature. It puts all of Part A's OOP to the test.",
+   "mustKnow": [
+    {
+     "t": "The LLD method: clarify requirements and scope → find nouns (entities) and verbs (behaviours) → assign responsibilities → draw the class diagram → write the core code → walk through use cases",
+     "c": []
+    },
+    {
+     "t": "Responsibility-driven design: each class has one reason to change; tell, don't ask",
+     "c": []
+    },
+    {
+     "t": "Modelling with interfaces so parts can be swapped (payment methods, pricing rules, notification channels)",
+     "c": []
+    },
+    {
+     "t": "Enums, records and value objects for things that never change; entities for things with identity",
+     "c": []
+    },
+    {
+     "t": "Extensibility questions interviewers ask: 'now add X' without rewriting everything (Open/Closed in practice)",
+     "c": []
+    },
+    {
+     "t": "Concurrency in LLD at a basic level: what happens if two users book the same thing at the same time",
+     "c": []
+    }
+   ],
+   "niche": [
+    "Over-modelling: twenty classes for a problem that needs five",
+    "Writing the use-case walkthrough as a test",
+    "UML sequence diagrams for one flow"
+   ],
+   "resources": [
+    {
+     "text": "refactoring.guru (free) for the patterns you'll use, plus your weeks 4-7 notes",
+     "core": true
+    },
+    {
+     "text": "awesome-low-level-design (GitHub, free): problem statements and sample solutions to compare against after you finish",
+     "core": false
+    }
+   ],
+   "sessions": [
+    {
+     "label": "Parking lot",
+     "hours": 2,
+     "text": "Design a parking lot (levels, spot sizes, tickets, payment, pricing rules) in 60 minutes: requirements, class diagram, core code. Then add 'electric charging spots' without editing existing classes."
+    },
+    {
+     "label": "Library or vending machine",
+     "hours": 2,
+     "text": "Design a library management system or a vending machine (State pattern). Write the main use case as a JUnit test."
+    },
+    {
+     "label": "Compare and refactor",
+     "hours": 2,
+     "text": "Compare both designs with a public sample solution. Write down two responsibilities you put in the wrong class, and fix them."
+    }
+   ],
+   "checklist": [],
+   "doneWhen": "you can turn a vague problem statement into a class diagram and working core code in an hour, and extend it without rewriting it.",
+   "build": "",
+   "problems": [],
+   "problemNote": "",
+   "after": [],
+   "extra": []
+  },
+  {
+   "id": "J39",
+   "title": "Low-level design II — harder case studies",
+   "why": "these case studies add the parts that make real systems hard: money, concurrency, many users and rules that change. Together with last week they cover the problems most often asked in LLD rounds.",
+   "mustKnow": [
+    {
+     "t": "Splitting and settling shared expenses: balance graphs and simplifying debts",
+     "c": []
+    },
+    {
+     "t": "Booking systems: seat locking, holds that expire, avoiding double booking",
+     "c": []
+    },
+    {
+     "t": "Elevator and scheduling problems: strategies you can swap (nearest car, direction-aware)",
+     "c": []
+    },
+    {
+     "t": "An in-memory rate limiter and an LRU cache behind clean interfaces (thread-safe versions with java.util.concurrent)",
+     "c": []
+    },
+    {
+     "t": "Designing for testability: injecting clocks and random sources so behaviour is reproducible",
+     "c": []
+    }
+   ],
+   "niche": [
+    "Event-driven LLD: publishing domain events between classes",
+    "Idempotency at the class level (retrying a payment call)",
+    "Snake and ladder, chess and other game designs"
+   ],
+   "resources": [
+    {
+     "text": "awesome-low-level-design (GitHub, free): problem statements and sample solutions",
+     "core": true
+    },
+    {
+     "text": "Java Concurrency in Practice ch. 2-3 for the thread-safety parts (you'll study concurrency fully in week 34)",
+     "core": false
+    }
+   ],
+   "sessions": [
+    {
+     "label": "Expense splitting",
+     "hours": 2,
+     "text": "Design an expense-splitting app (groups, equal, exact and percentage splits, balances, simplify debts). Write tests for each split type."
+    },
+    {
+     "label": "Movie booking",
+     "hours": 2,
+     "text": "Design a movie ticket booking system with seat holds that expire. Make double booking impossible, and prove it with a test that books from two threads."
+    },
+    {
+     "label": "Elevator, cache, limiter",
+     "hours": 2,
+     "text": "Design an elevator system with a swappable scheduling strategy, then a token-bucket rate limiter and an LRU cache behind interfaces, with an injected clock for tests."
+    }
+   ],
+   "checklist": [],
+   "doneWhen": "you can design an expense splitter, a booking system and an elevator in an hour each, with tests that prove the tricky rules.",
+   "build": "",
+   "problems": [],
+   "problemNote": "",
+   "after": [],
+   "extra": []
+  },
+  {
+   "id": "J11",
    "title": "Arrays and dynamic arrays",
    "why": "the array is the foundation of almost every other structure; its O(1) access comes from contiguous memory.",
    "mustKnow": [
@@ -4093,7 +5713,7 @@
    "extra": []
   },
   {
-   "n": 12,
+   "id": "J12",
    "title": "Strings, two pointers, sliding window",
    "why": "two pointers and sliding window turn many O(n²) brute-force solutions into O(n). They're among the most common interview patterns.",
    "mustKnow": [
@@ -4183,7 +5803,7 @@
    "extra": []
   },
   {
-   "n": 13,
+   "id": "J13",
    "title": "Hashing and hash maps",
    "why": "the hash map is the most useful structure in programming. It turns O(n) lookups into O(1) on average.",
    "mustKnow": [
@@ -4295,7 +5915,7 @@
    "extra": []
   },
   {
-   "n": 14,
+   "id": "J14",
    "title": "Prefix sums, matrices, bit manipulation",
    "why": "three small but powerful toolkits that show up everywhere.",
    "mustKnow": [
@@ -4390,7 +6010,7 @@
    "extra": []
   },
   {
-   "n": 15,
+   "id": "J15",
    "title": "Linked lists",
    "why": "linked lists teach pointer (reference) manipulation, which is the skill behind trees and graphs.",
    "mustKnow": [
@@ -4481,7 +6101,7 @@
    "extra": []
   },
   {
-   "n": 16,
+   "id": "J16",
    "title": "Stacks, queues, deques, monotonic stack",
    "why": "stacks and queues model order (last-in-first-out vs first-in-first-out), and they underlie recursion, BFS, undo, parsing and job queues.",
    "mustKnow": [
@@ -4588,7 +6208,7 @@
    "extra": []
   },
   {
-   "n": 17,
+   "id": "J17",
    "title": "Recursion and backtracking",
    "why": "trees, graphs, divide and conquer and dynamic programming are all recursion. Getting comfortable now makes the rest of the track possible.",
    "mustKnow": [
@@ -4687,7 +6307,7 @@
    "extra": []
   },
   {
-   "n": 18,
+   "id": "J18",
    "title": "Sorting I",
    "why": "sorting algorithms are the classic way to learn algorithm design: brute force, divide and conquer, and their tradeoffs.",
    "mustKnow": [
@@ -4781,7 +6401,7 @@
    "extra": []
   },
   {
-   "n": 19,
+   "id": "J19",
    "title": "Sorting II and binary search",
    "why": "the rest of sorting (heap sort, non-comparison sorts, what Java really uses) and binary search, one of the most powerful ideas in all of DSA.",
    "mustKnow": [
@@ -4880,7 +6500,7 @@
    "extra": []
   },
   {
-   "n": 20,
+   "id": "J20",
    "title": "Binary search on the answer",
    "why": "binary search works on any monotonic yes/no question, not just arrays. This unlocks a whole family of \"minimize the maximum\" problems.",
    "mustKnow": [
@@ -4977,7 +6597,7 @@
    "extra": []
   },
   {
-   "n": 21,
+   "id": "J21",
    "title": "Binary trees",
    "why": "trees are everywhere: the DOM, React's fiber tree, file systems, B-trees in databases, syntax trees in your bundler.",
    "mustKnow": [
@@ -5081,7 +6701,7 @@
    "extra": []
   },
   {
-   "n": 22,
+   "id": "J22",
    "title": "Binary search trees and balanced trees",
    "why": "BSTs keep data sorted with fast search; balanced trees (and their cousins, B-trees) are how TreeMap and every database index work.",
    "mustKnow": [
@@ -5188,7 +6808,7 @@
    "extra": []
   },
   {
-   "n": 23,
+   "id": "J23",
    "title": "Heaps and priority queues",
    "why": "heaps answer \"what's the smallest/largest right now?\" efficiently. They power schedulers, Dijkstra's algorithm, top-k queries and React's own scheduler.",
    "mustKnow": [
@@ -5291,7 +6911,240 @@
    "extra": []
   },
   {
-   "n": 24,
+   "id": "J40",
+   "title": "Spring Boot I — the framework, dependency injection and REST",
+   "why": "Java with Spring Boot is the most common backend stack in Indian product companies and banks, and very common worldwide. Spring is your Part A OOP, SOLID and patterns at industrial scale; you'll recognise most of it.",
+   "mustKnow": [
+    {
+     "t": "What Spring solves: wiring objects together (inversion of control), so classes depend on interfaces and the framework supplies implementations",
+     "c": []
+    },
+    {
+     "t": "The application context, beans, component scanning, @Component / @Service / @Repository, constructor injection",
+     "c": []
+    },
+    {
+     "t": "Spring Boot: auto-configuration, starters, application.yml and profiles, the embedded server",
+     "c": []
+    },
+    {
+     "t": "REST controllers: @RestController, request mapping, path and query parameters, request bodies with records, status codes, exception handlers (@ControllerAdvice)",
+     "c": []
+    },
+    {
+     "t": "Validation with Jakarta Bean Validation (@Valid, @NotBlank)",
+     "c": []
+    },
+    {
+     "t": "Build with Maven or Gradle (week 9), Spring Initializr, running and debugging in IntelliJ",
+     "c": []
+    },
+    {
+     "t": "Testing: @SpringBootTest vs slice tests (@WebMvcTest), MockMvc, JUnit 6 (week 9)",
+     "c": []
+    }
+   ],
+   "niche": [
+    "Proxies behind @Transactional and why self-invocation skips them",
+    "Bean scopes and lifecycle",
+    "Spring Boot Actuator for health and metrics",
+    "GraalVM native images"
+   ],
+   "resources": [
+    {
+     "text": "Spring Boot reference docs: Getting started and Developing with Spring Boot, plus the spring.io guides Building a RESTful Web Service and Validating Form Input",
+     "core": true
+    },
+    {
+     "text": "Spring Framework reference: The IoC container (sections on beans and dependency injection)",
+     "core": false
+    },
+    {
+     "text": "Baeldung's Spring Boot tutorials as quick reference",
+     "core": false
+    }
+   ],
+   "sessions": [
+    {
+     "label": "IoC and Boot",
+     "hours": 2,
+     "text": "Read the IoC container sections. Create a project with Spring Initializr in IntelliJ and trace how a @Service gets injected into a @RestController."
+    },
+    {
+     "label": "A REST API",
+     "hours": 2.5,
+     "text": "Turn your week 38 parking lot (or library) design into a REST API: controllers, services, validation, a @ControllerAdvice error handler. Data in memory for now."
+    },
+    {
+     "label": "Tests",
+     "hours": 1.5,
+     "text": "Write @WebMvcTest tests with MockMvc for every endpoint, and one @SpringBootTest for the whole app."
+    }
+   ],
+   "checklist": [],
+   "doneWhen": "you can explain how Spring decides which object to inject where, and you have a validated, tested REST API in Spring Boot.",
+   "build": "",
+   "problems": [],
+   "problemNote": "",
+   "after": [],
+   "extra": []
+  },
+  {
+   "id": "J41",
+   "title": "Spring Boot II — data, JPA and transactions",
+   "why": "almost every Spring service talks to a relational database through JPA and Hibernate. They save a lot of code, and they also cause the most common performance bugs in Java backends. You already know SQL and transactions from the Main track, so here you learn what the ORM does with them.",
+   "mustKnow": [
+    {
+     "t": "JPA and Hibernate: entities, IDs, the persistence context, dirty checking, the entity lifecycle",
+     "c": []
+    },
+    {
+     "t": "Relationships: @OneToMany, @ManyToOne, @ManyToMany; owning side; lazy vs eager loading",
+     "c": []
+    },
+    {
+     "t": "Spring Data JPA repositories, derived queries, @Query, pagination and sorting",
+     "c": []
+    },
+    {
+     "t": "The N+1 query problem in JPA and fixes (fetch joins, entity graphs); reading the SQL Hibernate generates",
+     "c": []
+    },
+    {
+     "t": "Transactions with @Transactional: propagation, isolation levels (Main track week 19), rollback rules",
+     "c": []
+    },
+    {
+     "t": "Schema migrations with Flyway or Liquibase",
+     "c": []
+    },
+    {
+     "t": "Integration tests against real Postgres with Testcontainers",
+     "c": []
+    }
+   ],
+   "niche": [
+    "Optimistic locking with @Version",
+    "Open-session-in-view and why to turn it off",
+    "When to drop to JdbcTemplate or jOOQ",
+    "Second-level cache"
+   ],
+   "resources": [
+    {
+     "text": "Spring Data JPA reference docs: Getting started, JPA repositories, Transactionality",
+     "core": true
+    },
+    {
+     "text": "Vlad Mihalcea's blog posts on the N+1 problem and @Transactional (free)",
+     "core": false
+    },
+    {
+     "text": "Testcontainers docs: Spring Boot quickstart",
+     "core": false
+    }
+   ],
+   "sessions": [
+    {
+     "label": "Entities and repositories",
+     "hours": 2,
+     "text": "Read the Spring Data JPA getting started and repositories sections. Move your API's data into Postgres with JPA entities and Flyway migrations."
+    },
+    {
+     "label": "Find and fix N+1",
+     "hours": 2,
+     "text": "Log Hibernate's SQL. Write an endpoint that triggers N+1, show the query count, then fix it with a fetch join. Add optimistic locking to one entity and show a conflict."
+    },
+    {
+     "label": "Transactions and Testcontainers",
+     "hours": 2,
+     "text": "Write a service method that must be atomic (for example booking plus payment) with @Transactional, and test the rollback against a real Postgres in Testcontainers."
+    }
+   ],
+   "checklist": [],
+   "doneWhen": "you can read the SQL your JPA code generates, fix an N+1 problem, and prove with a Testcontainers test that a transaction rolls back.",
+   "build": "",
+   "problems": [],
+   "problemNote": "",
+   "after": [],
+   "extra": []
+  },
+  {
+   "id": "J42",
+   "title": "Spring Boot III — security, messaging and production",
+   "why": "a real Java service needs authentication, talks to other services through messages, and has to be observable and deployable. This step finishes your Spring Boot service the way a company would run it.",
+   "mustKnow": [
+    {
+     "t": "Spring Security: the filter chain, authentication vs authorization, JWT resource server, method security (@PreAuthorize)",
+     "c": []
+    },
+    {
+     "t": "Messaging with Kafka: KafkaTemplate producers, @KafkaListener consumers, consumer groups, retries and dead-letter topics, idempotent consumers (Main track week 20)",
+     "c": []
+    },
+    {
+     "t": "Calling other services: RestClient, timeouts, retries and circuit breakers (Resilience4j)",
+     "c": []
+    },
+    {
+     "t": "Observability: Actuator health, metrics with Micrometer, tracing with OpenTelemetry",
+     "c": []
+    },
+    {
+     "t": "Virtual threads in Spring Boot (spring.threads.virtual.enabled) and what they change (week 34)",
+     "c": []
+    },
+    {
+     "t": "Packaging: a container image with Buildpacks or a Dockerfile, configuration through environment variables",
+     "c": []
+    }
+   ],
+   "niche": [
+    "OAuth2 login vs resource server",
+    "Transactional outbox in Spring",
+    "Spring Modulith for modular monoliths",
+    "Kafka Streams"
+   ],
+   "resources": [
+    {
+     "text": "Spring Security reference: Architecture and OAuth2 Resource Server JWT; Spring for Apache Kafka reference: Quick tour",
+     "core": true
+    },
+    {
+     "text": "Spring Boot reference: Production-ready features (Actuator, metrics, tracing)",
+     "core": false
+    },
+    {
+     "text": "Resilience4j docs: CircuitBreaker and Retry",
+     "core": false
+    }
+   ],
+   "sessions": [
+    {
+     "label": "Security",
+     "hours": 2,
+     "text": "Read Spring Security's architecture page. Protect your API as a JWT resource server, with one admin-only endpoint using @PreAuthorize. Test both allowed and denied requests."
+    },
+    {
+     "label": "Kafka",
+     "hours": 2,
+     "text": "Run Kafka in Docker. Publish an event when a booking is made and consume it in a second Spring Boot service, with retries, a dead-letter topic and an idempotent consumer."
+    },
+    {
+     "label": "Production-ready",
+     "hours": 2,
+     "text": "Add Actuator, Micrometer metrics and tracing, a Resilience4j circuit breaker on the call between services, and build a container image. Run both services with Docker Compose."
+    }
+   ],
+   "checklist": [],
+   "doneWhen": "your two Spring Boot services authenticate requests, communicate through Kafka without duplicate effects, expose health and metrics, and run from container images.",
+   "build": "",
+   "problems": [],
+   "problemNote": "",
+   "after": [],
+   "extra": []
+  },
+  {
+   "id": "J24",
    "title": "Tries, segment trees and Fenwick trees",
    "why": "specialized trees for prefix lookups (autocomplete) and fast range queries with updates.",
    "mustKnow": [
@@ -5393,7 +7246,7 @@
    "extra": []
   },
   {
-   "n": 25,
+   "id": "J25",
    "title": "Graphs I — representation, BFS, DFS",
    "why": "graphs model networks, dependencies, maps, social connections, and your bundler's module graph (Main track week 22).",
    "mustKnow": [
@@ -5496,7 +7349,7 @@
    "extra": []
   },
   {
-   "n": 26,
+   "id": "J26",
    "title": "Graphs II — topological sort, cycles, union-find",
    "why": "ordering dependencies (build systems, course prerequisites, package managers) and grouping things that are connected.",
    "mustKnow": [
@@ -5595,7 +7448,7 @@
    "extra": []
   },
   {
-   "n": 27,
+   "id": "J27",
    "title": "Graphs III — shortest paths and spanning trees",
    "why": "weighted graphs model the real world: maps, networks, costs. These algorithms are how routers and navigation apps work.",
    "mustKnow": [
@@ -5693,7 +7546,7 @@
    "extra": []
   },
   {
-   "n": 28,
+   "id": "J28",
    "title": "Greedy algorithms",
    "why": "greedy algorithms make the best local choice at each step. When they work they're simple and fast; the skill is knowing when they work.",
    "mustKnow": [
@@ -5791,7 +7644,7 @@
    "extra": []
   },
   {
-   "n": 29,
+   "id": "J29",
    "title": "Dynamic programming I — the method and 1D problems",
    "why": "DP is recursion + remembering answers to subproblems. It's the most feared topic, and the most learnable once you have a method.",
    "mustKnow": [
@@ -5914,7 +7767,7 @@
    "extra": []
   },
   {
-   "n": 30,
+   "id": "J30",
    "title": "Dynamic programming II — 2D, grids, strings, knapsack",
    "why": "most interview DP problems are 2D: two sequences, a grid, or items × capacity.",
    "mustKnow": [
@@ -6013,7 +7866,7 @@
    "extra": []
   },
   {
-   "n": 31,
+   "id": "J31",
    "title": "Dynamic programming III — intervals, trees, bitmasks, states",
    "why": "the remaining DP families. Recognizing which family a problem belongs to is most of the battle.",
    "mustKnow": [
@@ -6115,7 +7968,7 @@
    "extra": []
   },
   {
-   "n": 32,
+   "id": "J32",
    "title": "Intervals, sweep line and math",
    "why": "a set of patterns that show up constantly in scheduling and calendar problems, plus the math every programmer should have.",
    "mustKnow": [
@@ -6218,7 +8071,7 @@
    "extra": []
   },
   {
-   "n": 33,
+   "id": "J33",
    "title": "String algorithms and system-style data structures",
    "why": "efficient string matching, and the \"design a data structure\" problems that bridge DSA and system design.",
    "mustKnow": [
@@ -6322,7 +8175,7 @@
    "extra": []
   },
   {
-   "n": 34,
+   "id": "J34",
    "title": "Concurrency in Java",
    "why": "real systems are concurrent. This ties the OS concurrency of Main track week 3 to Java, and contrasts it with JavaScript's event loop.",
    "mustKnow": [
@@ -6427,7 +8280,7 @@
    "extra": []
   },
   {
-   "n": 35,
+   "id": "J35",
    "title": "Mixed practice and mock interviews",
    "why": "real problems don't say which pattern they need. This week trains recognition under time pressure.",
    "mustKnow": [
@@ -6468,7 +8321,7 @@
    "extra": []
   },
   {
-   "n": 36,
+   "id": "J36",
    "title": "Review and gap filling",
    "why": "consolidate before moving on, so it sticks.",
    "mustKnow": [],
@@ -6504,148 +8357,209 @@
  "mainGroups": [
   {
    "id": "Phase 1",
-   "title": "Computers, OS, Linux, Git, Networks (Weeks 1-7)",
-   "goal": "when you type a URL and press Enter, you can explain every step down to processes and packets. Everything after this phase sits on top of it.",
-   "milestone": "write the first half of What happens when I type a URL, from keypress to the HTML bytes arriving. Optional buffer week before Phase 2.",
+   "title": "Learn to program",
+   "goal": "go from never having programmed to writing, compiling and debugging small C programs, so every build in Phase 2 is within reach.",
+   "milestone": "you've solved CS50x Problem Sets 1 and 2 with every check green.",
    "weeks": [
-    1,
-    2,
-    3,
-    4,
-    5,
-    6,
-    7
+    "M37"
    ]
   },
   {
    "id": "Phase 2",
-   "title": "The Browser, HTML, CSS, JavaScript (Weeks 8-14)",
-   "goal": "you know what the browser does with every byte the server sends, and you know JavaScript as a language and as a runtime, not just syntax. No frameworks in this phase.",
-   "milestone": "add the browser half to What happens when I type a URL: parsing, CSSOM, render tree, layout, paint, composite, script execution. Optional buffer week.",
+   "title": "Computers, OS, Linux, Git, Networks",
+   "goal": "when you type a URL and press Enter, you can explain every step down to processes and packets. Everything after this phase sits on top of it.",
+   "milestone": "write the first half of What happens when I type a URL, from keypress to the HTML bytes arriving. Optional buffer week before Phase 3.",
    "weeks": [
-    8,
-    9,
-    10,
-    11,
-    12,
-    13,
-    14
+    "M1",
+    "M2",
+    "M3",
+    "M4",
+    "M5",
+    "M6",
+    "M7"
    ]
   },
   {
    "id": "Phase 3",
-   "title": "Backend and Databases (Weeks 15-21)",
-   "goal": "you can build a production-shaped API and explain what happens inside Node and inside the database for every request. The main book for this phase is Designing Data- Intensive Applications (DDIA) by Martin Kleppmann and Chris Riccomini; get the 2nd edition (2026), which every chapter number in this plan refers to.",
-   "milestone": "a Node + Postgres + Redis API with auth, validation, pagination, rate limiting, background jobs, tests and logging, in your foundations repo. Add the server half to What happens when I type a URL. Optional buffer week.",
+   "title": "The Browser, HTML, CSS, JavaScript",
+   "goal": "you know what the browser does with every byte the server sends, and you know JavaScript as a language and as a runtime, not just syntax. No frameworks in this phase.",
+   "milestone": "add the browser half to What happens when I type a URL: parsing, CSSOM, render tree, layout, paint, composite, script execution. Optional buffer week.",
    "weeks": [
-    15,
-    16,
-    17,
-    18,
-    19,
-    20,
-    21
+    "M8",
+    "M9",
+    "M10",
+    "M11",
+    "M12",
+    "M13",
+    "M14"
    ]
   },
   {
    "id": "Phase 4",
-   "title": "Build Tools, React, Next.js Internals (Weeks 22-26)",
-   "goal": "Next.js stops being magic. You can explain how a component becomes HTML on a server, becomes JS chunks in a browser, and becomes interactive, and why each step exists.",
-   "milestone": "mini bundler + mini React + a Next.js app with a How this page loads write-up. Optional buffer week.",
+   "title": "Backend and Databases",
+   "goal": "you can build a production-shaped API and explain what happens inside Node and inside the database for every request. The main book for this phase is Designing Data- Intensive Applications (DDIA) by Martin Kleppmann and Chris Riccomini; get the 2nd edition (2026), which every chapter number in this plan refers to.",
+   "milestone": "a Node + Postgres + Redis API with auth, validation, pagination, rate limiting, background jobs, tests and logging, in your foundations repo. Add the server half to What happens when I type a URL. Optional buffer week.",
    "weeks": [
-    22,
-    23,
-    24,
-    25,
-    26
+    "M15",
+    "M16",
+    "M17",
+    "M18",
+    "M19",
+    "M20",
+    "M21",
+    "M38"
    ]
   },
   {
    "id": "Phase 5",
-   "title": "Infrastructure and Deployment (Weeks 27-32)",
-   "goal": "you can draw and explain the path of a real production request: user → DNS → CDN → WAF → load balancer → API gateway → Kubernetes Ingress → Service → Pod → your Node process → database.",
-   "milestone": "draw your full production architecture from memory, every box labeled and justified. Add the infrastructure section to What happens when I type a URL. Optional buffer week.",
+   "title": "Engineering craft",
+   "goal": "write code other people can change, find your way and fix bugs in codebases you didn't write, structure an application so its rules stay separate from its frameworks, and work the way teams work.",
+   "milestone": "your Phase 4 API is refactored, layered and partly ported to NestJS, and you have an open or merged PR in a real open-source project.",
    "weeks": [
-    27,
-    28,
-    29,
-    30,
-    31,
-    32
+    "M39",
+    "M40",
+    "M41",
+    "M42"
    ]
   },
   {
    "id": "Phase 6",
-   "title": "System Design and Capstone (Weeks 33-36)",
-   "goal": "you can design a system for a given scale, justify every choice, and name the tradeoffs. Every building block is now something you've built a toy version of.",
-   "milestone": "",
+   "title": "Python and AI engineering",
+   "goal": "pick up Python as a working second language, use AI coding tools without trusting them blindly, and build LLM features that are tested, safe and affordable.",
+   "milestone": "your API has an AI feature with retrieval, citations, guardrails and an eval suite running in CI.",
    "weeks": [
-    33,
-    34,
-    35,
-    36
+    "M43",
+    "M44",
+    "M45",
+    "M46"
+   ]
+  },
+  {
+   "id": "Phase 7",
+   "title": "Build Tools, React, Next.js Internals",
+   "goal": "Next.js stops being magic. You can explain how a component becomes HTML on a server, becomes JS chunks in a browser, and becomes interactive, and why each step exists.",
+   "milestone": "mini bundler + mini React + a Next.js app with a How this page loads write-up. Optional buffer week.",
+   "weeks": [
+    "M22",
+    "M23",
+    "M24",
+    "M25",
+    "M47"
+   ]
+  },
+  {
+   "id": "Phase 8",
+   "title": "Infrastructure and Deployment",
+   "goal": "you can draw and explain the path of a real production request: user → DNS → CDN → WAF → load balancer → API gateway → Kubernetes Ingress → Service → Pod → your Node process → database.",
+   "milestone": "draw your full production architecture from memory, every box labeled and justified. Add the infrastructure section to What happens when I type a URL. Optional buffer week.",
+   "weeks": [
+    "M27",
+    "M29",
+    "M30",
+    "M31",
+    "M32",
+    "M48",
+    "M49"
+   ]
+  },
+  {
+   "id": "Phase 9",
+   "title": "System Design, Capstone and Career",
+   "goal": "you can design a system for a given scale, justify every choice, and name the tradeoffs. Every building block is now something you've built a toy version of.",
+   "milestone": "your capstone was designed, reviewed, built, deployed to the cloud and operated through a game day, and your portfolio shows it.",
+   "weeks": [
+    "M33",
+    "M34",
+    "M50",
+    "M35",
+    "M51",
+    "M36",
+    "M52",
+    "M53"
    ]
   }
  ],
  "javaGroups": [
   {
    "id": "Part A",
-   "title": "Programming in Java, OOP and Paradigms (Weeks 1-10)",
+   "title": "Programming in Java, OOP and Paradigms",
    "goal": "go from never having written Java to writing clean, object-oriented and functional Java, knowing how the JVM runs it, and analyzing an algorithm's cost. dev.java (Oracle's official tutorials for current Java) is your daily guide, and Exercism's Java exercises check themselves in IntelliJ, so you always know if you've got it.",
-   "milestone": "you can write well-structured Java with classes, interfaces, generics, collections and streams, explain the four pillars of OOP and the main paradigms, and analyze complexity. Optional buffer week before Part B.",
+   "milestone": "you can write well-structured Java with classes, interfaces, generics, collections and streams, explain the four pillars of OOP and the main paradigms, and analyze complexity. Optional buffer week before Part C.",
    "weeks": [
-    1,
-    2,
-    3,
-    4,
-    5,
-    6,
-    7,
-    8,
-    9,
-    10
+    "J1",
+    "J2",
+    "J3",
+    "J4",
+    "J5",
+    "J6",
+    "J7",
+    "J8",
+    "J9",
+    "J10"
    ]
   },
   {
    "id": "Part B",
-   "title": "Core Data Structures and Algorithms (Weeks 11-23)",
-   "goal": "implement every core data structure from scratch, understand how Java's own versions work inside, and solve easy and medium problems by recognizing patterns. Each week: Tuesday learn, Thursday build it yourself, Sunday solve problems.",
-   "milestone": "in under 20 minutes each and from a blank file, you can implement a dynamic array, hash map, linked list, stack, queue, BST and heap, and you've solved ~90 problems by pattern. Optional buffer week before Part C.",
+   "title": "Object-Oriented Design",
+   "goal": "use the OOP of Part A to design real programs: the everyday design patterns, then low-level design case studies like the ones in interviews.",
+   "milestone": "you can design a parking lot, a booking system and an expense splitter in an hour each, with tests for the tricky rules.",
    "weeks": [
-    11,
-    12,
-    13,
-    14,
-    15,
-    16,
-    17,
-    18,
-    19,
-    20,
-    21,
-    22,
-    23
+    "J37",
+    "J38",
+    "J39"
    ]
   },
   {
    "id": "Part C",
-   "title": "Advanced Algorithms and Practice (Weeks 24-36)",
+   "title": "Core Data Structures and Algorithms",
+   "goal": "implement every core data structure from scratch, understand how Java's own versions work inside, and solve easy and medium problems by recognizing patterns. Each week: Tuesday learn, Thursday build it yourself, Sunday solve problems.",
+   "milestone": "in under 20 minutes each and from a blank file, you can implement a dynamic array, hash map, linked list, stack, queue, BST and heap, and you've solved ~90 problems by pattern. Optional buffer week before Part E.",
+   "weeks": [
+    "J11",
+    "J12",
+    "J13",
+    "J14",
+    "J15",
+    "J16",
+    "J17",
+    "J18",
+    "J19",
+    "J20",
+    "J21",
+    "J22",
+    "J23"
+   ]
+  },
+  {
+   "id": "Part D",
+   "title": "Java Backend with Spring Boot",
+   "goal": "build production-shaped Java services with Spring Boot: dependency injection, REST, JPA, transactions, security, Kafka and observability.",
+   "milestone": "two Spring Boot services that authenticate, persist with JPA, talk through Kafka and run from container images.",
+   "weeks": [
+    "J40",
+    "J41",
+    "J42"
+   ]
+  },
+  {
+   "id": "Part E",
+   "title": "Advanced Algorithms and Practice",
    "goal": "master the advanced families (graphs, greedy, dynamic programming) and build interview-level fluency. Same weekly rhythm: Tuesday learn, Thursday build, Sunday solve.",
    "milestone": "",
    "weeks": [
-    24,
-    25,
-    26,
-    27,
-    28,
-    29,
-    30,
-    31,
-    32,
-    33,
-    34,
-    35,
-    36
+    "J24",
+    "J25",
+    "J26",
+    "J27",
+    "J28",
+    "J29",
+    "J30",
+    "J31",
+    "J32",
+    "J33",
+    "J34",
+    "J35",
+    "J36"
    ]
   }
  ]

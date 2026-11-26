@@ -272,7 +272,7 @@ export const CONTEST_INFO = {
   url: "https://leetcode.com/contest/",
   startAfterWeek: 23,
   rules: [
-    "Start once you reach Part C (week 24). Before that, contests mostly test topics you haven't met yet.",
+    "Start once you reach Part E (week 24). Before that, contests mostly test topics you haven't met yet.",
     "Do it live and timed (90 minutes). Virtual contests on LeetCode count if you miss the live one.",
     "Most people solve 1-2 at first. 2 regularly is a good interview sign; 3 is strong.",
     "Afterwards, upsolve: read the editorial for the first problem you couldn't solve, then solve it yourself the next day.",
