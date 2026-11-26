@@ -1,6 +1,6 @@
 # Ground Up
 
-*Zero to engineer, one layer at a time.*
+*Zero to engineer, layer by layer.*
 
 A web app for a software engineering plan from absolute zero, built from the original **Zero to Deep** roadmap: a Main track (CPU → OS → networks → browser → JS → backend → React/Next.js → infra → system design) running in parallel with a Java + DSA track.
 
@@ -8,8 +8,8 @@ A web app for a software engineering plan from absolute zero, built from the ori
 
 - **Today**: the sessions planned for today, with Swap with next, Not today and Do it today. Shows this week's hours against your rhythm, a week-based streak (two sessions makes a minimum week), pace (sessions ahead or behind) and the projected finish date, plus where you are on each track and why that phase comes now.
 - **Flexible schedule**: each plan week is a list of sessions with hour estimates (from `sessions` in the data, or the original weekday checklist) plus a review, not fixed weekdays. Weeks have stable ids (`id`, default M<n>/J<n>) used by every progress key, so weeks can be inserted, reordered or merged (`aliases`) without losing ticks, and tracks can be any length. On first run you pick your start date, your study days and hours per day (presets include weekend-heavy, every day, weekdays only and weekends only), and what happens when you miss: push everything back, spread the catch-up over your study days, or catch up on days you choose. The app fills your days in order; content is never cut, only the finish date moves. Doing a session early, missing a day, swapping or changing the rhythm reflows the whole plan.
-- **Big picture**: every phase of both tracks as a timeline, with what it's for, what it unlocks, its milestone and projected dates; your schedule for the next weeks; and all 36 weeks with progress.
-- **72 week pages**: Why this week, sessions with their planned dates, Must know topic tree, Overlooked/niche, resources (⭐ core first), build, Sunday problems, Done-when test, phase milestone and your notes. Everything is tickable, and resource names become links.
+- **Big picture**: every phase of both tracks as a timeline, with what it's for, what it unlocks, its milestone and projected dates; your schedule for the next weeks; and every week with progress.
+- **A page for every week (51 Main, 42 Java)**: Why this week, sessions with their planned dates, Must know topic tree, Overlooked/niche, resources (⭐ core first), build, Sunday problems, Done-when test, phase milestone and your notes. Everything is tickable, and resource names become links.
 - **Problem tracker**: all 161 LeetCode problems from the Java track, linked, with status (Solved / Needed help / Stuck) and automatic re-solve reminders at 3 days and 2 weeks (practice rule 6). You can add your own problems.
 - **Journal**: the long-running "What happens when I type a URL" note (one section per phase), a mistakes log with tags, and a patterns note.
 - **How it works**: schedule, session template, setup checklist, falling-behind rules, AI-as-tutor rules, practice rules.

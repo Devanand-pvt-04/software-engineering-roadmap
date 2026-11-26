@@ -183,7 +183,7 @@
   {
    "id": "M2",
    "title": "Operating systems I — processes, threads, memory",
-   "why": "your Node server, your browser tabs and your Docker containers are all processes. You need to know what that means.",
+   "why": "every program you run, from your browser tabs to a web server or a Docker container, is a process. You need to know what that means.",
    "mustKnow": [
     {
      "t": "What an OS is: the kernel, user mode vs kernel mode",
@@ -4442,7 +4442,7 @@
     "Crafting Interpreters (free): after it, Babel, TypeScript and V8 make sense from the inside",
     "PortSwigger Web Security Academy, all labs",
     "build-your-own-x: one project a month (Redis, Git, a database, a DNS server)",
-    "At work: volunteer for tickets in the layer you just studied, and read your company's infrastructure configs"
+    "Read the infrastructure configs (Dockerfiles, CI workflows, Terraform, Kubernetes manifests) of an open-source project you use; if you have a job or internship, volunteer for tickets in the layer you just studied"
    ],
    "extra": []
   },

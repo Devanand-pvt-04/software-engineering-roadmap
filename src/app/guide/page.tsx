@@ -36,7 +36,7 @@ export default function Page() {
       </header>
 
       <div className="grid gap-4 sm:grid-cols-2">
-        <Card title="Why past roadmaps didn't stick">
+        <Card title="Why most roadmaps don't stick">
           <ul className="list-disc space-y-1.5 pl-5 text-[15px] leading-relaxed">
             {WHY_PAST_FAILED.map((x) => (
               <li key={x}>{x}</li>
