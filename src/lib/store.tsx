@@ -4,6 +4,7 @@ import { createContext, useCallback, useContext, useEffect, useRef, useState, us
 import { DEFAULT_START } from "./constants";
 import { dayKey } from "./schedule";
 import { mergeState, emptyState, type Entry, type State } from "./merge";
+import { setAssetSync } from "./notes/assets";
 
 const LS_KEY = "ztd:v1";
 
@@ -193,6 +194,9 @@ export function SyncProvider({ children }: { children: React.ReactNode }) {
       inflight.current = false;
     }
   }, [user]);
+
+  // Note images upload only for signed-in people.
+  useEffect(() => setAssetSync(!!user), [user]);
 
   // who am I?
   useEffect(() => {

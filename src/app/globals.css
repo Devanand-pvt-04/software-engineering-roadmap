@@ -40,6 +40,12 @@
     --warn: #e6b450;
     --warn-soft: #3a2f16;
     --danger: #ff6b6b;
+    --hl-kw: #ff7b72;
+    --hl-str: #a5d6ff;
+    --hl-num: #79c0ff;
+    --hl-com: #8b949e;
+    --hl-fn: #d2a8ff;
+    --hl-var: #ffa657;
   }
 }
 :root[data-theme="dark"] {
@@ -60,6 +66,12 @@
   --warn: #e6b450;
   --warn-soft: #3a2f16;
   --danger: #ff6b6b;
+  --hl-kw: #ff7b72;
+  --hl-str: #a5d6ff;
+  --hl-num: #79c0ff;
+  --hl-com: #8b949e;
+  --hl-fn: #d2a8ff;
+  --hl-var: #ffa657;
 }
 
 @theme inline {
@@ -161,4 +173,18 @@ code,
   background: var(--panel-2);
   padding: 1px 5px;
   border-radius: 5px;
+}
+
+/* Note editor (CodeMirror) */
+.nb-editor .cm-editor {
+  min-height: 100%;
+}
+.nb-editor .cm-scroller {
+  min-height: inherit;
+}
+.nb-editor.nb-compact .cm-content {
+  padding-bottom: 24px;
+}
+.nb-editor.nb-compact .cm-editor {
+  min-height: 10rem;
 }

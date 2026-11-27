@@ -1,6 +1,6 @@
-import { JournalView } from "@/components/journal-view";
-export const metadata = { title: "Journal" };
+import { redirect } from "next/navigation";
 
+// The journals now live at the bottom of Notes.
 export default function Page() {
-  return <JournalView />;
+  redirect("/notes");
 }

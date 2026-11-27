@@ -39,9 +39,9 @@ function useNav(): { primary: NavItem[]; practice: NavItem[]; more: NavItem[] } 
       { href: `/java/${wk("java")}`, label: "Java + DSA", short: "Java", match: "/java", icon: I.java },
     ],
     practice: [
+      { href: "/notes", label: "Notes", icon: I.journal, match: "/notes" },
       { href: "/review", label: "Review", icon: I.review },
       { href: "/problems", label: "Problems", icon: I.problems },
-      { href: "/journal", label: "Journal", icon: I.journal },
     ],
     more: [
       { href: "/guide", label: "How it works", icon: I.guide },
@@ -192,7 +192,7 @@ export function Shell({ children }: { children: React.ReactNode }) {
       </nav>
       <main className="min-w-0 flex-1 px-4 pb-24 pt-6 sm:px-8 lg:py-10">
         <AliasMigrate />
-        <div className="mx-auto max-w-3xl">{children}</div>
+        <div className={`mx-auto ${path.startsWith("/notes") ? "max-w-6xl" : "max-w-3xl"}`}>{children}</div>
       </main>
     </div>
   );

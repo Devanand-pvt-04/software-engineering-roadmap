@@ -25,39 +25,40 @@ const TABS = [
   { id: "pattern", label: "Patterns note" },
 ] as const;
 
-export function JournalView() {
+/** The plan's long-running journals (the URL note, mistakes and patterns), folded at the bottom of Notes. */
+export function JournalPanel() {
   const c = useContent();
   const tabs = TABS.filter((t) => (t.id === "url" ? c.urlNoteSections.length > 0 : c.tracks.includes("java")));
   const [picked, setTab] = useState<(typeof TABS)[number]["id"] | null>(null);
   const tab = picked ?? tabs[0]?.id;
+  if (!tabs.length) return null;
   return (
-    <div className="space-y-6">
-      <header>
+    <details className="group card">
+      <summary className="flex cursor-pointer list-none items-center justify-between gap-3 px-5 py-4 [&::-webkit-details-marker]:hidden">
+        <span className="text-xs font-semibold uppercase tracking-wider text-muted group-hover:text-fg">Plan journals</span>
+        <span className="flex items-center gap-2 text-xs text-muted">
+          {tabs.map((t) => (t.id === "url" ? c.urlNoteTitle : t.label)).join(" · ")}
+          <span className="inline-block transition-transform group-open:rotate-90" aria-hidden>
+            ›
+          </span>
+        </span>
+      </summary>
+      <div className="space-y-4 px-5 pb-5">
         <div className="flex flex-wrap items-center justify-between gap-2">
-          <h1 className="text-2xl font-bold tracking-tight sm:text-3xl">Journal</h1>
-          {(
-            <button className="btn" onClick={() => download(`${APP_SLUG}-notes-${dayKey()}.md`, notesMarkdown(getState(), c, dayKey()), "text/markdown")}>
-              Export all notes (Markdown)
-            </button>
-          )}
-        </div>
-        <p className="mt-2 max-w-2xl text-[15px] text-muted">
-          {tabs.length === 3
-            ? "The plan's long-running notes: one URL note that grows each phase, and the patterns and mistakes notes for the Java + DSA track."
-            : tab === "url"
-              ? "The plan's long-running note: one URL explanation that grows each phase."
-              : "Your long-running patterns and mistakes notes."}
-        </p>
-      </header>
-      <div className="flex flex-wrap gap-1.5" role="tablist">
-        {tabs.map((t) => (
-          <button key={t.id} role="tab" aria-selected={tab === t.id} onClick={() => setTab(t.id)} className={`chip !px-3 !py-2 !text-[13px] ${tab === t.id ? "!border-accent !text-accent" : ""}`}>
-            {t.id === "url" ? c.urlNoteTitle : t.label}
+          <div className="flex flex-wrap gap-1.5" role="tablist">
+            {tabs.map((t) => (
+              <button key={t.id} role="tab" aria-selected={tab === t.id} onClick={() => setTab(t.id)} className={`chip !px-3 !py-2 !text-[13px] ${tab === t.id ? "!border-accent !text-accent" : ""}`}>
+                {t.id === "url" ? c.urlNoteTitle : t.label}
+              </button>
+            ))}
+          </div>
+          <button className="chip !py-1.5" onClick={() => download(`${APP_SLUG}-journals-${dayKey()}.md`, notesMarkdown(getState(), c, dayKey()), "text/markdown")}>
+            Export journals (.md)
           </button>
-        ))}
+        </div>
+        {tab === "url" ? <UrlNote /> : tab ? <Log kind={tab} /> : null}
       </div>
-      {tab === "url" ? <UrlNote /> : tab ? <Log kind={tab} /> : null}
-    </div>
+    </details>
   );
 }
 
@@ -67,7 +68,7 @@ function UrlNote() {
     <div className="space-y-4">
       <p className="text-sm text-muted">Start this in week 1. Every phase adds a section. By week 36 it&apos;s a document you could teach from, and the basis of your capstone talk.</p>
       {urlNoteSections.map((s) => (
-        <section key={s.id} className="card p-5">
+        <section key={s.id} className="rounded-xl border border-line p-4">
           <SectionTitle hint={s.phase}>{s.title}</SectionTitle>
           <p className="mb-2 text-xs text-muted">{s.hint}</p>
           <NoteBox k={`url:${s.id}`} rows={8} placeholder="Write it in your own words…" />
@@ -99,7 +100,7 @@ function Log({ kind }: { kind: Kind }) {
 
   return (
     <div className="space-y-4">
-      <section className="card p-5">
+      <section className="rounded-xl border border-line p-4">
         <SectionTitle>{kind === "mistake" ? "Log a mistake" : "Add a pattern"}</SectionTitle>
         <p className="mb-3 text-sm text-muted">
           {kind === "mistake"
