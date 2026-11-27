@@ -5,6 +5,8 @@ import { useMemo, useState } from "react";
 import { useContent } from "@/lib/content";
 import { TRACK_LABEL, type Track } from "@/lib/roadmap";
 import { TrackTag } from "./ui";
+import { useNotes } from "@/lib/notes/use-notes";
+import { displayTitle, noteHref, snippet } from "@/lib/notes/model";
 
 interface Doc {
   track: Track;
@@ -68,6 +70,25 @@ export function SearchView({ initial }: { initial: string }) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [docs, q]);
 
+  const notes = useNotes();
+  const noteHits = useMemo(() => {
+    if (!terms.length) return [];
+    return notes
+      .filter((n) => !n.deleted)
+      .map((n) => {
+        const title = displayTitle(n);
+        const hay = `${title}\n${n.body}\n${n.allTags.join(" ")}`.toLowerCase();
+        if (!terms.every((t) => hay.includes(t))) return null;
+        // A line around the first match, to show why it matched.
+        const line = n.body.split("\n").find((l) => terms.some((t) => l.toLowerCase().includes(t))) ?? "";
+        return { n, title, line: snippet(line, 160) || snippet(n.body, 160), score: terms.filter((t) => title.toLowerCase().includes(t)).length };
+      })
+      .filter((x): x is NonNullable<typeof x> => !!x)
+      .sort((a, b) => b.score - a.score || b.n.updated - a.n.updated)
+      .slice(0, 20);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [notes, q]);
+
   const update = (v: string) => {
     setQ(v);
     const u = new URL(window.location.href);
@@ -81,7 +102,7 @@ export function SearchView({ initial }: { initial: string }) {
       <header>
         <h1 className="text-2xl font-bold tracking-tight sm:text-3xl">Search</h1>
         <p className="mt-2 text-[15px] text-muted">
-          Every topic, resource, chapter, build and problem{c.tracks.length > 1 ? " on both tracks" : ` on the ${TRACK_LABEL[c.tracks[0]]}`}. Press / or Ctrl K from anywhere.
+          Your notes, and every topic, resource, chapter, build and problem{c.tracks.length > 1 ? " on both tracks" : ` on the ${TRACK_LABEL[c.tracks[0]]}`}. Press / or Ctrl K from anywhere.
         </p>
       </header>
       <input
@@ -97,6 +118,26 @@ export function SearchView({ initial }: { initial: string }) {
           {results.length === 0 ? "Nothing matches." : `${results.length === 80 ? "First 80" : results.length} result${results.length === 1 ? "" : "s"}`}
         </p>
       )}
+      {noteHits.length > 0 && (
+        <section>
+          <h2 className="mb-2 text-xs font-semibold uppercase tracking-wider text-muted">Your notes ({noteHits.length})</h2>
+          <div className="card divide-y divide-line">
+            {noteHits.map(({ n, title, line }) => (
+              <Link key={n.id} href={noteHref(n.id)} className="block p-4 hover:bg-panel-2">
+                <div className="font-semibold">
+                  <Highlight text={title} terms={terms} />
+                </div>
+                {line && (
+                  <div className="mt-0.5 text-sm text-muted">
+                    <Highlight text={line} terms={terms} />
+                  </div>
+                )}
+              </Link>
+            ))}
+          </div>
+        </section>
+      )}
+      {noteHits.length > 0 && results.length > 0 && <h2 className="-mb-4 text-xs font-semibold uppercase tracking-wider text-muted">The plan</h2>}
       <div className="card divide-y divide-line">
         {results.map((d, i) => {
           const inner = (

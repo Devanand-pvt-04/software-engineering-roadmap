@@ -8,13 +8,16 @@ import { keys } from "@/lib/roadmap";
 import { useStore, useToday } from "@/lib/store";
 import { TrackTag } from "./ui";
 import { QuizCard } from "./quiz";
+import { useNotes, dueCount } from "@/lib/notes/use-notes";
 
 /** Every self-check question that's due for another go today. */
 export function ReviewView() {
   const s = useStore();
   const c = useContent();
   const now = useToday();
+  const notes = useNotes();
   if (!now) return <div className="h-96" />;
+  const fc = dueCount(notes.filter((n) => !n.deleted), s.entries, dayKey(now));
   const due = dueCards(s, c, dayKey(now));
   let answered = 0;
   let total = 0;
@@ -36,6 +39,17 @@ export function ReviewView() {
           {answered} of {total} questions answered so far. Each week&apos;s questions are at the bottom of its page.
         </p>
       </header>
+      {fc.total > 0 && (
+        <Link href="/notes#study" className="card flex items-center justify-between gap-3 p-4 hover:border-accent">
+          <span>
+            <span className="block text-sm font-semibold">Your flashcards</span>
+            <span className="block text-xs text-muted">
+              {fc.due} due · {fc.fresh} new · from your notes
+            </span>
+          </span>
+          <span className="btn btn-primary !py-1.5 text-[13px]">Study</span>
+        </Link>
+      )}
       {due.length === 0 ? (
         <section className="card p-5 text-[15px]">Nothing due today. New questions are waiting on each week&apos;s page under Self-check.</section>
       ) : (

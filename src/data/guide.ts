@@ -39,9 +39,9 @@ export const SCHEDULE: { day: Day; track: string; time: string; what: string }[]
 
 export const SETUP_MAIN = [
   "Create a GitHub repo called foundations with folders main-track/ and java-dsa/",
-  "Pick a notes tool (Obsidian is free and works offline). Make one folder per week.",
+  "Open Notes in this app and try a template: it handles code, diagrams, sketches and flashcards, and exports to Markdown, PDF or Word if you later move to another tool.",
   "Install VS Code (main track) and IntelliJ IDEA Community (Java track)",
-  "Install Anki on your phone; add 5 cards per week from your notes",
+  "Write about 5 flashcards a week inside your notes (Q: / A:) and study them in Notes; they also export to Anki",
   "Block the time slots in your calendar as recurring events",
   "Tell one person (a friend, family member or study buddy) you're doing this; send them your week's ticks every Sunday",
 ];

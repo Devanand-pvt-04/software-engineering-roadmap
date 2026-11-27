@@ -10,9 +10,12 @@ import { usePlan } from "@/lib/use-plan";
 import { SessionItem } from "./session-row";
 import { Bar, CheckRow, SectionTitle } from "./ui";
 import { ProblemRow } from "./problem-row";
-import { NoteBox } from "./notes";
+import dynamic from "next/dynamic";
 import { QuizCard } from "./quiz";
 import { Explain } from "./explain";
+
+// The editor is heavy; load it only on the client when a week page opens.
+const WeekNotes = dynamic(() => import("./notes/week-notes").then((m) => m.WeekNotes), { ssr: false, loading: () => <div className="h-40 rounded-xl border border-line" /> });
 
 export function WeekView({ track, n }: { track: Track; n: number }) {
   const c = useContent();
@@ -249,9 +252,9 @@ export function WeekView({ track, n }: { track: Track; n: number }) {
 
       {/* notes */}
       <section className="card p-5">
-        <SectionTitle hint="Write it after the week's last session">Your notes</SectionTitle>
-        <p className="mb-2 text-xs text-muted">“Today I learned X. It exists because Y. It works by Z. I&apos;m still confused about W.”</p>
-        <NoteBox k={keys.note(w.id)} placeholder={track === "main" ? "Explain this week to a junior…" : "What clicked, what didn't, patterns you noticed…"} />
+        <SectionTitle hint={<Link href="/notes" className="hover:text-accent">All notes →</Link>}>Your notes</SectionTitle>
+        <p className="mb-3 text-xs text-muted">“Today I learned X. It exists because Y. It works by Z. I&apos;m still confused about W.”</p>
+        <WeekNotes track={track} w={w} placeholder={track === "main" ? "Explain this week to a junior…" : "What clicked, what didn't, patterns you noticed…"} />
       </section>
 
       {w.after.length > 0 && (

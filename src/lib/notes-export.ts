@@ -1,8 +1,7 @@
-// Everything the person has written, as one Markdown document.
+// The plan journals (URL note, patterns, mistakes) as one Markdown document.
 import type { ClientContent } from "./content";
 import { APP_NAME } from "./brand";
 import type { State } from "./merge";
-import { TRACK_LABEL, keys } from "./roadmap";
 
 interface LogItem {
   kind: "mistake" | "pattern";
@@ -16,13 +15,8 @@ export function notesMarkdown(s: State, c: ClientContent, today: string): string
     const v = s.entries[k]?.v;
     return typeof v === "string" ? v.trim() : "";
   };
-  const out: string[] = [`# ${APP_NAME} notes`, ``, `Exported ${today}.`, ``];
-  for (const t of c.tracks) {
-    const weeks = (c.weeks[t] ?? []).filter((w) => text(keys.note(w.id)));
-    if (!weeks.length) continue;
-    out.push(`## ${TRACK_LABEL[t]}`, ``);
-    for (const w of weeks) out.push(`### Week ${w.n}: ${w.title}`, ``, text(keys.note(w.id)), ``);
-  }
+  // Week notes and other notes are exported from Notes; this covers the plan's journals.
+  const out: string[] = [`# ${APP_NAME} journals`, ``, `Exported ${today}.`, ``];
   const url = c.urlNoteSections.filter((x) => text(`url:${x.id}`));
   if (url.length) {
     out.push(`## ${c.urlNoteTitle}`, ``);
@@ -44,7 +38,7 @@ export function notesMarkdown(s: State, c: ClientContent, today: string): string
       out.push(``);
     }
   }
-  if (out.length === 4) out.push(`_No notes yet._`, ``);
+  if (out.length === 4) out.push(`_Nothing written yet._`, ``);
   return out.join("\n");
 }
 

@@ -9,8 +9,8 @@ const LOCAL_DB = !DB_URL ? process.env.ZTD_LOCAL_DB || "" : "";
 export const dbEnabled = Boolean(DB_URL || LOCAL_DB);
 
 /** Every table is a simple key → JSON document store. */
-type Table = "progress";
-const KEY_COL: Record<Table, string> = { progress: "user_id" };
+type Table = "progress" | "assets";
+const KEY_COL: Record<Table, string> = { progress: "user_id", assets: "id" };
 
 let ready: Promise<void> | null = null;
 function sql() {
@@ -21,6 +21,8 @@ async function ensureTables() {
     const q = sql();
     ready = Promise.all([
       q`CREATE TABLE IF NOT EXISTS progress (user_id TEXT PRIMARY KEY, data JSONB NOT NULL, updated_at TIMESTAMPTZ NOT NULL DEFAULT now())`,
+      // Note images, keyed "<user id>:<asset id>".
+      q`CREATE TABLE IF NOT EXISTS assets (id TEXT PRIMARY KEY, data JSONB NOT NULL, updated_at TIMESTAMPTZ NOT NULL DEFAULT now())`,
     ]).then(() => undefined);
     ready.catch(() => (ready = null));
   }
@@ -31,9 +33,9 @@ async function ensureTables() {
 type LocalData = Record<Table, Record<string, unknown>>;
 async function readLocal(): Promise<LocalData> {
   try {
-    return { progress: {}, ...JSON.parse(await fs.readFile(LOCAL_DB, "utf8")) };
+    return { progress: {}, assets: {}, ...JSON.parse(await fs.readFile(LOCAL_DB, "utf8")) };
   } catch {
-    return { progress: {} };
+    return { progress: {}, assets: {} };
   }
 }
 async function writeLocal(d: LocalData) {
@@ -91,3 +93,7 @@ export async function kvDelete(table: Table, key: string): Promise<void> {
 
 export const readProgress = (userId: string) => kvGet<unknown>("progress", userId);
 export const writeProgress = (userId: string, data: unknown) => kvSet("progress", userId, data);
+
+/** A note image as a data: URL. */
+export const readAsset = (userId: string, id: string) => kvGet<{ url: string }>("assets", `${userId}:${id}`);
+export const writeAsset = (userId: string, id: string, url: string) => kvSet("assets", `${userId}:${id}`, { url });

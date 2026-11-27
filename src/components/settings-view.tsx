@@ -139,7 +139,7 @@ export function SettingsView() {
             Import…
           </button>
           <button className="btn" onClick={() => download(`${APP_SLUG}-notes-${dayKey()}.md`, notesMarkdown(getState(), content, dayKey()), "text/markdown")}>
-            Export notes (Markdown)
+            Export journals (Markdown)
           </button>
           <input ref={file} type="file" accept="application/json,.json" className="hidden" onChange={(e) => e.target.files?.[0] && importJson(e.target.files[0])} />
         </div>
