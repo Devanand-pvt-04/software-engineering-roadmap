@@ -5,8 +5,30 @@ import markdownit, { type MarkdownIt, type Token } from "markdown-it";
 import taskLists from "markdown-it-task-lists";
 import footnote from "markdown-it-footnote";
 import mark from "markdown-it-mark";
-import katex from "@vscode/markdown-it-katex";
-import hljs from "highlight.js/lib/common";
+import hljs from "highlight.js/lib/core";
+import java from "highlight.js/lib/languages/java";
+import python from "highlight.js/lib/languages/python";
+import javascript from "highlight.js/lib/languages/javascript";
+import typescript from "highlight.js/lib/languages/typescript";
+import sql from "highlight.js/lib/languages/sql";
+import bash from "highlight.js/lib/languages/bash";
+import json from "highlight.js/lib/languages/json";
+import yaml from "highlight.js/lib/languages/yaml";
+import xml from "highlight.js/lib/languages/xml";
+import css from "highlight.js/lib/languages/css";
+import go from "highlight.js/lib/languages/go";
+import cpp from "highlight.js/lib/languages/cpp";
+import c from "highlight.js/lib/languages/c";
+import rust from "highlight.js/lib/languages/rust";
+import kotlin from "highlight.js/lib/languages/kotlin";
+import csharp from "highlight.js/lib/languages/csharp";
+import http from "highlight.js/lib/languages/http";
+import diff from "highlight.js/lib/languages/diff";
+import dockerfile from "highlight.js/lib/languages/dockerfile";
+import plaintext from "highlight.js/lib/languages/plaintext";
+
+for (const [name, lang] of Object.entries({ java, python, javascript, typescript, sql, bash, json, yaml, xml, css, go, cpp, c, rust, kotlin, csharp, http, diff, dockerfile, plaintext }))
+  hljs.registerLanguage(name, lang);
 import DOMPurify from "dompurify";
 import { splitCardBlock, TERM_RE } from "./cards";
 
@@ -20,13 +42,12 @@ export const headingId = (s: string) =>
     .replace(/^-|-$/g, "")
     .slice(0, 60);
 
-const LANG_ALIAS: Record<string, string> = { js: "javascript", ts: "typescript", py: "python", sh: "bash", shell: "bash", yml: "yaml", "c++": "cpp", kt: "kotlin", rs: "rust", golang: "go" };
+const LANG_ALIAS: Record<string, string> = { js: "javascript", jsx: "javascript", ts: "typescript", tsx: "typescript", py: "python", sh: "bash", shell: "bash", zsh: "bash", yml: "yaml", html: "xml", "c++": "cpp", kt: "kotlin", rs: "rust", golang: "go", cs: "csharp", "c#": "csharp", docker: "dockerfile", text: "plaintext", txt: "plaintext" };
 
 function highlight(code: string, lang: string): string {
   const l = LANG_ALIAS[lang] ?? lang;
   try {
     if (l && hljs.getLanguage(l)) return hljs.highlight(code, { language: l, ignoreIllegals: true }).value;
-    if (!l && code.length < 20_000) return hljs.highlightAuto(code).value;
   } catch {
     /* fall back to plain */
   }
@@ -41,7 +62,7 @@ function build(exportMode = false): MarkdownIt {
   md.use(footnote);
   md.use(mark);
   // Exports use MathML only, which browsers and Word render without extra stylesheets or fonts.
-  md.use(katex, { throwOnError: false, enableMathBlockInHtml: false, ...(exportMode ? { output: "mathml" } : {}) } as never);
+  if (katexPlugin) md.use(katexPlugin, { throwOnError: false, enableMathBlockInHtml: false, ...(exportMode ? { output: "mathml" } : {}) } as never);
 
   // Fenced code: highlighted with a language label and copy button. Mermaid, card and math fences are special.
   md.renderer.rules.fence = (tokens, idx, _opts, env) => {
@@ -171,6 +192,19 @@ function card(qHtml: string, aHtml: string) {
 
 let md: MarkdownIt | null = null;
 let mdExport: MarkdownIt | null = null;
+
+// Math (KaTeX, ~260 KB) loads only once a note uses $…$.
+type KatexPlugin = typeof import("@vscode/markdown-it-katex").default;
+let katexPlugin: KatexPlugin | null = null;
+let katexLoading: Promise<void> | null = null;
+export const needsMath = (body: string) => !katexPlugin && /\$[^$\n]+\$|^\s*\$\$|```(math|latex)/m.test(body);
+export function loadMath(): Promise<void> {
+  katexLoading ??= import("@vscode/markdown-it-katex").then((m) => {
+    katexPlugin = m.default;
+    md = mdExport = null; // rebuild with math
+  });
+  return katexLoading;
+}
 interface Env {
   exportMode?: boolean;
 }

@@ -9,7 +9,7 @@ import { assetIds, imageDataUrl, getImage } from "./assets";
 import { extractCards } from "./cards";
 import { hydrate } from "./hydrate";
 import { EXPORT_PAGE_CSS, EXPORT_VARS, PROSE_CSS } from "./prose-css";
-import { renderMarkdown } from "./render";
+import { loadMath, renderMarkdown } from "./render";
 import { sketchSvg, type Sketch } from "./sketch";
 import { displayTitle, refView, sketchKey, slugify, STATUS_LABEL, type Note, type NoteView } from "./model";
 
@@ -135,6 +135,7 @@ export async function exportZip(notes: NoteView[], s: State, c: ClientContent): 
 
 /** Rendered HTML for the notes, with images, sketches and diagrams inlined. */
 async function renderNotesHtml(notes: NoteView[], s: State, c: ClientContent): Promise<string> {
+  await loadMath();
   const host = document.createElement("div");
   host.style.cssText = "position:fixed;left:-10000px;top:0;width:800px";
   document.body.appendChild(host);
@@ -222,7 +223,8 @@ export function exportText(notes: NoteView[]): string {
 }
 
 /** Tab-separated front / back / tags: imports into Anki (File > Import) and Quizlet. */
-export function exportCards(notes: NoteView[]): { tsv: string; count: number } {
+export async function exportCards(notes: NoteView[]): Promise<{ tsv: string; count: number }> {
+  await loadMath();
   const rows: string[] = ["#separator:tab", "#html:true", "#columns:Front\tBack\tTags"];
   let count = 0;
   for (const n of notes) {

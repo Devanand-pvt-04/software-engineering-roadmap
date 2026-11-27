@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useDeferredValue, useEffect, useMemo, useRef, useState } from "react";
 import { useContent } from "@/lib/content";
 import { getState, useStore, useToday } from "@/lib/store";
 import { dayKey } from "@/lib/schedule";
@@ -9,6 +9,8 @@ import { extractCards } from "@/lib/notes/cards";
 import { history, saveImage, snapshot, type Snapshot } from "@/lib/notes/assets";
 import { toggleTask, headingId } from "@/lib/notes/render";
 import { SNIPPETS } from "@/lib/notes/templates";
+
+const snippet = (id: string) => SNIPPETS.find((x) => x.id === id)!.text;
 import { blankSketch, type Sketch } from "@/lib/notes/sketch";
 import {
   STATUS_LABEL,
@@ -26,7 +28,11 @@ import {
   type NoteView,
 } from "@/lib/notes/model";
 import { createNote, getSketch, purgeNote, restoreNote, saveSketch, trashNote, updateNote } from "@/lib/notes/use-notes";
-import { NoteEditor, type EditorApi } from "./editor";
+import type { EditorApi } from "./editor";
+import dynamic from "next/dynamic";
+
+// CodeMirror loads only when writing, so reading a note stays light.
+const NoteEditor = dynamic(() => import("./editor").then((m) => m.NoteEditor), { ssr: false, loading: () => <div className="h-[60vh]" aria-busy="true" /> });
 import { NotePreview } from "./preview";
 import { SketchPad } from "./sketch-pad";
 import { ExportMenu } from "./export-menu";
@@ -94,7 +100,8 @@ export function NotePage({ id, notes, onBack, onOpen, onTag, onStudy }: { id: st
     };
   }, [flush]);
 
-  const [mode, setModeState] = useState<Mode>("write");
+  const [chosen, setModeState] = useState<Mode | null>(null);
+  const mode: Mode = chosen ?? "write";
   useEffect(() => {
     let m: Mode | null = null;
     try {
@@ -130,6 +137,11 @@ export function NotePage({ id, notes, onBack, onOpen, onTag, onStudy }: { id: st
     return out.join("\n\n");
   }, []);
 
+  // Word count, outline, cards and backlinks trail the typing slightly so keystrokes stay fast.
+  const lazyBody = useDeferredValue(body);
+  const lazyTitle = useDeferredValue(title);
+  const links = useMemo(() => (stored ? backlinks(notes, { ...stored, title: lazyTitle, body: lazyTitle ? "" : lazyBody }) : []), [notes, stored, lazyTitle, lazyBody]);
+
   if (!stored)
     return (
       <div className="card p-6 text-center">
@@ -141,10 +153,9 @@ export function NotePage({ id, notes, onBack, onOpen, onTag, onStudy }: { id: st
     );
 
   const n: NoteView = { ...stored, title, body };
-  const cards = extractCards(body);
-  const heads = outline(body);
-  const links = backlinks(notes, n);
-  const words = wordCount(body);
+  const cards = extractCards(lazyBody);
+  const heads = outline(lazyBody);
+  const words = wordCount(lazyBody);
   const set = (patch: Parameters<typeof updateNote>[2]) => {
     flush();
     updateNote(c, id, patch);
@@ -170,16 +181,20 @@ export function NotePage({ id, notes, onBack, onOpen, onTag, onStudy }: { id: st
         <span className="text-xs text-muted" aria-live="polite">
           {saved ? "Saved" : "Saving…"}
         </span>
-        <div className="ml-auto flex flex-wrap items-center gap-1.5">
-          <button className={`chip !py-1.5 ${n.pinned ? "!border-accent !text-accent" : ""}`} onClick={() => set({ pinned: !n.pinned })} aria-pressed={!!n.pinned} title="Pin to the top of the list">
-            {n.pinned ? "Pinned" : "Pin"}
-          </button>
-          <button className={`chip !py-1.5 ${n.interview ? "!border-java !text-java" : ""}`} onClick={() => set({ interview: !n.interview })} aria-pressed={!!n.interview} title="Add to your interview pack">
-            {n.interview ? "★ Interview pack" : "☆ Interview pack"}
+        <div className="ml-auto flex items-center gap-1.5">
+          <button
+            className={`grid size-8 place-items-center rounded-lg text-lg leading-none hover:bg-panel-2 ${n.interview ? "text-java" : "text-muted"}`}
+            onClick={() => set({ interview: !n.interview })}
+            aria-pressed={!!n.interview}
+            title={n.interview ? "In your interview pack" : "Add to your interview pack"}
+            aria-label="Interview pack"
+          >
+            {n.interview ? "★" : "☆"}
           </button>
           <ExportMenu notes={[n]} className="chip !py-1.5" />
           <MoreMenu
             items={[
+              { label: n.pinned ? "Unpin" : "Pin to top", run: () => set({ pinned: !n.pinned }) },
               { label: "Version history", run: () => (flush(), setShowHistory(true)) },
               {
                 label: "Duplicate",
@@ -220,39 +235,43 @@ export function NotePage({ id, notes, onBack, onOpen, onTag, onStudy }: { id: st
       <MetaRow n={n} set={set} allTags={allTags()} onTag={onTag} today={today} />
 
       {/* toolbar */}
-      <div className="sticky top-[49px] z-10 -mx-1 flex items-center gap-1 rounded-xl border border-line bg-panel/95 px-1 py-1 backdrop-blur lg:top-0">
-        <div className="flex min-w-0 flex-1 items-center gap-0.5 overflow-x-auto [scrollbar-width:none]">
-          {editorVisible && (
-            <>
+      <div className="sticky top-[49px] z-10 -mx-1 flex items-center gap-1 rounded-xl border border-line bg-panel px-1 py-1 lg:top-0">
+        {editorVisible ? (
+          <>
+            <div className="flex min-w-0 flex-1 items-center gap-0.5 overflow-x-auto [scrollbar-width:none]">
               <Tool label="Heading" d="M5 4v12M15 4v12M5 10h10" onClick={() => ed()?.linePrefix("## ")} />
               <Tool label="Bold (Ctrl+B)" d="M6 4h5a3 3 0 010 6H6zM6 10h6a3 3 0 010 6H6z" onClick={() => ed()?.wrap("**")} />
               <Tool label="Italic (Ctrl+I)" d="M12 4H8M12 16H8M11 4l-2 12" onClick={() => ed()?.wrap("_")} />
-              <Tool label="Highlight" d="M4 16h12M6 12l6-8 3 3-6 7H6z" onClick={() => ed()?.wrap("==")} />
               <Tool label="Inline code (Ctrl+E)" d="M7 6l-4 4 4 4M13 6l4 4-4 4" onClick={() => ed()?.wrap("`", "`", "code")} />
               <Tool label="Link (Ctrl+K)" d="M8 12l4-4M7 9l-2 2a3 3 0 004 4l2-2M13 11l2-2a3 3 0 00-4-4L9 7" onClick={() => ed()?.wrap("[", "](https://)", "link")} />
-              <Tool label="Link a note [[ ]]" d="M7 4H4v12h3M13 4h3v12h-3" onClick={() => ed()?.wrap("[[", "]]", "Note title")} />
               <span className="mx-0.5 h-5 w-px shrink-0 bg-line" />
               <Tool label="Bullet list" d="M8 5h9M8 10h9M8 15h9M4 5h.01M4 10h.01M4 15h.01" onClick={() => ed()?.linePrefix("- ")} />
-              <Tool label="Numbered list" d="M8 5h9M8 10h9M8 15h9M3 4h1v3M3 14h2l-2 2h2" onClick={() => ed()?.linePrefix("1. ")} />
               <Tool label="Checklist" d="M3 5l1.5 1.5L7 4M3 13l1.5 1.5L7 12M10 5h7M10 13h7" onClick={() => ed()?.linePrefix("- [ ] ")} />
-              <Tool label="Quote" d="M4 6h4v4H6l-2 4M12 6h4v4h-2l-2 4" onClick={() => ed()?.linePrefix("> ")} />
               <span className="mx-0.5 h-5 w-px shrink-0 bg-line" />
               <Tool label="Code block" d="M3 4h14v12H3zM6 8l2 2-2 2M10 12h4" onClick={() => ed()?.insert("```java\n|\n```", true)} />
-              <Tool label="Table" d="M3 4h14v12H3zM3 8h14M3 12h14M9 4v12" onClick={() => ed()?.insert(SNIPPETS.find((x) => x.id === "table")!.text, true)} />
+              <Tool label="Table" d="M3 4h14v12H3zM3 8h14M3 12h14M9 4v12" onClick={() => ed()?.insert(snippet("table"), true)} />
               <Tool label="Image (or paste / drop one)" d="M3 4h14v12H3zM3 13l4-4 3 3 2-2 5 5M13 8h.01" onClick={() => fileInput.current?.click()} />
-              <Tool label="Sketch (draw by hand)" d="M3 17c3-1 4-6 7-6s2 4 5 4M14 3l3 3-7 7H7v-3z" onClick={() => setSketch({ id: newId(), data: null, isNew: true })} extra="!text-accent" />
-              <Tool label="Diagram (Mermaid)" d="M3 3h5v4H3zM12 13h5v4h-5zM5.5 7v3h9v3" onClick={() => ed()?.insert(SNIPPETS.find((x) => x.id === "flow")!.text, true)} />
-              <Tool label="Math" d="M4 5h6M7 5v10l-3-3M12 9l5 6M17 9l-5 6" onClick={() => ed()?.wrap("$", "$", "O(n \\log n)")} />
-              <Tool label="Flashcard (Q: / A:)" d="M3 5h14v10H3zM7 9h6M7 12h3" onClick={() => ed()?.insert("Q: |\nA: ", true)} extra="!text-java" />
-              <Tool label="Callout" d="M4 4h12v9H8l-4 3z" onClick={() => ed()?.insert("> [!TIP]\n> |", true)} />
-              <InsertMenu onPick={(t) => ed()?.insert(t, true)} />
-            </>
-          )}
-          {!editorVisible && <span className="px-2 text-xs text-muted">Reading view. Tick boxes and click sketches to edit them.</span>}
-        </div>
-        <div className="flex shrink-0 rounded-lg border border-line p-0.5 text-xs" role="radiogroup" aria-label="View">
+              <Tool label="Sketch (draw by hand)" d="M3 17c3-1 4-6 7-6s2 4 5 4M14 3l3 3-7 7H7v-3z" onClick={() => setSketch({ id: newId(), data: null, isNew: true })} />
+              <Tool label="Diagram" d="M3 3h5v4H3zM12 13h5v4h-5zM5.5 7v3h9v3" onClick={() => ed()?.insert(snippet("flow"), true)} />
+              <Tool label="Flashcard (Q: / A:)" d="M3 5h14v10H3zM7 9h6M7 12h3" onClick={() => ed()?.insert("Q: |\nA: ", true)} />
+            </div>
+            <InsertMenu
+              items={[
+                { label: "Highlight", hint: "==text==", run: () => ed()?.wrap("==") },
+                { label: "Numbered list", hint: "1.", run: () => ed()?.linePrefix("1. ") },
+                { label: "Quote", hint: ">", run: () => ed()?.linePrefix("> ") },
+                { label: "Link to a note", hint: "[[ ]]", run: () => ed()?.wrap("[[", "]]", "Note title") },
+                { label: "Inline math", hint: "$ … $", run: () => ed()?.wrap("$", "$", "O(n \\log n)") },
+                ...SNIPPETS.filter((x) => !["table", "flow", "card", "todo", "h2", "code"].includes(x.id)).map((x) => ({ label: x.label, hint: x.hint, run: () => ed()?.insert(x.text, true) })),
+              ]}
+            />
+          </>
+        ) : (
+          <span className="flex-1 px-2 text-xs text-muted">Reading view. Tick boxes and tap sketches to edit them.</span>
+        )}
+        <div className="flex shrink-0 rounded-lg bg-panel-2 p-0.5 text-xs" role="radiogroup" aria-label="View">
           {(["write", "split", "read"] as Mode[]).map((m) => (
-            <button key={m} role="radio" aria-checked={mode === m} onClick={() => setMode(m)} className={`rounded-md px-2 py-1 ${mode === m ? "bg-accent-soft font-semibold text-accent" : "text-muted hover:text-fg"} ${m === "split" ? "hidden md:block" : ""}`}>
+            <button key={m} role="radio" aria-checked={mode === m} onClick={() => setMode(m)} className={`rounded-md px-2 py-1 ${mode === m ? "bg-panel font-semibold text-fg shadow-sm" : "text-muted hover:text-fg"} ${m === "split" ? "hidden md:block" : ""}`}>
               {m === "write" ? "Write" : m === "split" ? "Split" : "Read"}
             </button>
           ))}
@@ -273,7 +292,8 @@ export function NotePage({ id, notes, onBack, onOpen, onTag, onStudy }: { id: st
 
       {/* editor / preview */}
       <div className={`grid gap-3 ${mode === "split" ? "md:grid-cols-2" : ""}`}>
-        <div className={`card min-h-[60vh] overflow-hidden ${mode === "read" ? "hidden" : ""} ${mode === "split" ? "md:max-h-[calc(100vh-14rem)] md:overflow-auto" : ""}`}>
+        {chosen && mode !== "read" && (
+        <div className={`card min-h-[60vh] overflow-hidden ${mode === "split" ? "md:max-h-[calc(100vh-14rem)] md:overflow-auto" : ""}`}>
           <NoteEditor
             key={id}
             value={body}
@@ -288,6 +308,7 @@ export function NotePage({ id, notes, onBack, onOpen, onTag, onStudy }: { id: st
             autoFocus={!body}
           />
         </div>
+        )}
         {mode !== "write" && (
           <div className={`card min-h-[60vh] p-5 sm:p-7 ${mode === "split" ? "hidden md:block md:max-h-[calc(100vh-14rem)] md:overflow-auto" : ""}`}>
             {body.trim() ? (
@@ -414,96 +435,114 @@ function Tool({ label, d, onClick, extra = "" }: { label: string; d: string; onC
   );
 }
 
+/** One quiet line of tags, roadmap links and status; everything editable sits behind "Details". */
 function MetaRow({ n, set, allTags, onTag, today }: { n: NoteView; set: (p: Parameters<typeof updateNote>[2]) => void; allTags: string[]; onTag: (t: string) => void; today: string }) {
   const c = useContent();
+  const [open, setOpen] = useState(false);
   const [tag, setTag] = useState("");
   const [picking, setPicking] = useState(false);
-  const bodyOnly = n.allTags.filter((t) => !n.tags.map(normTag).includes(t));
+  const own = n.tags.map(normTag);
   const addTag = () => {
     const t = normTag(tag);
-    if (t && !n.tags.includes(t)) set({ tags: [...n.tags, t] });
+    if (t && !own.includes(t)) set({ tags: [...n.tags, t] });
     setTag("");
   };
   const since = daysSince(n.revisedAt, today);
+  const refs = n.refs.map((r) => refView(c, r)).filter((v): v is NonNullable<typeof v> => !!v);
   return (
     <div className="space-y-2">
-      <div className="flex flex-wrap items-center gap-1.5">
-        {n.tags.map((t) => (
-          <span key={t} className="chip">
-            <button onClick={() => onTag(normTag(t))} className="hover:text-accent">
-              #{normTag(t)}
-            </button>
-            <button aria-label={`Remove tag ${t}`} className="text-muted hover:text-danger" onClick={() => set({ tags: n.tags.filter((x) => x !== t) })}>
-              ×
-            </button>
-          </span>
-        ))}
-        {bodyOnly.map((t) => (
-          <button key={t} className="chip opacity-70 hover:text-accent" title="Tag written in the note" onClick={() => onTag(t)}>
+      <div className="flex flex-wrap items-center gap-x-3 gap-y-1 text-[13px] text-muted">
+        {n.allTags.map((t) => (
+          <button key={t} onClick={() => onTag(t)} className="hover:text-accent">
             #{t}
           </button>
         ))}
-        <form
-          onSubmit={(e) => {
-            e.preventDefault();
-            addTag();
-          }}
-        >
-          <input className="input !w-32 !rounded-full !px-3 !py-1 text-xs" list="nb-tags" value={tag} onChange={(e) => setTag(e.target.value)} onBlur={addTag} placeholder="+ tag" aria-label="Add tag" />
-          <datalist id="nb-tags">
-            {allTags.map((t) => (
-              <option key={t} value={t} />
-            ))}
-          </datalist>
-        </form>
-      </div>
-      <div className="flex flex-wrap items-center gap-1.5">
-        {n.refs.map((r) => {
-          const v = refView(c, r);
-          if (!v) return null;
-          return (
-            <span key={r} className={`chip ${v.track === "main" ? "!bg-main-soft !text-main" : "!bg-java-soft !text-java"}`}>
-              <Link href={`/${v.track}/${v.n}`} className="hover:underline">
-                {v.label}
-                {v.topic ? ` · ${v.topic.length > 40 ? v.topic.slice(0, 40) + "…" : v.topic}` : ""}
-              </Link>
-              <button aria-label="Remove link" className="opacity-60 hover:opacity-100" onClick={() => set({ refs: n.refs.filter((x) => x !== r) })}>
-                ×
-              </button>
-            </span>
-          );
-        })}
-        {picking ? (
-          <RoadmapPicker
-            onPick={(r) => {
-              if (!n.refs.includes(r)) set({ refs: [...n.refs, r] });
-              setPicking(false);
-            }}
-            onCancel={() => setPicking(false)}
-          />
-        ) : (
-          <button className="chip !border-dashed text-muted hover:text-fg" onClick={() => setPicking(true)}>
-            + Link to roadmap
-          </button>
-        )}
-        <span className="mx-1 h-4 w-px bg-line" />
-        <select
-          className="input !w-auto !rounded-full !px-3 !py-1 text-xs"
-          value={n.status ?? ""}
-          onChange={(e) => set({ status: (e.target.value || undefined) as NoteStatus | undefined })}
-          aria-label="How well you know it"
-        >
-          <option value="">How well do I know it?</option>
-          {(Object.keys(STATUS_LABEL) as NoteStatus[]).map((k) => (
-            <option key={k} value={k}>
-              {STATUS_LABEL[k]}
-            </option>
-          ))}
-        </select>
-        <button className="chip" onClick={() => set({ revisedAt: today, ...(n.status === "revise" ? { status: "learning" as NoteStatus } : {}) })} title="Mark that you went over this note today">
-          {since === 0 ? "✓ Revised today" : n.revisedAt ? `Revised ${since}d ago · mark again` : "Mark revised"}
+        {refs.map((v) => (
+          <Link key={v.ref} href={`/${v.track}/${v.n}`} className={`rounded-md px-1.5 py-0.5 text-xs font-medium ${v.track === "main" ? "bg-main-soft text-main" : "bg-java-soft text-java"}`} title={v.topic ? `${v.label} · ${v.topic}` : v.label}>
+            {v.track === "main" ? "Main" : "Java"} W{v.n}
+            {v.topic ? ` · ${v.topic.length > 28 ? v.topic.slice(0, 28) + "…" : v.topic}` : ""}
+          </Link>
+        ))}
+        {n.status && <span className={`rounded-md px-1.5 py-0.5 text-xs ${n.status === "revise" ? "bg-warn-soft text-warn" : n.status === "confident" ? "bg-ok-soft text-ok" : "bg-panel-2"}`}>{STATUS_LABEL[n.status]}</span>}
+        {n.revisedAt && <span className="text-xs">{since === 0 ? "Revised today" : `Revised ${since}d ago`}</span>}
+        <button className="text-xs font-medium text-accent hover:underline" onClick={() => setOpen(!open)} aria-expanded={open}>
+          {open ? "Hide details" : n.allTags.length || refs.length || n.status ? "Edit details" : "+ Tags, roadmap link, status"}
         </button>
       </div>
+      {open && (
+        <div className="grid gap-3 rounded-xl border border-line bg-panel p-3 text-sm sm:grid-cols-2">
+          <div>
+            <p className="mb-1 text-xs font-semibold uppercase tracking-wider text-muted">Tags</p>
+            <div className="flex flex-wrap items-center gap-1.5">
+              {own.map((t, i) => (
+                <span key={t} className="chip">
+                  #{t}
+                  <button aria-label={`Remove tag ${t}`} className="text-muted hover:text-danger" onClick={() => set({ tags: n.tags.filter((_, j) => j !== i) })}>
+                    ×
+                  </button>
+                </span>
+              ))}
+              <form
+                onSubmit={(e) => {
+                  e.preventDefault();
+                  addTag();
+                }}
+              >
+                <input className="input !w-28 !rounded-full !px-3 !py-1 text-xs" list="nb-tags" value={tag} onChange={(e) => setTag(e.target.value)} onBlur={addTag} placeholder="add tag" aria-label="Add tag" />
+                <datalist id="nb-tags">
+                  {allTags.map((t) => (
+                    <option key={t} value={t} />
+                  ))}
+                </datalist>
+              </form>
+            </div>
+            <p className="mt-1 text-xs text-muted">You can also type #tag anywhere in the note.</p>
+          </div>
+          <div>
+            <p className="mb-1 text-xs font-semibold uppercase tracking-wider text-muted">How well do I know it</p>
+            <div className="flex flex-wrap items-center gap-1.5">
+              <select className="input !w-auto !py-1 text-xs" value={n.status ?? ""} onChange={(e) => set({ status: (e.target.value || undefined) as NoteStatus | undefined })} aria-label="How well you know it">
+                <option value="">Not set</option>
+                {(Object.keys(STATUS_LABEL) as NoteStatus[]).map((k) => (
+                  <option key={k} value={k}>
+                    {STATUS_LABEL[k]}
+                  </option>
+                ))}
+              </select>
+              <button className="chip !py-1.5" onClick={() => set({ revisedAt: today, ...(n.status === "revise" ? { status: "learning" as NoteStatus } : {}) })}>
+                {since === 0 ? "✓ Revised today" : "Mark revised today"}
+              </button>
+            </div>
+          </div>
+          <div className="sm:col-span-2">
+            <p className="mb-1 text-xs font-semibold uppercase tracking-wider text-muted">Roadmap</p>
+            <div className="flex flex-wrap items-center gap-1.5">
+              {refs.map((v) => (
+                <span key={v.ref} className="chip">
+                  {v.label}
+                  {v.topic ? ` · ${v.topic.length > 40 ? v.topic.slice(0, 40) + "…" : v.topic}` : ""}
+                  <button aria-label="Remove link" className="text-muted hover:text-danger" onClick={() => set({ refs: n.refs.filter((x) => x !== v.ref) })}>
+                    ×
+                  </button>
+                </span>
+              ))}
+              {picking ? (
+                <RoadmapPicker
+                  onPick={(r) => {
+                    if (!n.refs.includes(r)) set({ refs: [...n.refs, r] });
+                    setPicking(false);
+                  }}
+                  onCancel={() => setPicking(false)}
+                />
+              ) : (
+                <button className="chip !border-dashed !py-1.5 text-muted hover:text-fg" onClick={() => setPicking(true)}>
+                  + Link a week or topic
+                </button>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
@@ -553,34 +592,47 @@ function RoadmapPicker({ onPick, onCancel }: { onPick: (ref: string) => void; on
   );
 }
 
-function InsertMenu({ onPick }: { onPick: (text: string) => void }) {
+export interface InsertItem {
+  label: string;
+  hint: string;
+  run: () => void;
+}
+
+/** Sits outside the toolbar's scrolling strip so the menu isn't clipped. */
+function InsertMenu({ items }: { items: InsertItem[] }) {
   const [open, setOpen] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
   useEffect(() => {
     if (!open) return;
-    const off = (e: MouseEvent) => !ref.current?.contains(e.target as Node) && setOpen(false);
-    document.addEventListener("mousedown", off);
-    return () => document.removeEventListener("mousedown", off);
+    const off = (e: PointerEvent) => !ref.current?.contains(e.target as Node) && setOpen(false);
+    const esc = (e: KeyboardEvent) => e.key === "Escape" && setOpen(false);
+    document.addEventListener("pointerdown", off);
+    document.addEventListener("keydown", esc);
+    return () => {
+      document.removeEventListener("pointerdown", off);
+      document.removeEventListener("keydown", esc);
+    };
   }, [open]);
   return (
     <div ref={ref} className="relative shrink-0">
-      <button type="button" className="flex h-8 items-center gap-1 rounded-md px-2 text-xs font-medium text-muted hover:bg-panel-2 hover:text-fg" onMouseDown={(e) => e.preventDefault()} onClick={() => setOpen(!open)} aria-expanded={open}>
+      <button type="button" className={`flex h-8 items-center gap-1 rounded-md px-2 text-xs font-medium hover:bg-panel-2 hover:text-fg ${open ? "bg-panel-2 text-fg" : "text-muted"}`} onMouseDown={(e) => e.preventDefault()} onClick={() => setOpen(!open)} aria-expanded={open} aria-haspopup="menu">
         <Ico d="M10 4v12M4 10h12" className="size-4" /> Insert
       </button>
       {open && (
-        <div className="fixed left-2 right-2 z-40 mt-1 max-h-[60vh] overflow-auto rounded-xl border border-line bg-panel p-1 shadow-xl sm:absolute sm:left-auto sm:right-0 sm:w-64">
-          {SNIPPETS.map((s) => (
+        <div role="menu" className="absolute right-0 top-full z-40 mt-2 max-h-[60vh] w-64 max-w-[calc(100vw-2rem)] overflow-auto rounded-xl border border-line bg-panel p-1 shadow-xl">
+          {items.map((s) => (
             <button
-              key={s.id}
+              key={s.label}
+              role="menuitem"
               className="flex w-full items-baseline justify-between gap-3 rounded-lg px-3 py-1.5 text-left text-sm hover:bg-panel-2"
               onMouseDown={(e) => e.preventDefault()}
               onClick={() => {
-                onPick(s.text);
                 setOpen(false);
+                s.run();
               }}
             >
               {s.label}
-              <span className="text-xs text-muted">{s.hint}</span>
+              <span className="shrink-0 text-xs text-muted">{s.hint}</span>
             </button>
           ))}
         </div>

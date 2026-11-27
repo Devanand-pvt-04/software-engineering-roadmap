@@ -174,6 +174,7 @@ export function NoteEditor({
 }) {
   const host = useRef<HTMLDivElement>(null);
   const view = useRef<EditorView | null>(null);
+  const emitted = useRef(value);
   const cb = useRef({ onChange, titles, tags, onFiles });
   useEffect(() => {
     cb.current = { onChange, titles, tags, onFiles };
@@ -249,7 +250,9 @@ export function NoteEditor({
       ]),
       theme,
       EditorView.updateListener.of((u) => {
-        if (u.docChanged) cb.current.onChange(u.state.doc.toString());
+        if (!u.docChanged) return;
+        emitted.current = u.state.doc.toString();
+        cb.current.onChange(emitted.current);
       }),
       EditorView.domEventHandlers({
         paste(e, v) {
@@ -284,7 +287,8 @@ export function NoteEditor({
   // Outside changes (another device, a restored version, a ticked box in the preview).
   useEffect(() => {
     const v = view.current;
-    if (!v) return;
+    if (!v || value === emitted.current) return;
+    emitted.current = value;
     const cur = v.state.doc.toString();
     if (cur !== value) {
       const sel = v.state.selection.main;
@@ -313,6 +317,9 @@ export function NoteEditor({
         const i = doc.indexOf(from);
         if (i >= 0) v.dispatch({ changes: { from: i, to: i + from.length, insert: to } });
       },
+    };
+    return () => {
+      apiRef.current = null;
     };
   }, [apiRef]);
 

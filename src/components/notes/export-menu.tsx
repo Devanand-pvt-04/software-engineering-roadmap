@@ -4,7 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import { useContent } from "@/lib/content";
 import { getState } from "@/lib/store";
 import type { NoteView } from "@/lib/notes/model";
-import { download, exportCards, exportHtml, exportMarkdown, exportPdf, exportText, exportWord, exportZip, fileName } from "@/lib/notes/export";
+// The exporters (Markdown renderer, diagrams, ZIP) load only when an export is picked.
 
 type Fmt = "md" | "zip" | "html" | "pdf" | "doc" | "txt" | "anki";
 const FORMATS: { id: Fmt; label: string; hint: string; many?: boolean }[] = [
@@ -33,6 +33,7 @@ export function ExportMenu({ notes, label = "Export", title, className = "btn" }
   const run = async (f: Fmt) => {
     const s = getState();
     setBusy(f);
+    const { download, exportCards, exportHtml, exportMarkdown, exportPdf, exportText, exportWord, exportZip, fileName } = await import("@/lib/notes/export");
     setMsg("");
     try {
       if (f === "md") download(fileName(notes, "md"), await exportMarkdown(notes, s, c, title), "text/markdown");
@@ -42,7 +43,7 @@ export function ExportMenu({ notes, label = "Export", title, className = "btn" }
       else if (f === "txt") download(fileName(notes, "txt"), exportText(notes), "text/plain");
       else if (f === "pdf") await exportPdf(notes, s, c, title);
       else {
-        const { tsv, count } = exportCards(notes);
+        const { tsv, count } = await exportCards(notes);
         if (!count) {
           setMsg("No flashcards in these notes yet.");
           return;

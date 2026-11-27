@@ -41,7 +41,18 @@ export function splitCardBlock(src: string): { q: string; a: string } {
 
 export const TERM_RE = /^(?![-*+>#|]|\d+\.)\s*(.{1,200}?)\s+::\s+(.+)$/;
 
+const cardCache = new Map<string, Card[]>();
+/** Cards in a note body. Cached by body text, since lists and counts ask for them on every render. */
 export function extractCards(body: string): Card[] {
+  const hit = cardCache.get(body);
+  if (hit) return hit;
+  const cards = parseCards(body);
+  if (cardCache.size > 500) cardCache.clear();
+  cardCache.set(body, cards);
+  return cards;
+}
+
+function parseCards(body: string): Card[] {
   const out: Card[] = [];
   const lines = body.split("\n");
   let i = 0;

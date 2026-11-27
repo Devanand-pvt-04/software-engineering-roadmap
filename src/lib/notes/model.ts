@@ -65,6 +65,16 @@ export const normTag = (t: string) =>
     .replace(/[^\w/-]/g, "")
     .slice(0, 40);
 
+// Views are rebuilt only when a note's stored object changes (every write makes a new object).
+const viewCache = new WeakMap<object, NoteView>();
+function cachedView(id: string, n: Note): NoteView {
+  const hit = viewCache.get(n);
+  if (hit && hit.id === id) return hit;
+  const v = view(id, n);
+  viewCache.set(n, v);
+  return v;
+}
+
 function view(id: string, n: Note, legacy = false): NoteView {
   const allTags = [...new Set([...(n.tags ?? []).map(normTag).filter(Boolean), ...bodyTags(n.body ?? "")])].sort();
   return { ...n, tags: n.tags ?? [], refs: n.refs ?? [], body: n.body ?? "", title: n.title ?? "", id, allTags, legacy };
@@ -86,7 +96,7 @@ export function allNotes(s: State, c: ClientContent): NoteView[] {
     if (!k.startsWith("nb:") || !e.v || typeof e.v !== "object") continue;
     const id = k.slice(3);
     seen.add(id);
-    out.push(view(id, e.v as Note));
+    out.push(cachedView(id, e.v as Note));
   }
   for (const [k, e] of Object.entries(s.entries)) {
     if (!k.startsWith("nt:") || typeof e.v !== "string" || !e.v.trim()) continue;
@@ -107,7 +117,7 @@ export const weekNoteTitle = (track: Track, w: Week) => `${track === "main" ? "M
 
 export function getNote(s: State, c: ClientContent, id: string): NoteView | null {
   const e = s.entries[noteKey(id)];
-  if (e?.v && typeof e.v === "object") return view(id, e.v as Note);
+  if (e?.v && typeof e.v === "object") return cachedView(id, e.v as Note);
   if (id.startsWith("w-")) {
     const weekId = id.slice(2);
     const old = s.entries[keys.note(weekId)];

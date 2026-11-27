@@ -1,20 +1,22 @@
 "use client";
 
 import { useCallback, useEffect, useRef, useState } from "react";
-import { unzipSync, strFromU8 } from "fflate";
 import { useContent } from "@/lib/content";
 import { setEntries, useHydrated, useStore, useToday } from "@/lib/store";
 import { dayKey } from "@/lib/schedule";
 import { putImage, saveImage } from "@/lib/notes/assets";
-import { download, exportBackup, isBackup, parseMarkdownFile } from "@/lib/notes/export";
 import { STATUS_LABEL, daysSince, displayTitle, snippet, type NoteView } from "@/lib/notes/model";
 import { extractCards } from "@/lib/notes/cards";
 import { TEMPLATES } from "@/lib/notes/templates";
 import { createNote, dueCount, purgeNote, restoreNote, useNotes } from "@/lib/notes/use-notes";
 import { APP_SLUG } from "@/lib/brand";
-import { NotePage } from "./note-page";
-import { Flashcards } from "./flashcards";
+import dynamic from "next/dynamic";
 import { ExportMenu } from "./export-menu";
+
+// The editor, renderer and flashcard player are the heavy parts; the list loads without them.
+const Loading = () => <div className="h-96 animate-pulse rounded-xl bg-panel-2/60" aria-busy="true" />;
+const NotePage = dynamic(() => import("./note-page").then((m) => m.NotePage), { ssr: false, loading: Loading });
+const Flashcards = dynamic(() => import("./flashcards").then((m) => m.Flashcards), { ssr: false, loading: Loading });
 import { JournalPanel } from "../journal-view";
 
 type View = "all" | "pinned" | "interview" | "revise" | "cards" | "trash";
@@ -108,6 +110,7 @@ export function NotesApp() {
   // ---- import ----
   const fileRef = useRef<HTMLInputElement>(null);
   const importFiles = async (files: File[]) => {
+    const [{ unzipSync, strFromU8 }, { isBackup, parseMarkdownFile }] = await Promise.all([import("fflate"), import("@/lib/notes/export")]);
     let made = 0;
     let restored = 0;
     for (const f of files) {
@@ -181,7 +184,7 @@ export function NotesApp() {
           </div>
         </div>
         <p className="mt-2 max-w-2xl text-[15px] text-muted">
-          Everything you write while studying: code, diagrams, sketches, images, tables and flashcards, linked to the roadmap and ready to export for interview prep.
+          Code, diagrams, sketches and flashcards, linked to the roadmap and ready for interview prep.
         </p>
       </header>
 
@@ -320,7 +323,10 @@ export function NotesApp() {
             <button className="btn" onClick={() => fileRef.current?.click()}>
               Import files
             </button>
-            <button className="btn" onClick={async () => download(`${APP_SLUG}-notes-backup-${today}.json`, await exportBackup(s), "application/json")}>
+            <button className="btn" onClick={async () => {
+                const { download, exportBackup } = await import("@/lib/notes/export");
+                download(`${APP_SLUG}-notes-backup-${today}.json`, await exportBackup(s), "application/json");
+              }}>
               Download backup (.json)
             </button>
           </div>

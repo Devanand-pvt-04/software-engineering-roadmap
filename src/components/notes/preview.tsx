@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useRef, useState } from "react";
-import { renderMarkdown } from "@/lib/notes/render";
+import { loadMath, needsMath, renderMarkdown } from "@/lib/notes/render";
 import { hydrate } from "@/lib/notes/hydrate";
 import { PROSE_CSS } from "@/lib/notes/prose-css";
 import "katex/dist/katex.min.css";
@@ -42,7 +42,13 @@ export function NotePreview({
   live?: boolean;
 }) {
   const src = useDebounced(body, live ? 250 : 0);
-  const html = useMemo(() => renderMarkdown(src), [src]);
+  const [mathReady, setMathReady] = useState(0);
+  const wantsMath = needsMath(src);
+  useEffect(() => {
+    if (wantsMath) void loadMath().then(() => setMathReady((x) => x + 1));
+  }, [wantsMath]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  const html = useMemo(() => renderMarkdown(src), [src, mathReady]);
   const ref = useRef<HTMLDivElement>(null);
   const s = useStore();
   // Re-hydrate when a sketch used by this note changes.
